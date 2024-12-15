@@ -9,6 +9,7 @@ const Vista = () => {
     axios
       .get("http://localhost:5000/api/datos")
       .then((response) => {
+        
         setData(response.data);
       })
       .catch((err) => {

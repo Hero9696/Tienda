@@ -1,9 +1,11 @@
 // server.js
-
 import express from 'express';
-import cors from 'cors';  // Si quieres permitir solicitudes desde tu frontend React
 import { getProductosActivosConStock, insertarProducto } from './models/productos.js';
 import { getCategoriasActivas } from './models/categorias.js';
+
+import cors from 'cors';  
+
+
 
 
 const app = express();
