@@ -1,16 +1,18 @@
 // server.js
-import multer from "multer";
+//import multer from "multer";
 import express from "express";
 import {
   getProductosActivosConStock,
   insertarProducto,
+  actualizarProducto,
+ 
 } from "./models/productos.js";
 import { getCategoriasActivas } from "./models/categorias.js";
 import cors from "cors";
 
 
-const storage = multer.memoryStorage(); // Usar memoria para almacenar el archivo temporalmente
-const upload = multer({ storage: storage }).single("foto");
+//const storage = multer.memoryStorage(); // Usar memoria para almacenar el archivo temporalmente
+//const upload = multer({ storage: storage }).single("foto");
 const app = express();
 const port = 5000;
 
@@ -49,23 +51,42 @@ app.get("/api/categorias/activas", async (req, res) => {
 });
 
 // Ruta para insertar un producto
-app.post("/api/insertarProducto", upload.single("foto"), async (req, res) => {
+app.post("/api/insertarProducto",  async (req, res) => {
   const producto = req.body;
-  const foto = req.file ? req.file.buffer : null;
+  
 
   console.log("Producto recibido:", producto); // Verifica los datos
-  console.log("Foto recibida:", foto); // Verifica la foto
+   
 
   try {
     const result = await insertarProducto({
       ...producto,
-      foto: foto,
     });
     res.status(200).json(result);
   } catch (err) {
     res.status(500).json({ error: err.message });
   }
 });
+
+app.put("/api/actualizarProducto", async (req, res) => {
+  const producto = req.body;
+  const foto = req.file ? `/uploads/${req.file.filename}` : null; // Guardamos la ruta de la imagen
+
+  console.log("Producto recibido para actualizar:", producto); // Verifica los datos
+  console.log("Foto recibida para actualizar:", foto); // Verifica la foto (ruta de la imagen)
+
+  try {
+    const result = await actualizarProducto({
+      ...producto,
+      foto: foto, 
+    });
+    res.status(200).json(result);
+  } catch (err) {
+    res.status(500).json({ error: err.message });
+  }
+});
+
+
 
 // Iniciar el servidor
 app.listen(port, () => {

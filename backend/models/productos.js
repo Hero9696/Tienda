@@ -33,7 +33,7 @@ const insertarProducto = async (producto) => {
       .input("stock", mssql.Int, producto.stock)
       .input("estados_idEstados", mssql.Int, producto.estados_idEstados)
       .input("precio", mssql.Float, producto.precio)
-      .input("foto", mssql.VarBinary, producto.foto)
+      .input("foto", mssql.NVarChar, producto.foto)
       .execute("InsertarProductos");
     return result; // El resultado de la ejecución del procedimiento almacenado
   } catch (err) {
@@ -42,4 +42,43 @@ const insertarProducto = async (producto) => {
   }
 };
 
-export { getProductosActivosConStock, insertarProducto };
+
+const actualizarProducto = async (producto) => {
+  try {
+    const pool = await connectDB(); // Asegúrate de invocar connectDB para obtener el pool
+    const result = await pool
+      .request()
+      .input("idProductos", mssql.Int, producto.idProductos) // El idProductos se usa para identificar el producto a actualizar
+      .input("categoriaProductos_idCategoriaProductos", mssql.Int, producto.categoriaProductos_idCategoriaProductos)
+      .input("usuarios_idUsuarios", mssql.Int, producto.usuarios_idUsuarios)
+      .input("nombre", mssql.NVarChar, producto.nombre)
+      .input("marca", mssql.NVarChar, producto.marca)
+      .input("codigo", mssql.NVarChar, producto.codigo)
+      .input("stock", mssql.Int, producto.stock)
+      .input("estados_idEstados", mssql.Int, producto.estados_idEstados)
+      .input("precio", mssql.Decimal, producto.precio)
+      .input("foto", mssql.NVarChar, producto.foto)
+      .execute("ActualizarProductos");
+    return result; // El resultado de la ejecución del procedimiento almacenado
+  } catch (err) {
+    console.error("Error al actualizar el producto:", err);
+    throw new Error("Error al actualizar el producto");
+  }
+};
+
+const getProductos = async () => {
+  try {
+    const pool = await connectDB();
+    const result = await pool
+      .request()
+      .query("SELECT * FROM dbo.Vista_Productos");
+    return result.recordset;
+  } catch (err) {
+    console.error("Error al obtener datos:", err);
+    throw new Error("Error al obtener datos de la base de datos");
+  }
+};
+
+
+
+export { getProductosActivosConStock, insertarProducto, actualizarProducto,getProductos };

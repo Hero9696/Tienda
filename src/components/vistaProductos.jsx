@@ -30,7 +30,7 @@ const Vista = () => {
           data.map((item, index) => (
             <div key={index} className="contenedor">
               <p>
-                <img src={item.foto} alt="" />
+                <img src="{item.foto}" alt="" />
               </p>
               <p>
                 <strong>Nombre:</strong> {item.nombre}

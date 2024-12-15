@@ -2,17 +2,16 @@ import { useState, useEffect } from "react";
 import axios from "axios";
 import PropTypes from "prop-types";
 
-const ProductoForm = ({ onSubmit }) => {
+const ProductoForm = ({ onSubmit, producto }) => {
   const [formData, setFormData] = useState({
-    categoriaProductos_idCategoriaProductos: "",
-    usuarios_idUsuarios: "",
-    nombre: "",
-    marca: "",
-    codigo: "",
-    stock: "",
-    estados_idEstados: "",
-    precio: "",
-    foto: null,
+    categoriaProductos_idCategoriaProductos: producto ? producto.categoriaProductos_idCategoriaProductos : "",
+    usuarios_idUsuarios: producto ? producto.usuarios_idUsuarios : "",
+    nombre: producto ? producto.nombre : "",
+    marca: producto ? producto.marca : "",
+    codigo: producto ? producto.codigo : "",
+    stock: producto ? producto.stock : "",
+    estados_idEstados: producto ? producto.estados_idEstados : "",
+    precio: producto ? producto.precio : "",
   });
 
   const [categorias, setCategorias] = useState([]);
@@ -37,84 +36,69 @@ const ProductoForm = ({ onSubmit }) => {
   }, []);
 
   const handleChange = (e) => {
-    const { name, value, files } = e.target;
+    const { name, value } = e.target;
 
-    // Si el campo es foto, manejamos de manera diferente
-    if (name === "foto") {
+    // Convierte valores de tipo número
+    if (["stock", "precio", "usuarios_idUsuarios", "estados_idEstados"].includes(name)) {
       setFormData((prevData) => ({
         ...prevData,
-        foto: files[0],
+        [name]: value ? Number(value) : "",
       }));
     } else {
-      // Convierte valores de tipo número
-      if (["stock", "precio", "usuarios_idUsuarios", "estados_idEstados"].includes(name)) {
-        setFormData((prevData) => ({
-          ...prevData,
-          [name]: value ? Number(value) : "",
-        }));
-      } else {
-        // Para los demás campos, solo actualizamos el valor
-        setFormData((prevData) => ({
-          ...prevData,
-          [name]: value,
-        }));
-      }
+      // Para los demás campos, solo actualizamos el valor
+      setFormData((prevData) => ({
+        ...prevData,
+        [name]: value,
+      }));
     }
   };
 
- const handleSubmit = async (e) => {
-  e.preventDefault();
+  const handleSubmit = async (e) => {
+    e.preventDefault();
 
-  if (!window.confirm("¿Estás seguro de enviar los datos?")) return;
+    if (!window.confirm("¿Estás seguro de enviar los datos?")) return;
 
-  setIsSubmitting(true);
-  const data = new FormData();
+    setIsSubmitting(true);
+    const data = new FormData();
   
-  // Agregar todos los campos a FormData
-  Object.keys(formData).forEach((key) => {
-    data.append(key, formData[key]);
-  });
-
-  // Asegúrate de agregar la foto al FormData correctamente
-  if (formData.foto) {
-    data.append("foto", formData.foto);
-  }
-
-  try {
-    const response = await axios.post(
-      "http://localhost:5000/api/insertarProducto",
-      data,
-      {
-        headers: { "Content-Type": "multipart/form-data" },
-      }
-    );
-    alert("Producto agregado correctamente.");
-    onSubmit && onSubmit(response.data);
-    setFormData({
-      categoriaProductos_idCategoriaProductos: "",
-      usuarios_idUsuarios: "",
-      nombre: "",
-      marca: "",
-      codigo: "",
-      stock: "",
-      estados_idEstados: "",
-      precio: "",
-      foto: null,
+    // Agregar todos los campos a FormData
+    Object.keys(formData).forEach((key) => {
+      data.append(key, formData[key]);
     });
-  } catch (error) {
-    console.error(error);
-    const message =
-      error.response?.data?.message || "Error al agregar el producto.";
-    alert(message);
-  } finally {
-    setIsSubmitting(false);
-  }
-};
+
+    try {
+      const url = producto ? "http://localhost:5000/api/actualizarProducto" : "http://localhost:5000/api/insertarProducto";
+      const response = await axios.post(url, data, {
+        headers: { "Content-Type": "multipart/form-data" },
+      });
+
+      alert(producto ? "Producto actualizado correctamente." : "Producto agregado correctamente.");
+      onSubmit && onSubmit(response.data);
+
+      setFormData({
+        categoriaProductos_idCategoriaProductos: "",
+        usuarios_idUsuarios: "",
+        nombre: "",
+        marca: "",
+        codigo: "",
+        stock: "",
+        estados_idEstados: "",
+        precio: "",
+      });
+    } catch (error) {
+      console.error(error);
+      const message =
+        error.response?.data?.message || "Error al guardar el producto.";
+      alert(message);
+    } finally {
+      setIsSubmitting(false);
+    }
+  };
 
   return (
     <section className="form-section">
       <form onSubmit={handleSubmit} className="form-container">
-        <h2>Formulario de Producto</h2>
+        <h2>{producto ? "Actualizar Producto" : "Formulario de Producto"}</h2>
 
         {/* Campo Select para Categorías */}
         <select
@@ -188,9 +172,8 @@ const ProductoForm = ({ onSubmit }) => {
           onChange={handleChange}
           required
         />
-        <input type="file" name="foto" onChange={handleChange} />
         <button type="submit" disabled={isSubmitting}>
-          {isSubmitting ? "Guardando..." : "Guardar"}
+          {isSubmitting ? "Guardando..." : producto ? "Actualizar" : "Guardar"}
         </button>
       </form>
     </section>
@@ -199,6 +182,7 @@ const ProductoForm = ({ onSubmit }) => {
 
 ProductoForm.propTypes = {
   onSubmit: PropTypes.func,
+  producto: PropTypes.object, // Producto a editar (opcional)
 };
 
 export default ProductoForm;
