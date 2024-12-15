@@ -9,7 +9,6 @@ const Vista = () => {
     axios
       .get("http://localhost:5000/api/datos")
       .then((response) => {
-        
         setData(response.data);
       })
       .catch((err) => {
@@ -30,6 +29,9 @@ const Vista = () => {
         {data.length > 0 ? (
           data.map((item, index) => (
             <div key={index} className="contenedor">
+              <p>
+                <img src={item.foto} alt="" />
+              </p>
               <p>
                 <strong>Nombre:</strong> {item.nombre}
               </p>

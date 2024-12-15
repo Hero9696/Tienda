@@ -15,22 +15,19 @@ const ProductoForm = ({ onSubmit }) => {
     foto: null,
   });
 
-  const [categorias, setCategorias] = useState([]); // Estado para las categorías
+  const [categorias, setCategorias] = useState([]);
   const [isSubmitting, setIsSubmitting] = useState(false);
 
   // Obtener las categorías de productos desde el servidor
   useEffect(() => {
     const fetchCategorias = async () => {
       try {
-        const response = await axios.get(
-          "http://localhost:5000/api/categorias/activas"
-        );
-        
+        const response = await axios.get("http://localhost:5000/api/categorias/activas");
         const categoriasSoloNombres = response.data.map((categoria) => ({
           idCategoriaProductos: categoria.idCategoriaProductos,
           nombre: categoria.nombreCategoria,
         }));
-        setCategorias(categoriasSoloNombres); // Guardar solo los nombres
+        setCategorias(categoriasSoloNombres);
       } catch (error) {
         console.error("Error al obtener las categorías:", error);
       }
@@ -41,53 +38,78 @@ const ProductoForm = ({ onSubmit }) => {
 
   const handleChange = (e) => {
     const { name, value, files } = e.target;
+
+    // Si el campo es foto, manejamos de manera diferente
     if (name === "foto") {
-      setFormData({ ...formData, foto: files[0] });
+      setFormData((prevData) => ({
+        ...prevData,
+        foto: files[0],
+      }));
     } else {
-      setFormData({ ...formData, [name]: value });
+      // Convierte valores de tipo número
+      if (["stock", "precio", "usuarios_idUsuarios", "estados_idEstados"].includes(name)) {
+        setFormData((prevData) => ({
+          ...prevData,
+          [name]: value ? Number(value) : "",
+        }));
+      } else {
+        // Para los demás campos, solo actualizamos el valor
+        setFormData((prevData) => ({
+          ...prevData,
+          [name]: value,
+        }));
+      }
     }
   };
 
-  const handleSubmit = async (e) => {
-    e.preventDefault();
-    if (!window.confirm("¿Estás seguro de enviar los datos?")) return;
+ const handleSubmit = async (e) => {
+  e.preventDefault();
 
-    setIsSubmitting(true);
-    const data = new FormData();
-    Object.keys(formData).forEach((key) => {
-      data.append(key, formData[key]);
+  if (!window.confirm("¿Estás seguro de enviar los datos?")) return;
+
+  setIsSubmitting(true);
+  const data = new FormData();
+  
+  // Agregar todos los campos a FormData
+  Object.keys(formData).forEach((key) => {
+    data.append(key, formData[key]);
+  });
+
+  // Asegúrate de agregar la foto al FormData correctamente
+  if (formData.foto) {
+    data.append("foto", formData.foto);
+  }
+
+  try {
+    const response = await axios.post(
+      "http://localhost:5000/api/insertarProducto",
+      data,
+      {
+        headers: { "Content-Type": "multipart/form-data" },
+      }
+    );
+    alert("Producto agregado correctamente.");
+    onSubmit && onSubmit(response.data);
+    setFormData({
+      categoriaProductos_idCategoriaProductos: "",
+      usuarios_idUsuarios: "",
+      nombre: "",
+      marca: "",
+      codigo: "",
+      stock: "",
+      estados_idEstados: "",
+      precio: "",
+      foto: null,
     });
-
-    try {
-      const response = await axios.post(
-        "http://localhost:5000/insertarProducto",
-        data,
-        {
-          headers: { "Content-Type": "multipart/form-data" },
-        }
-      );
-      alert("Producto agregado correctamente.");
-      onSubmit && onSubmit(response.data);
-      setFormData({
-        categoriaProductos_idCategoriaProductos: "",
-        usuarios_idUsuarios: "",
-        nombre: "",
-        marca: "",
-        codigo: "",
-        stock: "",
-        estados_idEstados: "",
-        precio: "",
-        foto: null,
-      });
-    } catch (error) {
-      console.error(error);
-      const message =
-        error.response?.data?.message || "Error al agregar el producto.";
-      alert(message);
-    } finally {
-      setIsSubmitting(false);
-    }
-  };
+  } catch (error) {
+    console.error(error);
+    const message =
+      error.response?.data?.message || "Error al agregar el producto.";
+    alert(message);
+  } finally {
+    setIsSubmitting(false);
+  }
+};
 
   return (
     <section className="form-section">
@@ -103,11 +125,8 @@ const ProductoForm = ({ onSubmit }) => {
         >
           <option value="">Selecciona una categoría</option>
           {categorias.map((categoria) => (
-            <option
-              key={categoria.idCategoriaProductos}
-              value={categoria.idCategoriaProductos}
-            >
-              {categoria.nombre} {/* Mostrar solo el nombre de la categoría */}
+            <option key={categoria.idCategoriaProductos} value={categoria.idCategoriaProductos}>
+              {categoria.nombre}
             </option>
           ))}
         </select>
