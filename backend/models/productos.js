@@ -28,4 +28,6 @@ const getProductosActivosConStock = async () => {
   }
 };
 
+
+
 export { getProductosActivosConStock };

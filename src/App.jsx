@@ -1,11 +1,25 @@
-import Vista from './vistaProductos.jsx';
-import ('./App.css')
-const App = () => {
+import Vista from './components/vistaProductos.jsx';
+import ProductoForm from './components/Productos.jsx';
+import { BrowserRouter as Router, Routes, Route } from 'react-router-dom';
+import NavBar from './components/menuNav.jsx';
+import Login from './components/login.jsx';
+import './assets/styles/App.css';
+import './assets/styles/nav.css';
+import './assets/styles/editar.css';
+import './assets/styles/vista.css'
 
-  return (<>
- <Vista></Vista>
- 
- </>
+const App = () => {
+  return (
+    <>
+      <Router>
+        <NavBar />
+        <Routes>
+          <Route path="/" element={<Vista />} />
+          <Route path="/Login" element={<Login />} />
+          <Route path="/editar" element={<ProductoForm />} />
+        </Routes>
+      </Router>
+    </>
   );
 };
 

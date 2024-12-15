@@ -1,0 +1,24 @@
+.registro {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 20px;
+    justify-content: space-around;
+  }
+  
+  .contenedor {
+    background-color: #f4f4f4; /* Fondo claro */
+    border: 1px solid #ccc; /* Borde gris claro */
+    padding: 20px;
+    border-radius: 8px;
+    width: 200px;
+    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+    color: #333; /* Asegura que el texto sea visible (gris oscuro) */
+  }
+  
+  .contenedor p {
+    margin: 5px 0;
+  }
+  
+  .contenedor strong {
+    color: #000; /* Asegura que el texto en negrita sea más visible (negro) */
+  }

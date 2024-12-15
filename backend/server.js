@@ -4,6 +4,7 @@ import express from 'express';
 import cors from 'cors';  // Si quieres permitir solicitudes desde tu frontend React
 import { getProductosActivosConStock } from './models/productoModel.js';
 
+
 const app = express();
 const port = 5000;
 
@@ -23,6 +24,8 @@ app.get('/api/datos', async (req, res) => {
     res.status(500).send('Error al conectar a la base de datos');
   }
 });
+
+
 
 // Iniciar el servidor
 app.listen(port, () => {
