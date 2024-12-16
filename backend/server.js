@@ -1,31 +1,28 @@
-// server.js
-//import multer from "multer";
 import express from "express";
 import {
   getProductosActivosConStock,
   insertarProducto,
   actualizarProducto,
- 
 } from "./models/productos.js";
-import { getCategoriasActivas } from "./models/categorias.js";
+import {
+  getCategoriasActivas,
+  insertarCategoria,
+  actualizarCategoria,
+} from "./models/categorias.js";
 import cors from "cors";
 
-
-//const storage = multer.memoryStorage(); // Usar memoria para almacenar el archivo temporalmente
-//const upload = multer({ storage: storage }).single("foto");
 const app = express();
 const port = 5000;
 
-// Middleware para parsear JSON
 app.use(express.json());
-
-// Habilitar CORS para permitir solicitudes desde React
 app.use(cors());
 
+// RUTAS DE PRODUCTOS
+
 // Ruta para obtener los datos de la base de datos usando el modelo
-app.get("/api/datos", async (req, res) => {
+app.get("/api/productos", async (req, res) => {
   try {
-    const productos = await getProductosActivosConStock(); // Llamamos al modelo para obtener los productos
+    const productos = await getProductosActivosConStock();
     if (productos.length === 0) {
       return res.status(404).send("No se encontraron datos.");
     }
@@ -35,6 +32,38 @@ app.get("/api/datos", async (req, res) => {
     res.status(500).send("Error al conectar a la base de datos");
   }
 });
+
+// Ruta para insertar un producto
+app.post("/api/insertarProducto", async (req, res) => {
+  const producto = req.body;
+
+  try {
+    const result = await insertarProducto({
+      ...producto,
+    });
+    res.status(200).json(result);
+  } catch (err) {
+    res.status(500).json({ error: err.message });
+  }
+});
+
+// Ruta para actualizar un producto
+app.put("/api/actualizarProducto", async (req, res) => {
+  const producto = req.body;
+  const foto = req.file ? `/uploads/${req.file.filename}` : null;
+
+  try {
+    const result = await actualizarProducto({
+      ...producto,
+      foto: foto,
+    });
+    res.status(200).json(result);
+  } catch (err) {
+    res.status(500).json({ error: err.message });
+  }
+});
+
+// RUTAS DE CATEGORIAS
 
 // Ruta para obtener las categorías activas
 app.get("/api/categorias/activas", async (req, res) => {
@@ -50,45 +79,69 @@ app.get("/api/categorias/activas", async (req, res) => {
   }
 });
 
-// Ruta para insertar un producto
-app.post("/api/insertarProducto",  async (req, res) => {
-  const producto = req.body;
-  
+// Ruta para Insertar Categorias
+app.post("/api/insertarcategorias", async (req, res) => {
+  const { usuarios_idUsuarios, estados_idEstados, nombre } = req.body;
 
-  console.log("Producto recibido:", producto); // Verifica los datos
-   
+  if (!usuarios_idUsuarios || !estados_idEstados || !nombre) {
+    return res.status(400).json({
+      error:
+        "Todos los campos (usuarios_idUsuarios, estados_idEstados, nombre) son obligatorios.",
+    });
+  }
 
   try {
-    const result = await insertarProducto({
-      ...producto,
+    const resultado = await insertarCategoria({
+      usuarios_idUsuarios,
+      estados_idEstados,
+      nombre,
     });
-    res.status(200).json(result);
-  } catch (err) {
-    res.status(500).json({ error: err.message });
+    res.status(201).json({
+      mensaje: "Categoría insertada correctamente",
+      datos: resultado.recordset,
+    });
+  } catch (error) {
+    res.status(500).json({
+      error: "Error interno del servidor al insertar la categoría.",
+      detalles: error.message,
+    });
   }
 });
 
-app.put("/api/actualizarProducto", async (req, res) => {
-  const producto = req.body;
-  const foto = req.file ? `/uploads/${req.file.filename}` : null; // Guardamos la ruta de la imagen
+// Ruta para Actualizar Categorias
+app.put("/api/actualizarcategorias", async (req, res) => {
+  const { idCategoriaProductos, usuarios_idUsuarios, estados_idEstados, nombre } = req.body;
 
-  console.log("Producto recibido para actualizar:", producto); // Verifica los datos
-  console.log("Foto recibida para actualizar:", foto); // Verifica la foto (ruta de la imagen)
+  // Validar datos enviados
+  if (!idCategoriaProductos || !usuarios_idUsuarios || !estados_idEstados || !nombre) {
+    return res.status(400).json({
+      error: "Todos los campos (idCategoriaProductos, usuarios_idUsuarios, estados_idEstados, nombre) son obligatorios.",
+    });
+  }
 
   try {
-    const result = await actualizarProducto({
-      ...producto,
-      foto: foto, 
+    // Llamar a la función para actualizar la categoría
+    const resultado = await actualizarCategoria({
+      idCategoriaProductos,
+      usuarios_idUsuarios,
+      estados_idEstados,
+      nombre,
     });
-    res.status(200).json(result);
-  } catch (err) {
-    res.status(500).json({ error: err.message });
+
+    res.status(200).json({
+      mensaje: "Categoría actualizada correctamente",
+      datos: resultado.recordset,
+    });
+  } catch (error) {
+    res.status(500).json({
+      error: "Error interno del servidor al actualizar la categoría.",
+      detalles: error.message,
+    });
   }
 });
 
 
-
-// Iniciar el servidor
+// INICIANDO SERVIDOR
 app.listen(port, () => {
   console.log(`Servidor corriendo en http://localhost:${port}`);
 });

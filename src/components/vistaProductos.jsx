@@ -7,7 +7,7 @@ const Vista = () => {
 
   useEffect(() => {
     axios
-      .get("http://localhost:5000/api/datos")
+      .get("http://localhost:5000/api/productos")
       .then((response) => {
         setData(response.data);
       })
