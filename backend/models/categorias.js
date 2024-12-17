@@ -20,7 +20,7 @@ const getCategoriasActivas = async () => {
 
 const insertarCategoria = async (categoria) => {
   try {
-    const pool = await connectDB(); // Conexión a la base de datos
+    const pool = await connectDB();
     const result = await pool
       .request()
       .input("usuarios_idUsuarios", mssql.Int, categoria.usuarios_idUsuarios) 
@@ -56,4 +56,4 @@ const actualizarCategoria = async (categoria) => {
 
 
 
-export { getCategoriasActivas, insertarCategoria, actualizarCategoria  };
+export default { getCategoriasActivas, insertarCategoria, actualizarCategoria  };

@@ -1,14 +1,7 @@
 import express from "express";
-import {
-  getProductosActivosConStock,
-  insertarProducto,
-  actualizarProducto,
-} from "./models/productos.js";
-import {
-  getCategoriasActivas,
-  insertarCategoria,
-  actualizarCategoria,
-} from "./models/categorias.js";
+import fproductos from "./models/productos.js";
+import fcategorias from "./models/categorias.js";
+import festados from "./models/estados.js";
 import cors from "cors";
 
 const app = express();
@@ -22,7 +15,7 @@ app.use(cors());
 // Ruta para obtener los datos de la base de datos usando el modelo
 app.get("/api/productos", async (req, res) => {
   try {
-    const productos = await getProductosActivosConStock();
+    const productos = await fproductos.getProductosActivosConStock();
     if (productos.length === 0) {
       return res.status(404).send("No se encontraron datos.");
     }
@@ -38,7 +31,7 @@ app.post("/api/insertarProducto", async (req, res) => {
   const producto = req.body;
 
   try {
-    const result = await insertarProducto({
+    const result = await fproductos.insertarProducto({
       ...producto,
     });
     res.status(200).json(result);
@@ -53,7 +46,7 @@ app.put("/api/actualizarProducto", async (req, res) => {
   const foto = req.file ? `/uploads/${req.file.filename}` : null;
 
   try {
-    const result = await actualizarProducto({
+    const result = await fproductos.actualizarProducto({
       ...producto,
       foto: foto,
     });
@@ -68,7 +61,7 @@ app.put("/api/actualizarProducto", async (req, res) => {
 // Ruta para obtener las categorías activas
 app.get("/api/categorias/activas", async (req, res) => {
   try {
-    const categoriasActivas = await getCategoriasActivas();
+    const categoriasActivas = await fcategorias.getCategoriasActivas();
     if (categoriasActivas.length === 0) {
       return res.status(404).send("No se encontraron categorías activas.");
     }
@@ -91,7 +84,7 @@ app.post("/api/insertarcategorias", async (req, res) => {
   }
 
   try {
-    const resultado = await insertarCategoria({
+    const resultado = await fcategorias.insertarCategoria({
       usuarios_idUsuarios,
       estados_idEstados,
       nombre,
@@ -110,18 +103,27 @@ app.post("/api/insertarcategorias", async (req, res) => {
 
 // Ruta para Actualizar Categorias
 app.put("/api/actualizarcategorias", async (req, res) => {
-  const { idCategoriaProductos, usuarios_idUsuarios, estados_idEstados, nombre } = req.body;
+  const {
+    idCategoriaProductos,
+    usuarios_idUsuarios,
+    estados_idEstados,
+    nombre,
+  } = req.body;
 
-  // Validar datos enviados
-  if (!idCategoriaProductos || !usuarios_idUsuarios || !estados_idEstados || !nombre) {
+  if (
+    !idCategoriaProductos ||
+    !usuarios_idUsuarios ||
+    !estados_idEstados ||
+    !nombre
+  ) {
     return res.status(400).json({
-      error: "Todos los campos (idCategoriaProductos, usuarios_idUsuarios, estados_idEstados, nombre) son obligatorios.",
+      error:
+        "Todos los campos (idCategoriaProductos, usuarios_idUsuarios, estados_idEstados, nombre) son obligatorios.",
     });
   }
 
   try {
-    // Llamar a la función para actualizar la categoría
-    const resultado = await actualizarCategoria({
+    const resultado = await fcategorias.actualizarCategoria({
       idCategoriaProductos,
       usuarios_idUsuarios,
       estados_idEstados,
@@ -140,6 +142,58 @@ app.put("/api/actualizarcategorias", async (req, res) => {
   }
 });
 
+// RUTAS PARA ESTADOS
+
+// Ruta para insertar estados
+app.post("/api/insertarestados", async (req, res) => {
+  const { nombre } = req.body;
+
+  if (!nombre) {
+    return res.status(400).json({
+      error: "El campo 'nombre' es obligatorio.",
+    });
+  }
+
+  try {
+    const resultado = await festados.insertarEstado({ nombre });
+    res.status(201).json({
+      mensaje: "Estado insertado correctamente",
+      datos: resultado.recordset,
+    });
+  } catch (error) {
+    res.status(500).json({
+      error: "Error interno del servidor al insertar el estado.",
+      detalles: error.message,
+    });
+  }
+});
+
+// Ruta para actualizar estados
+app.put("/api/actualizarestados", async (req, res) => {
+  const { idEstados, nombre } = req.body;
+
+  if (!idEstados || !nombre) {
+    return res.status(400).json({
+      error: "Los campos 'idEstados' y 'nombre' son obligatorios.",
+    });
+  }
+
+  try {
+    const resultado = await festados.ActualizarEstados({
+      idEstados: parseInt(idEstados, 10),
+      nombre,
+    });
+    res.status(200).json({
+      mensaje: "Estado actualizado correctamente",
+      datos: resultado.recordset,
+    });
+  } catch (error) {
+    res.status(500).json({
+      error: "Error interno del servidor al actualizar el estado.",
+      detalles: error.message,
+    });
+  }
+});
 
 // INICIANDO SERVIDOR
 app.listen(port, () => {

@@ -81,4 +81,4 @@ const getProductos = async () => {
 
 
 
-export { getProductosActivosConStock, insertarProducto, actualizarProducto,getProductos };
+export default { getProductosActivosConStock, insertarProducto, actualizarProducto,getProductos };
