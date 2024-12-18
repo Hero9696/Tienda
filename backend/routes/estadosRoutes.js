@@ -3,7 +3,7 @@ import festados from "../models/estados.js";
 
 const router = express.Router();
 
-// Ruta para insertar estados
+
 router.post("/api/insertarestados", async (req, res) => {
   const { nombre } = req.body;
 
@@ -19,7 +19,7 @@ router.post("/api/insertarestados", async (req, res) => {
   }
 });
 
-// Ruta para actualizar estados
+
 router.put("/api/actualizarestados", async (req, res) => {
   const { idEstados, nombre } = req.body;
 

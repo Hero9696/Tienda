@@ -3,7 +3,7 @@ import fcategorias from "../models/categorias.js";
 
 const router = express.Router();
 
-// Ruta para obtener las categorías activas
+
 router.get("/api/categorias/activas", async (req, res) => {
   try {
     const categoriasActivas = await fcategorias.getCategoriasActivas();
@@ -17,7 +17,7 @@ router.get("/api/categorias/activas", async (req, res) => {
   }
 });
 
-// Ruta para insertar categoría
+
 router.post("/api/insertarcategorias", async (req, res) => {
   const { usuarios_idUsuarios, estados_idEstados, nombre } = req.body;
 
@@ -39,7 +39,7 @@ router.post("/api/insertarcategorias", async (req, res) => {
   }
 });
 
-// Ruta para actualizar categoría
+
 router.put("/api/actualizarcategorias", async (req, res) => {
   const { idCategoriaProductos, usuarios_idUsuarios, estados_idEstados, nombre } = req.body;
 

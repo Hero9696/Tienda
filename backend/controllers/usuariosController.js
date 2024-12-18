@@ -6,20 +6,20 @@ const createUsuario = async (req, res) => {
   try {
     const usuario = req.body;
 
-    // Hashear la contraseña usando bcrypt
-    const passwordHashed = await bcrypt.hash(usuario.password, 10);  // Usamos bcrypt.hash para generar el hash de la contraseña
-    usuario.password = passwordHashed;  // Asignamos la contraseña hasheada al usuario
+   
+    const passwordHashed = await bcrypt.hash(usuario.password, 10);  
+    usuario.password = passwordHashed;  
 
-    // Insertar usuario en la base de datos
-    const result = await fusuarios.insertarUsuario(usuario);  // Inserta el usuario
+    
+    const result = await fusuarios.insertarUsuario(usuario); 
 
-    // Generar el token JWT después de insertar el usuario
+    
     const token = generarToken({
-      idUsuarios: result.recordset[0].idUsuarios,  // Asegúrate de que el idUsuarios esté disponible en el resultado
+      idUsuarios: result.recordset[0].idUsuarios,  
       correo: usuario.correo_electronico
     });
 
-    // Responder con el token y el resultado de la inserción
+   
     res.status(201).json({ message: 'Usuario registrado exitosamente', token, result });
 
   } catch (err) {

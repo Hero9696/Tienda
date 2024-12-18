@@ -5,11 +5,10 @@ import fusuarios from "../models/usuarios.js"
 
 const router = express.Router();
 
-// Ruta para insertar un usuario
+
 router.post('/api/insertarusuarios', fuscontroller.createUsuario );
 
 
-  // Ruta para actualizar un usuario
   router.put('/api/actualizarusuarios',  fusuarios.actualizarUsuario);
 
   router.post('/api/iniciarsesion', login );

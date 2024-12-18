@@ -1,14 +1,14 @@
 import jwt from "jsonwebtoken";
 
-// Define la clave secreta directamente en este archivo
-const SECRET_KEY = 'mi_secreto_super_seguro';
 
-// Función para generar un token
+const SECRET_KEY = 'Hello_World';
+
+
 const generarToken = (payload) => {
   return jwt.sign(payload, SECRET_KEY, { expiresIn: '24h' });
 };
 
-// Función para verificar un token
+
 const verificarToken = (token) => {
   try {
     return jwt.verify(token, SECRET_KEY);

@@ -5,8 +5,6 @@ import bcrypt from "bcrypt";
 const insertarUsuario = async (usuario) => {
     try {
       const pool = await connectDB();
-  
-      // Verificar si el correo ya está registrado
       const resultBusqueda = await pool
         .request()
         .input("Correo", mssql.NVarChar, usuario.correo_electronico)
@@ -16,7 +14,7 @@ const insertarUsuario = async (usuario) => {
         throw new Error("El correo electrónico ya está registrado.");
       }
   
-      // Si el correo no está registrado, proceder con la inserción
+     
       const result = await pool
         .request()
         .input("rol_idRol", mssql.Int, usuario.rol_idRol)
@@ -37,7 +35,7 @@ const insertarUsuario = async (usuario) => {
 
   const actualizarUsuario = async (req, res) => {
     try {
-      // Obtener los parámetros desde el cuerpo de la solicitud
+      
       const {
         idUsuarios,
         rol_idRol,
@@ -50,19 +48,19 @@ const insertarUsuario = async (usuario) => {
         clientes_idClientes
       } = req.body;
   
-      // Validar que se hayan recibido todos los campos necesarios
+      
       if (!idUsuarios || !rol_idRol || !estados_idEstados || !correo_electronico || !nombre_completo || 
           !password || !telefono || !fecha_nacimiento || !clientes_idClientes) {
         return res.status(400).json({ error: 'Todos los campos son requeridos' });
       }
   
-      // Conectar a la base de datos
+      
       const pool = await connectDB();
   
-      // Encriptar la nueva contraseña antes de actualizarla
+      
       const passwordEncriptada = await bcrypt.hash(password, 10);
   
-      // Actualizar usuario en la base de datos
+      
       const result = await pool
         .request()
         .input("idUsuarios", mssql.Int, idUsuarios)
@@ -76,12 +74,12 @@ const insertarUsuario = async (usuario) => {
         .input("clientes_idClientes", mssql.Int, clientes_idClientes)
         .execute("ActualizarUsuarios");
   
-      // Verificar si la actualización fue exitosa
+     
       if (result.rowsAffected[0] === 0) {
         return res.status(404).json({ error: 'Usuario no encontrado' });
       }
   
-      // Responder con un mensaje de éxito
+     
       res.status(200).json({ message: 'Usuario actualizado correctamente' });
   
     } catch (err) {
@@ -89,9 +87,4 @@ const insertarUsuario = async (usuario) => {
       res.status(500).json({ error: 'Error al actualizar usuario' });
     }
   };
-  
-  
-
-  
-
 export default { insertarUsuario, actualizarUsuario, };

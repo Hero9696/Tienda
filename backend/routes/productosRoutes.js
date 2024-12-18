@@ -3,7 +3,7 @@ import fproductos from "../models/productos.js";
 
 const router = express.Router();
 
-// Ruta para obtener los productos
+
 router.get("/api/productos", async (req, res) => {
   try {
     const productos = await fproductos.getProductosActivosConStock();
@@ -17,7 +17,7 @@ router.get("/api/productos", async (req, res) => {
   }
 });
 
-// Ruta para insertar un producto
+
 router.post("/api/insertarProducto", async (req, res) => {
   const producto = req.body;
 
@@ -29,7 +29,7 @@ router.post("/api/insertarProducto", async (req, res) => {
   }
 });
 
-// Ruta para actualizar un producto
+
 router.put("/api/actualizarProducto", async (req, res) => {
   const producto = req.body;
   const foto = req.file ? `/uploads/${req.file.filename}` : null;
