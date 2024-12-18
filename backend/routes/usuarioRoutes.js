@@ -1,6 +1,7 @@
 import express from "express";
 import login from "../controllers/authController.js"
 import fuscontroller from "../controllers/usuariosController.js";
+import fusuarios from "../models/usuarios.js"
 
 const router = express.Router();
 
@@ -9,7 +10,7 @@ router.post('/api/insertarusuarios', fuscontroller.createUsuario );
 
 
   // Ruta para actualizar un usuario
-  router.put('/api/actualizarusuarios',  fuscontroller.updateUsuario);
+  router.put('/api/actualizarusuarios',  fusuarios.actualizarUsuario);
 
   router.post('/api/iniciarsesion', login );
   

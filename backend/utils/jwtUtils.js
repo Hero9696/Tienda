@@ -5,7 +5,7 @@ const SECRET_KEY = 'mi_secreto_super_seguro';
 
 // Función para generar un token
 const generarToken = (payload) => {
-  return jwt.sign(payload, SECRET_KEY, { expiresIn: '1h' });
+  return jwt.sign(payload, SECRET_KEY, { expiresIn: '24h' });
 };
 
 // Función para verificar un token
