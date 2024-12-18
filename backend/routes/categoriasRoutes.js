@@ -3,7 +3,6 @@ import fcategorias from "../models/categorias.js";
 
 const router = express.Router();
 
-
 router.get("/api/categorias/activas", async (req, res) => {
   try {
     const categoriasActivas = await fcategorias.getCategoriasActivas();
@@ -16,7 +15,6 @@ router.get("/api/categorias/activas", async (req, res) => {
     res.status(500).send("Error al obtener las categorías activas");
   }
 });
-
 
 router.post("/api/insertarcategorias", async (req, res) => {
   const { usuarios_idUsuarios, estados_idEstados, nombre } = req.body;
@@ -33,17 +31,36 @@ router.post("/api/insertarcategorias", async (req, res) => {
       estados_idEstados,
       nombre,
     });
-    res.status(201).json({ mensaje: "Categoría insertada correctamente", datos: resultado.recordset });
+    res
+      .status(201)
+      .json({
+        mensaje: "Categoría insertada correctamente",
+        datos: resultado.recordset,
+      });
   } catch (error) {
-    res.status(500).json({ error: "Error interno del servidor al insertar la categoría.", detalles: error.message });
+    res
+      .status(500)
+      .json({
+        error: "Error interno del servidor al insertar la categoría.",
+        detalles: error.message,
+      });
   }
 });
 
-
 router.put("/api/actualizarcategorias", async (req, res) => {
-  const { idCategoriaProductos, usuarios_idUsuarios, estados_idEstados, nombre } = req.body;
+  const {
+    idCategoriaProductos,
+    usuarios_idUsuarios,
+    estados_idEstados,
+    nombre,
+  } = req.body;
 
-  if (!idCategoriaProductos || !usuarios_idUsuarios || !estados_idEstados || !nombre) {
+  if (
+    !idCategoriaProductos ||
+    !usuarios_idUsuarios ||
+    !estados_idEstados ||
+    !nombre
+  ) {
     return res.status(400).json({
       error: "Todos los campos son obligatorios.",
     });
@@ -56,9 +73,19 @@ router.put("/api/actualizarcategorias", async (req, res) => {
       estados_idEstados,
       nombre,
     });
-    res.status(200).json({ mensaje: "Categoría actualizada correctamente", datos: resultado.recordset });
+    res
+      .status(200)
+      .json({
+        mensaje: "Categoría actualizada correctamente",
+        datos: resultado.recordset,
+      });
   } catch (error) {
-    res.status(500).json({ error: "Error interno del servidor al actualizar la categoría.", detalles: error.message });
+    res
+      .status(500)
+      .json({
+        error: "Error interno del servidor al actualizar la categoría.",
+        detalles: error.message,
+      });
   }
 });
 

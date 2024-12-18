@@ -3,7 +3,6 @@ import fproductos from "../models/productos.js";
 
 const router = express.Router();
 
-
 router.get("/api/productos", async (req, res) => {
   try {
     const productos = await fproductos.getProductosActivosConStock();
@@ -17,7 +16,6 @@ router.get("/api/productos", async (req, res) => {
   }
 });
 
-
 router.post("/api/insertarProducto", async (req, res) => {
   const producto = req.body;
 
@@ -28,7 +26,6 @@ router.post("/api/insertarProducto", async (req, res) => {
     res.status(500).json({ error: err.message });
   }
 });
-
 
 router.put("/api/actualizarProducto", async (req, res) => {
   const producto = req.body;

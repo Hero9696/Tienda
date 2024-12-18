@@ -5,27 +5,26 @@ dotenv.config();
 const user = "sa";
 const pass = "root96";
 const dbConfig = {
-  server: "localhost", // Cambia por el nombre o IP de tu servidor
-  database: "GDA00278-OTMiguelPadilla", // Nombre de la base de datos
+  server: "localhost",
+  database: "GDA00278-OTMiguelPadilla",
   options: {
-    trustServerCertificate: true, // Esto evita problemas de certificados en entornos locales
+    trustServerCertificate: true,
   },
-  port: 1434, // Puerto de SQL Server
+  port: 1434,
   authentication: {
     type: "default",
     options: {
-      userName: user, // O el usuario del sistema
-      password: pass, // O la contraseña del sistema (si aplica)
+      userName: user,
+      password: pass,
     },
   },
 };
 
-// Función para conectar a la base de datos
 async function connectDB() {
   try {
-    const pool = await mssql.connect(dbConfig); // Conectar a SQL Server
+    const pool = await mssql.connect(dbConfig);
     console.log("Conexión exitosa a SQL Server");
-    return pool; // Retorna la conexión para que otros archivos la usen
+    return pool;
   } catch (err) {
     console.error("Error al conectar a SQL Server:", err);
     throw err;

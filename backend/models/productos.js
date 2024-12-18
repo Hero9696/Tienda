@@ -1,7 +1,6 @@
 import mssql from "mssql";
 import connectDB from "../db.js";
 
-
 const getProductosActivosConStock = async () => {
   try {
     const pool = await connectDB();
@@ -15,10 +14,9 @@ const getProductosActivosConStock = async () => {
   }
 };
 
-
 const insertarProducto = async (producto) => {
   try {
-    const pool = await connectDB(); 
+    const pool = await connectDB();
     const result = await pool
       .request()
       .input(
@@ -35,21 +33,24 @@ const insertarProducto = async (producto) => {
       .input("precio", mssql.Float, producto.precio)
       .input("foto", mssql.NVarChar, producto.foto)
       .execute("InsertarProductos");
-    return result; 
+    return result;
   } catch (err) {
     console.error("Error al insertar el producto:", err);
     throw new Error("Error al insertar el producto");
   }
 };
 
-
 const actualizarProducto = async (producto) => {
   try {
-    const pool = await connectDB(); 
+    const pool = await connectDB();
     const result = await pool
       .request()
-      .input("idProductos", mssql.Int, producto.idProductos) 
-      .input("categoriaProductos_idCategoriaProductos", mssql.Int, producto.categoriaProductos_idCategoriaProductos)
+      .input("idProductos", mssql.Int, producto.idProductos)
+      .input(
+        "categoriaProductos_idCategoriaProductos",
+        mssql.Int,
+        producto.categoriaProductos_idCategoriaProductos
+      )
       .input("usuarios_idUsuarios", mssql.Int, producto.usuarios_idUsuarios)
       .input("nombre", mssql.NVarChar, producto.nombre)
       .input("marca", mssql.NVarChar, producto.marca)
@@ -59,7 +60,7 @@ const actualizarProducto = async (producto) => {
       .input("precio", mssql.Decimal, producto.precio)
       .input("foto", mssql.NVarChar, producto.foto)
       .execute("ActualizarProductos");
-    return result; 
+    return result;
   } catch (err) {
     console.error("Error al actualizar el producto:", err);
     throw new Error("Error al actualizar el producto");
@@ -79,6 +80,9 @@ const getProductos = async () => {
   }
 };
 
-
-
-export default { getProductosActivosConStock, insertarProducto, actualizarProducto,getProductos };
+export default {
+  getProductosActivosConStock,
+  insertarProducto,
+  actualizarProducto,
+  getProductos,
+};
