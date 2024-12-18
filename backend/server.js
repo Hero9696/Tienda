@@ -3,6 +3,7 @@ import cors from "cors";
 import productosRoutes from "./routes/productosRoutes.js";
 import categoriasRoutes from "./routes/categoriasRoutes.js";
 import estadosRoutes from "./routes/estadosRoutes.js";
+import usuarioRoutes from "./routes/usuarioRoutes.js"
 
 const app = express();
 const port = 5000;
@@ -14,6 +15,7 @@ app.use(cors());
 app.use(productosRoutes);
 app.use(categoriasRoutes);
 app.use(estadosRoutes);
+app.use(usuarioRoutes);
 
 // INICIANDO SERVIDOR
 app.listen(port, () => {

@@ -1,4 +1,4 @@
-import mssql from 'mssql';
+import mssql from "mssql";
 import connectDB from "../db.js";
 
 
