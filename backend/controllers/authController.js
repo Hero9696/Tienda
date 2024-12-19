@@ -51,8 +51,8 @@ const login = async (req, res) => {
     };
 
     const token = jwt.sign(payload, jwt_secret, { expiresIn: "24h" });
-
-    res.status(200).json({ message: "Inicio de sesión exitoso", token });
+    res.cookie('token', token, { httpOnly: true, secure: true, sameSite: 'Strict' });
+    res.status(200).json({ message: "Inicio de sesión exitoso" });
   } catch (err) {
     console.error(err);
     res.status(500).json({ error: "Error al iniciar sesión" });
