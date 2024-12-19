@@ -50,7 +50,7 @@ const login = async (req, res) => {
       rol: rol.nombre,
     };
 
-    const token = jwt.sign(payload, jwt_secret, { expiresIn: "1h" });
+    const token = jwt.sign(payload, jwt_secret, { expiresIn: "24h" });
 
     res.status(200).json({ message: "Inicio de sesión exitoso", token });
   } catch (err) {
