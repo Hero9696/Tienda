@@ -1,4 +1,4 @@
-import fod from "../models/ordenDetalles";
+import fod from "../models/ordenDetalles.js";
 
 const insertarordendetalles =  async (req, res) => {
   const { idUsuarios, detalles } = req.body;
