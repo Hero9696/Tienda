@@ -1,97 +1,79 @@
-import mssql from "mssql";
-import connectDB from "../db.js";
+import fod from "../models/ordenDetalles";
 
-const crearOrdenDetalles = async (idUsuarios, detalles) => {
-  try {
-    const productosValidos = [];
+const insertarordendetalles =  async (req, res) => {
+  const { idUsuarios, detalles } = req.body;
 
-    for (const detalle of detalles) {
-      const producto = await verProductoPorId(detalle.idProductos);
-      if (producto.length > 0) {
-        productosValidos.push({
-          idProductos: detalle.idProductos,
-          cantidad: detalle.cantidad,
-        });
-      } else {
-        console.error(`Producto con ID ${detalle.idProductos} no encontrado`);
-        return;
-      }
-    }
-
-    const pool = await connectDB();
-
-    const result = await pool
-      .request()
-      .input("idUsuarios", mssql.Int, idUsuarios)
-      .input("detalles", mssql.NVarChar, JSON.stringify(productosValidos))
-      .execute("CrearOrdenDetalles");
-
-    return result;
-  } catch (err) {
-    console.error("Error al crear la orden y sus detalles:", err);
-    throw new Error("Error al crear la orden y sus detalles");
+  if (!idUsuarios || !detalles || detalles.length === 0) {
+    return res.status(400).json({ error: "Faltan datos en la solicitud" });
   }
-};
 
-const verProductoPorId = async (idProductos) => {
   try {
-    const pool = await connectDB();
-
-    const result = await pool
-      .request()
-      .input("idProductos", mssql.Int, idProductos)
-      .execute("VerProductoPorId");
-
-    return result.recordset;
-  } catch (err) {
-    console.error("Error al obtener el producto:", err);
-    throw new Error("Error al obtener el producto");
+    const result = await fod.crearOrdenDetalles(idUsuarios, detalles);
+    return res.status(200).json({ success: true, result });
+  } catch (error) {
+    return res.status(500).json({ error: error.message });
   }
-};
+}
 
-const actualizarOrdenDetalles = async (idOrden, detalles) => {
+
+const actualizarOrdenDetalles = async (req, res) => {
+  const { idOrden, detalles } = req.body;
+
   try {
     if (!idOrden || !Array.isArray(detalles) || detalles.length === 0) {
-      throw new Error("Faltan parámetros: idOrden y detalles son necesarios.");
+      return res.status(400).json({
+        message:
+          "Faltan parámetros: idOrden y detalles son necesarios, y detalles debe ser un arreglo con al menos un elemento.",
+      });
     }
 
-    const pool = await connectDB();
+    const result = await fod.actualizarOrdenDetalles(
+      parseInt(idOrden),
+      detalles
+    );
 
-    const result = await pool
-      .request()
-      .input("idOrden", mssql.Int, idOrden)
-      .input("detalles", mssql.NVarChar, JSON.stringify(detalles))
-      .execute("ActualizarOrdenDetalles");
-
-    if (!result.recordset || result.recordset.length === 0) {
-      throw new Error(
-        "No se encontraron resultados para la orden actualizada."
-      );
-    }
-
-    return result.recordset;
+    res.status(200).json({
+      message: "Detalles de la orden actualizados correctamente.",
+      data: result,
+    });
   } catch (err) {
     console.error("Error al actualizar los detalles de la orden:", err.message);
-    throw new Error("Error al actualizar los detalles de la orden");
+    res.status(500).json({
+      message: "Error al actualizar los detalles de la orden.",
+      error: err.message,
+    });
   }
-};
+}
 
-const actualizarOrden = async (idOrden, direccion, idEstado) => {
+const actualizarOrden = async (req, res) => {
+  const { usuarioId, direccion, estado } = req.body;
+
+  if (!usuarioId || !direccion || !estado) {
+    return res
+      .status(400)
+      .json({
+        message:
+          "Faltan parámetros: usuarioId, dirección y estado son necesarios",
+      });
+  }
+
   try {
-    const pool = await connectDB();
+    const result = await fod.actualizarOrden(
+      parseInt(usuarioId),
+      direccion,
+      estado
+    );
 
-    const result = await pool
-      .request()
-      .input("idOrden", mssql.Int, idOrden)
-      .input("direccion", mssql.NVarChar, direccion)
-      .input("idEstado", mssql.Int, idEstado)
-      .execute("ActualizarOrden");
-
-    return result.recordset;
+    res.status(200).json({
+      message: "Orden actualizada correctamente",
+      data: result,
+    });
   } catch (err) {
     console.error("Error al actualizar la orden:", err);
-    throw new Error("Error al actualizar la orden");
+    res
+      .status(500)
+      .json({ message: "Error al actualizar la orden", error: err.message });
   }
-};
+}
 
-export default { crearOrdenDetalles, actualizarOrdenDetalles, actualizarOrden };
+export default { insertarordendetalles, actualizarOrdenDetalles, actualizarOrden };

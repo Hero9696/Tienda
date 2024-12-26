@@ -1,42 +1,12 @@
 import express from "express";
-import fproductos from "../models/productos.js";
+import fproductos from "../controllers/productosController.js";
 
 const router = express.Router();
 
-router.get("/api/productos", async (req, res) => {
-  try {
-    const productos = await fproductos.getProductosActivosConStock();
-    if (productos.length === 0) {
-      return res.status(404).send("No se encontraron datos.");
-    }
-    res.json(productos);
-  } catch (err) {
-    console.error("Error al obtener datos:", err);
-    res.status(500).send("Error al conectar a la base de datos");
-  }
-});
+router.get("/api/productos", fproductos.verProductos);
 
-router.post("/api/insertarProducto", async (req, res) => {
-  const producto = req.body;
+router.post("/api/insertarProducto", fproductos.insertarProducto);
 
-  try {
-    const result = await fproductos.insertarProducto({ ...producto });
-    res.status(200).json(result);
-  } catch (err) {
-    res.status(500).json({ error: err.message });
-  }
-});
-
-router.put("/api/actualizarProducto", async (req, res) => {
-  const producto = req.body;
-  const foto = req.file ? `/uploads/${req.file.filename}` : null;
-
-  try {
-    const result = await fproductos.actualizarProducto({ ...producto, foto });
-    res.status(200).json(result);
-  } catch (err) {
-    res.status(500).json({ error: err.message });
-  }
-});
+router.put("/api/actualizarProducto", fproductos.actualizarProducto);
 
 export default router;
