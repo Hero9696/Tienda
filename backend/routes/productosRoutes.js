@@ -1,7 +1,10 @@
 import express from "express";
 import fproductos from "../controllers/productosController.js";
+import authMiddleware from "../midlewares/authMiddleware.js";
 
 const router = express.Router();
+
+router.use(authMiddleware);
 
 router.get("/api/productos", fproductos.verProductos);
 
