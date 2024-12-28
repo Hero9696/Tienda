@@ -12,17 +12,22 @@ const app = express();
 const port = 5000;
 
 app.use(express.json());
-app.use(cors());
 app.use(express.urlencoded({ extended: true }));
 app.use(cookieParser());
 
+app.use(cors());
 
+
+app.use(usuarioRoutes);
 app.use(productosRoutes);
 app.use(categoriasRoutes);
 app.use(estadosRoutes);
-app.use(usuarioRoutes);
 app.use(clientesRoutes);
 app.use(ordenDetallesRoutes);
+
+app.use((req, res) => {
+  res.redirect("/api/iniciarsesion"); 
+});
 
 
 app.listen(port, () => {
