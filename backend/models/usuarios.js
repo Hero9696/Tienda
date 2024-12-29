@@ -2,34 +2,33 @@ import mssql from "mssql";
 import connectDB from "../db.js";
 import bcrypt from "bcrypt";
 
-const insertarUsuario = async (usuario) => {
-  try {
-    const pool = await connectDB();
-    const resultBusqueda = await pool
-      .request()
-      .input("Correo", mssql.NVarChar, usuario.correo_electronico)
-      .execute("BuscarUsuarioPorCorreo");
+  const insertarUsuario = async (usuario) => {
+    try {
+      const pool = await connectDB();
+      const resultBusqueda = await pool
+        .request()
+        .input("Correo", mssql.NVarChar, usuario.correo_electronico)
+        .execute("BuscarUsuarioPorCorreo");
 
-    if (resultBusqueda.recordset.length > 0) {
-      throw new Error("El correo electrónico ya está registrado.");
+      if (resultBusqueda.recordset.length > 0) {
+        throw new Error("El correo electrónico ya está registrado.");
+      }
+
+      const result = await pool
+        .request()
+        .input("rol_idRol", mssql.Int, usuario.rol_idRol)
+        .input("correo_electronico", mssql.NVarChar, usuario.correo_electronico)
+        .input("nombre_completo", mssql.NVarChar, usuario.nombre_completo)
+        .input("password", mssql.NVarChar, usuario.password)
+        .input("telefono", mssql.NVarChar, usuario.telefono)
+        .input("fecha_nacimiento", mssql.Date, usuario.fecha_nacimiento)
+        .execute("InsertarUsuarios");
+
+      return result;
+    } catch (err) {
+      console.error("Error al insertar el usuario:", err);
     }
-
-    const result = await pool
-      .request()
-      .input("rol_idRol", mssql.Int, usuario.rol_idRol)
-      .input("estados_idEstados", mssql.Int, usuario.estados_idEstados)
-      .input("correo_electronico", mssql.NVarChar, usuario.correo_electronico)
-      .input("nombre_completo", mssql.NVarChar, usuario.nombre_completo)
-      .input("password", mssql.NVarChar, usuario.password)
-      .input("telefono", mssql.NVarChar, usuario.telefono)
-      .input("fecha_nacimiento", mssql.Date, usuario.fecha_nacimiento)
-      .execute("InsertarUsuarios");
-
-    return result;
-  } catch (err) {
-    console.error("Error al insertar el usuario:", err);
-  }
-};
+  };
 
 const actualizarUsuario = async (req, res) => {
   try {

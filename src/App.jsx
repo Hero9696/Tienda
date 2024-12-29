@@ -1,141 +1,164 @@
-import  { useState } from 'react';
-import { TextField, Button, MenuItem, Select, InputLabel, FormControl, Grid, Container, Typography } from '@mui/material';
-import axios from 'axios';
+import  { useState, useEffect } from "react";
+import { TextField, Button, MenuItem, Box, Typography } from "@mui/material";
 
-const RegistroForm = () => {
+const RegistroUsuario = () => {
   const [formData, setFormData] = useState({
-    nombre_completo: '',
-    correo_electronico: '',
-    password: '',
-    telefono: '',
-    fecha_nacimiento: '',
-    rol_idRol: '',
-    estados_idEstados: ''
+    rol_idRol: "",
+    correo_electronico: "",
+    nombre_completo: "",
+    password: "",
+    telefono: "",
+    fecha_nacimiento: "",
   });
+
+  const [roles, setRoles] = useState([]);
+  const [loadingRoles, setLoadingRoles] = useState(true);
+
+  // Cargar los roles desde el endpoint
+  useEffect(() => {
+    const fetchRoles = async () => {
+      try {
+        const response = await fetch("http://localhost:5000/api/obtenerroles");
+         console.log(response);
+        if (!response.ok) {
+          throw new Error("Error al obtener los roles");
+        }
+        const data = await response.json();
+        setRoles(data); // Asume que el endpoint devuelve un array de roles
+        setLoadingRoles(false);
+      } catch (error) {
+        console.error("Error al cargar los roles:", error);
+        setLoadingRoles(false);
+      }
+    };
+
+    fetchRoles();
+  }, []);
 
   const handleChange = (e) => {
     const { name, value } = e.target;
-    setFormData({
-      ...formData,
-      [name]: value
-    });
+    setFormData({ ...formData, [name]: value });
   };
 
   const handleSubmit = async (e) => {
     e.preventDefault();
-
     try {
-      // Enviar los datos al servidor
-      const response = await axios.post('http://localhost:5000/api/insertarusuarios', formData);
+      const response = await fetch("http://localhost:5000/api/insertarusuarios", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify(formData),
+      });
 
-      if (response.data.success) {
-        alert('Usuario registrado exitosamente');
+      const result = await response.json();
+      if (response.ok) {
+        alert("Usuario registrado con éxito.");
       } else {
-        alert('Error al registrar el usuario');
+        alert(`Error: ${result.message}`);
       }
     } catch (error) {
-      console.error('Error al registrar el usuario:', error);
-      alert('Hubo un error, intente nuevamente');
+      console.error("Error al registrar el usuario:", error);
+      alert("Hubo un problema al procesar el registro.");
     }
   };
 
   return (
-    <Container component="main" maxWidth="xs">
+    <Box
+      sx={{
+        maxWidth: 400,
+        mx: "auto",
+        mt: 5,
+        p: 3,
+        borderRadius: 2,
+        boxShadow: 3,
+        bgcolor: "background.paper",
+      }}
+    >
       <Typography variant="h5" align="center" gutterBottom>
-        Formulario de Registro
+        Registro de Usuario
       </Typography>
       <form onSubmit={handleSubmit}>
-        <Grid container spacing={2}>
-          <Grid item xs={12}>
-            <TextField
-              fullWidth
-              label="Nombre Completo"
-              name="nombre_completo"
-              value={formData.nombre_completo}
-              onChange={handleChange}
-              required
-            />
-          </Grid>
-          <Grid item xs={12}>
-            <TextField
-              fullWidth
-              label="Correo Electrónico"
-              name="correo_electronico"
-              type="email"
-              value={formData.correo_electronico}
-              onChange={handleChange}
-              required
-            />
-          </Grid>
-          <Grid item xs={12}>
-            <TextField
-              fullWidth
-              label="Contraseña"
-              name="password"
-              type="password"
-              value={formData.password}
-              onChange={handleChange}
-              required
-            />
-          </Grid>
-          <Grid item xs={12}>
-            <TextField
-              fullWidth
-              label="Teléfono"
-              name="telefono"
-              value={formData.telefono}
-              onChange={handleChange}
-              required
-            />
-          </Grid>
-          <Grid item xs={12}>
-            <TextField
-              fullWidth
-              label="Fecha de Nacimiento"
-              name="fecha_nacimiento"
-              type="date"
-              value={formData.fecha_nacimiento}
-              onChange={handleChange}
-              required
-              InputLabelProps={{ shrink: true }}
-            />
-          </Grid>
-          <Grid item xs={12}>
-            <FormControl fullWidth required>
-              <InputLabel>Rol</InputLabel>
-              <Select
-                name="rol_idRol"
-                value={formData.rol_idRol}
-                onChange={handleChange}
-              >
-                <MenuItem value={1}>Administrador</MenuItem>
-                <MenuItem value={2}>Empleado</MenuItem>
-                <MenuItem value={3}>Cliente</MenuItem>
-              </Select>
-            </FormControl>
-          </Grid>
-          <Grid item xs={12}>
-            <FormControl fullWidth required>
-              <InputLabel>Estado</InputLabel>
-              <Select
-                name="estados_idEstados"
-                value={formData.estados_idEstados}
-                onChange={handleChange}
-              >
-                <MenuItem value={1}>Activo</MenuItem>
-                <MenuItem value={2}>Inactivo</MenuItem>
-              </Select>
-            </FormControl>
-          </Grid>
-          <Grid item xs={12}>
-            <Button type="submit" fullWidth variant="contained" color="primary">
-              Registrar
-            </Button>
-          </Grid>
-        </Grid>
+        <TextField
+          select
+          label="Rol"
+          name="rol_idRol"
+          value={formData.rol_idRol}
+          onChange={handleChange}
+          fullWidth
+          margin="normal"
+          required
+          disabled={loadingRoles || roles.length === 0}
+        >
+          {loadingRoles ? (
+            <MenuItem disabled>Cargando roles...</MenuItem>
+          ) : (
+            roles.map((rol) => (
+              <MenuItem key={rol.idRol} value={rol.idRol}>
+                {rol.nombreRol}
+              </MenuItem>
+            ))
+          )}
+        </TextField>
+        <TextField
+          label="Correo Electrónico"
+          name="correo_electronico"
+          value={formData.correo_electronico}
+          onChange={handleChange}
+          type="email"
+          fullWidth
+          margin="normal"
+          required
+        />
+        <TextField
+          label="Nombre Completo"
+          name="nombre_completo"
+          value={formData.nombre_completo}
+          onChange={handleChange}
+          fullWidth
+          margin="normal"
+          required
+        />
+        <TextField
+          label="Contraseña"
+          name="password"
+          value={formData.password}
+          onChange={handleChange}
+          type="password"
+          fullWidth
+          margin="normal"
+          required
+        />
+        <TextField
+          label="Teléfono"
+          name="telefono"
+          value={formData.telefono}
+          onChange={handleChange}
+          fullWidth
+          margin="normal"
+          required
+        />
+        <TextField
+          label="Fecha de Nacimiento"
+          name="fecha_nacimiento"
+          value={formData.fecha_nacimiento}
+          onChange={handleChange}
+          type="date"
+          InputLabelProps={{ shrink: true }}
+          fullWidth
+          margin="normal"
+          required
+        />
+        <Button
+          type="submit"
+          variant="contained"
+          color="primary"
+          fullWidth
+          sx={{ mt: 2 }}
+        >
+          Registrar
+        </Button>
       </form>
-    </Container>
+    </Box>
   );
 };
 
-export default RegistroForm;
+export default RegistroUsuario;

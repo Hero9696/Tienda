@@ -10,6 +10,7 @@ const createUsuario = async (req, res) => {
     usuario.password = passwordHashed;
 
     const result = await fusuarios.insertarUsuario(usuario);
+    console.log(result);
 
     const token = generarToken({
       idUsuarios: result.recordset[0].idUsuarios,
