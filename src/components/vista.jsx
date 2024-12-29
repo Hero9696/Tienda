@@ -2,12 +2,10 @@ import Vista from './components/vistaProductos.jsx';
 import ProductoForm from './components/Productos.jsx';
 import { BrowserRouter as Router, Routes, Route } from 'react-router-dom';
 import NavBar from './components/menuNav.jsx';
-import Login from './components/login.jsx';
+import re from './RegistrarUsuario.jsx'
 import fapp from '../App.jsx';
 import './assets/styles/App.css';
-import './assets/styles/nav.css';
-import './assets/styles/editar.css';
-import './assets/styles/vista.css'
+
 
 const App = () => {
   return (
@@ -15,10 +13,10 @@ const App = () => {
       <Router>
         <NavBar />
         <Routes>
-          <Route path="/" element={<Vista />} />
-          <Route path="/Login" element={<Login />} />
+          <Route path="/home" element={<Vista />} />
+          <Route path="/Login" element={<fapp.Login />} />
           <Route path="/editar" element={<ProductoForm />} />
-          <Route path="/registrar" element={<fapp.Login/>} />
+          <Route path="/registrar" element={<re.RegistroFormulario/>} />
         </Routes>
       </Router>
     </>

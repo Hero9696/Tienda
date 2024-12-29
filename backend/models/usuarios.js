@@ -23,7 +23,6 @@ const insertarUsuario = async (usuario) => {
       .input("password", mssql.NVarChar, usuario.password)
       .input("telefono", mssql.NVarChar, usuario.telefono)
       .input("fecha_nacimiento", mssql.Date, usuario.fecha_nacimiento)
-      .input("clientes_idClientes", mssql.Int, usuario.clientes_idClientes)
       .execute("InsertarUsuarios");
 
     return result;

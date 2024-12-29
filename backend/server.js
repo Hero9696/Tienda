@@ -7,6 +7,7 @@ import estadosRoutes from "./routes/estadosRoutes.js";
 import usuarioRoutes from "./routes/usuarioRoutes.js";
 import clientesRoutes from "./routes/clientesRoutes.js";
 import ordenDetallesRoutes from "./routes/ordenDetallesRoutes.js"
+import roles from "./routes/roleRoutes.js";
 
 const app = express();
 const port = 5000;
@@ -17,7 +18,7 @@ app.use(cookieParser());
 
 app.use(cors());
 
-
+app.use(roles);
 app.use(usuarioRoutes);
 app.use(productosRoutes);
 app.use(categoriasRoutes);
