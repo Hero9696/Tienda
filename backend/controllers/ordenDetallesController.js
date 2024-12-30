@@ -1,6 +1,6 @@
 import fod from "../models/ordenDetalles.js";
 
-const insertarordendetalles =  async (req, res) => {
+const insertarordendetalles = async (req, res) => {
   const { idUsuarios, detalles } = req.body;
 
   if (!idUsuarios || !detalles || detalles.length === 0) {
@@ -8,12 +8,16 @@ const insertarordendetalles =  async (req, res) => {
   }
 
   try {
+    // Llamar al procedimiento almacenado para crear la orden
     const result = await fod.crearOrdenDetalles(idUsuarios, detalles);
+
     return res.status(200).json({ success: true, result });
   } catch (error) {
+    console.error("Error al insertar detalles de la orden:", error);
     return res.status(500).json({ error: error.message });
   }
 }
+
 
 
 const actualizarOrdenDetalles = async (req, res) => {

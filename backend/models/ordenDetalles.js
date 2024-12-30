@@ -4,6 +4,7 @@ import connectDB from "../db.js";
 const crearOrdenDetalles = async (idUsuarios, detalles) => {
   try {
     const productosValidos = [];
+    const productosNoEncontrados = [];
 
     for (const detalle of detalles) {
       const producto = await verProductoPorId(detalle.idProductos);
@@ -13,9 +14,12 @@ const crearOrdenDetalles = async (idUsuarios, detalles) => {
           cantidad: detalle.cantidad,
         });
       } else {
-        console.error(`Producto con ID ${detalle.idProductos} no encontrado`);
-        return;
+        productosNoEncontrados.push(detalle.idProductos);
       }
+    }
+
+    if (productosNoEncontrados.length > 0) {
+      return { error: `Productos no encontrados: ${productosNoEncontrados.join(", ")}` };
     }
 
     const pool = await connectDB();
@@ -32,6 +36,7 @@ const crearOrdenDetalles = async (idUsuarios, detalles) => {
     throw new Error("Error al crear la orden y sus detalles");
   }
 };
+
 
 const verProductoPorId = async (idProductos) => {
   try {
@@ -64,9 +69,7 @@ const actualizarOrdenDetalles = async (idOrden, detalles) => {
       .execute("ActualizarOrdenDetalles");
 
     if (!result.recordset || result.recordset.length === 0) {
-      throw new Error(
-        "No se encontraron resultados para la orden actualizada."
-      );
+      throw new Error("No se encontraron resultados para la orden actualizada.");
     }
 
     return result.recordset;
@@ -75,6 +78,7 @@ const actualizarOrdenDetalles = async (idOrden, detalles) => {
     throw new Error("Error al actualizar los detalles de la orden");
   }
 };
+
 
 const actualizarOrden = async (idOrden, direccion, idEstado) => {
   try {
