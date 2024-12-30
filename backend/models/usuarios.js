@@ -6,7 +6,6 @@ const insertarUsuario = async (usuario) => {
   try {
     const pool = await connectDB();
 
-    // Verificar si el correo ya está registrado
     const resultBusqueda = await pool
       .request()
       .input("Correo", mssql.NVarChar, usuario.correo_electronico)
@@ -16,7 +15,6 @@ const insertarUsuario = async (usuario) => {
       throw new Error("El correo electrónico ya está registrado.");
     }
 
-    // Insertar el nuevo usuario
     const result = await pool
       .request()
       .input("rol_idRol", mssql.Int, usuario.rol_idRol)
@@ -27,22 +25,19 @@ const insertarUsuario = async (usuario) => {
       .input("fecha_nacimiento", mssql.Date, usuario.fecha_nacimiento)
       .execute("InsertarUsuarios");
 
-    console.log("Resultado de InsertarUsuarios:", result); // Añade esta línea para depurar
+    console.log("Resultado de InsertarUsuarios:", result);
 
-    // Verificar si el recordset tiene datos y obtener el idUsuarios
     if (result.recordset && result.recordset.length > 0) {
       const idUsuario = result.recordset[0].idUsuarios;
       return { idUsuarios: idUsuario };
     } else {
       throw new Error("No se obtuvo el ID del usuario.");
     }
-
   } catch (err) {
     console.error("Error al insertar el usuario:", err);
     throw err;
   }
 };
-
 
 const actualizarUsuario = async (req, res) => {
   try {

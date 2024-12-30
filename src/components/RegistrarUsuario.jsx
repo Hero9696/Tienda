@@ -15,12 +15,13 @@ const RegistroUsuario = () => {
   const [roles, setRoles] = useState([]);
   const [loadingRoles, setLoadingRoles] = useState(true);
 
- 
   useEffect(() => {
     const fetchRoles = async () => {
       try {
-        const response = await axios.get("http://localhost:5000/api/obtenerroles");
-        setRoles(response.data); 
+        const response = await axios.get(
+          "http://localhost:5000/api/obtenerroles"
+        );
+        setRoles(response.data);
       } catch (error) {
         console.error("Error al obtener los roles:", error);
       } finally {
@@ -39,11 +40,14 @@ const RegistroUsuario = () => {
   const handleSubmit = async (e) => {
     e.preventDefault();
     try {
-      const response = await fetch("http://localhost:5000/api/insertarusuarios", {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify(formData),
-      });
+      const response = await fetch(
+        "http://localhost:5000/api/insertarusuarios",
+        {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify(formData),
+        }
+      );
 
       const result = await response.json();
       if (response.ok) {

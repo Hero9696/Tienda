@@ -1,16 +1,13 @@
 import connectDB from "../db.js";
 
-
 const obtenerRoles = async () => {
   try {
-    const pool = await connectDB(); 
-    const result = await pool
-      .request()
-      .query("SELECT * FROM dbo.VistaRoles"); 
+    const pool = await connectDB();
+    const result = await pool.request().query("SELECT * FROM dbo.VistaRoles");
     console.log(result);
-    
+
     if (result.recordset.length > 0) {
-      return result.recordset; 
+      return result.recordset;
     } else {
       throw new Error("No se encontraron roles.");
     }
@@ -20,5 +17,4 @@ const obtenerRoles = async () => {
   }
 };
 
-  
-  export default { obtenerRoles };
+export default { obtenerRoles };

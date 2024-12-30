@@ -1,10 +1,11 @@
 import { useEffect, useState } from "react";
 import axios from "axios";
-import { Card, CardContent, CardMedia, Typography, Grid, CircularProgress } from "@mui/material";
+import { Card, CardContent, CardMedia, Typography, Grid, CircularProgress, Button, Chip } from "@mui/material";
 
 const Vista = () => {
   const [data, setData] = useState([]);
   const [error, setError] = useState(null);
+  const [cart, setCart] = useState([]); // Estado para el carrito
 
   useEffect(() => {
     axios
@@ -18,6 +19,15 @@ const Vista = () => {
       });
   }, []);
 
+  const addToCart = (product) => {
+    if (product.stock > 0) {
+      setCart([...cart, product]);
+      alert(`${product.nombre} ha sido agregado al carrito.`);
+    } else {
+      alert("El producto no tiene stock disponible");
+    }
+  };
+
   if (error) {
     return <Typography color="error">{error}</Typography>;
   }
@@ -25,7 +35,7 @@ const Vista = () => {
   return (
     <div>
       <Typography variant="h4" gutterBottom>
-        Obteniendo Datos
+        Catálogo de Productos
       </Typography>
 
       <div className="registro">
@@ -51,6 +61,20 @@ const Vista = () => {
                     <Typography color="textSecondary">
                       <strong>Precio:</strong> Q{item.precio}
                     </Typography>
+
+                    {/* Indicador de stock agotado */}
+                    {item.stock === 0 && (
+                      <Chip label="Sin Stock" color="secondary" style={{ marginTop: '10px' }} />
+                    )}
+                    <Button
+                      variant="contained"
+                      color="primary"
+                      onClick={() => addToCart(item)}
+                      disabled={item.stock === 0}
+                      style={{ marginTop: '10px' }}
+                    >
+                      {item.stock === 0 ? 'Sin Stock' : 'Agregar al Carrito'}
+                    </Button>
                   </CardContent>
                 </Card>
               </Grid>

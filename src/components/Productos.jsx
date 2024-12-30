@@ -1,11 +1,21 @@
 import { useState, useEffect } from "react";
 import axios from "axios";
 import PropTypes from "prop-types";
-import { TextField, Button, MenuItem, Select, InputLabel, FormControl, Grid } from "@mui/material";
+import {
+  TextField,
+  Button,
+  MenuItem,
+  Select,
+  InputLabel,
+  FormControl,
+  Grid,
+} from "@mui/material";
 
 const ProductoForm = ({ onSubmit, producto }) => {
   const [formData, setFormData] = useState({
-    categoriaProductos_idCategoriaProductos: producto ? producto.categoriaProductos_idCategoriaProductos : "",
+    categoriaProductos_idCategoriaProductos: producto
+      ? producto.categoriaProductos_idCategoriaProductos
+      : "",
     usuarios_idUsuarios: producto ? producto.usuarios_idUsuarios : "",
     nombre: producto ? producto.nombre : "",
     marca: producto ? producto.marca : "",
@@ -22,7 +32,9 @@ const ProductoForm = ({ onSubmit, producto }) => {
   useEffect(() => {
     const fetchCategorias = async () => {
       try {
-        const response = await axios.get("http://localhost:5000/api/categorias/activas");
+        const response = await axios.get(
+          "http://localhost:5000/api/categorias/activas"
+        );
         const categoriasSoloNombres = response.data.map((categoria) => ({
           idCategoriaProductos: categoria.idCategoriaProductos,
           nombre: categoria.nombreCategoria,
@@ -40,7 +52,11 @@ const ProductoForm = ({ onSubmit, producto }) => {
     const { name, value } = e.target;
 
     // Convierte valores de tipo número
-    if (["stock", "precio", "usuarios_idUsuarios", "estados_idEstados"].includes(name)) {
+    if (
+      ["stock", "precio", "usuarios_idUsuarios", "estados_idEstados"].includes(
+        name
+      )
+    ) {
       setFormData((prevData) => ({
         ...prevData,
         [name]: value ? Number(value) : "",
@@ -61,19 +77,25 @@ const ProductoForm = ({ onSubmit, producto }) => {
 
     setIsSubmitting(true);
     const data = new FormData();
-  
+
     // Agregar todos los campos a FormData
     Object.keys(formData).forEach((key) => {
       data.append(key, formData[key]);
     });
 
     try {
-      const url = producto ? "http://localhost:5000/api/actualizarProducto" : "http://localhost:5000/api/insertarProducto";
+      const url = producto
+        ? "http://localhost:5000/api/actualizarProducto"
+        : "http://localhost:5000/api/insertarProducto";
       const response = await axios.post(url, data, {
         headers: { "Content-Type": "multipart/form-data" },
       });
 
-      alert(producto ? "Producto actualizado correctamente." : "Producto agregado correctamente.");
+      alert(
+        producto
+          ? "Producto actualizado correctamente."
+          : "Producto agregado correctamente."
+      );
       onSubmit && onSubmit(response.data);
 
       setFormData({
@@ -115,7 +137,10 @@ const ProductoForm = ({ onSubmit, producto }) => {
               >
                 <MenuItem value="">Selecciona una categoría</MenuItem>
                 {categorias.map((categoria) => (
-                  <MenuItem key={categoria.idCategoriaProductos} value={categoria.idCategoriaProductos}>
+                  <MenuItem
+                    key={categoria.idCategoriaProductos}
+                    value={categoria.idCategoriaProductos}
+                  >
                     {categoria.nombre}
                   </MenuItem>
                 ))}
@@ -207,7 +232,7 @@ const ProductoForm = ({ onSubmit, producto }) => {
               required
             />
           </Grid>
-          
+
           <Grid item xs={12}>
             <Button
               type="submit"
@@ -216,7 +241,11 @@ const ProductoForm = ({ onSubmit, producto }) => {
               fullWidth
               disabled={isSubmitting}
             >
-              {isSubmitting ? "Guardando..." : producto ? "Actualizar" : "Guardar"}
+              {isSubmitting
+                ? "Guardando..."
+                : producto
+                ? "Actualizar"
+                : "Guardar"}
             </Button>
           </Grid>
         </Grid>

@@ -1,7 +1,7 @@
 import mssql from "mssql";
 import jwt from "jsonwebtoken";
 import bcrypt from "bcrypt";
-import {SECRET_KEY} from "../utils/jwtUtils.js";
+import { SECRET_KEY } from "../utils/jwtUtils.js";
 import connectDB from "../db.js";
 
 const login = async (req, res) => {
@@ -20,7 +20,6 @@ const login = async (req, res) => {
       .request()
       .input("Correo", mssql.NVarChar, correo_electronico)
       .execute("BuscarUsuarioPorCorreo");
-      console.log(result);
 
     const usuario = result.recordset[0];
 
@@ -34,7 +33,6 @@ const login = async (req, res) => {
     }
 
     const rol = usuario.rol_idRol;
-    console.log(rol)
 
     if (!rol) {
       return res.status(500).json({ error: "Rol no encontrado" });
@@ -45,11 +43,19 @@ const login = async (req, res) => {
       correo_electronico: usuario.correo_electronico,
       nombre_completo: usuario.nombre_completo,
       rol,
+      
     };
 
+    
+
     const token = jwt.sign(payload, SECRET_KEY, { expiresIn: "24h" });
-    res.cookie('token', token, { httpOnly: true, secure: true, sameSite: 'Strict' });
-    res.status(200).json({ message: "Inicio de sesión exitoso" });
+    res.cookie("token", token, { httpOnly: true, secure: true, sameSite: "Strict" });
+
+    
+    res.status(200).json({
+      message: "Inicio de sesión exitoso",
+      rol_idRol: rol,  
+    });
   } catch (err) {
     console.error(err);
     res.status(500).json({ error: "Error al iniciar sesión" });
