@@ -1,16 +1,17 @@
 import { useEffect, useState } from "react";
 import axios from "axios";
 import { Card, CardContent, CardMedia, Typography, Grid, CircularProgress, Button, Chip } from "@mui/material";
+import PropTypes from 'prop-types'; // Importar PropTypes
 
 
-const Vista = () => {
-  const [data, setData] = useState([]); 
-  const [error, setError] = useState(null); 
- 
+const Vista = ({ addToCart }) => {
+  const [data, setData] = useState([]);
+  const [error, setError] = useState(null);
 
+  // Obtener los productos desde la API
   useEffect(() => {
     axios
-      .get("http://localhost:5000/api/productos") 
+      .get("http://localhost:5000/api/productos")
       .then((response) => {
         setData(response.data);
       })
@@ -20,14 +21,7 @@ const Vista = () => {
       });
   }, []);
 
-  const addToCart = (product) => {
-    if (product.stock > 0) {
-      alert(`${product.nombre} ha sido agregado al carrito.`);
-    } else {
-      alert("El producto no tiene stock disponible");
-    }
-  };
-
+  // Manejo de errores en la carga de productos
   if (error) {
     return <Typography color="error">{error}</Typography>;
   }
@@ -68,8 +62,8 @@ const Vista = () => {
                     <Button
                       variant="contained"
                       color="primary"
-                      onClick={() => addToCart(item)}
-                      disabled={item.stock === 0}
+                      onClick={() => addToCart(item)} // Llamada a la función para agregar al carrito
+                      disabled={item.stock === 0} // Desactivar el botón si no hay stock
                       style={{ marginTop: '10px' }}
                     >
                       {item.stock === 0 ? 'Sin Stock' : 'Agregar al Carrito'}
@@ -87,6 +81,11 @@ const Vista = () => {
       </div>
     </div>
   );
+};
+
+// Definir los tipos de las propiedades
+Vista.propTypes = {
+  addToCart: PropTypes.func.isRequired, // La propiedad addToCart debe ser una función
 };
 
 export default Vista;
