@@ -2,14 +2,15 @@ import { useEffect, useState } from "react";
 import axios from "axios";
 import { Card, CardContent, CardMedia, Typography, Grid, CircularProgress, Button, Chip } from "@mui/material";
 
+
 const Vista = () => {
-  const [data, setData] = useState([]);
-  const [error, setError] = useState(null);
-  const [cart, setCart] = useState([]); // Estado para el carrito
+  const [data, setData] = useState([]); 
+  const [error, setError] = useState(null); 
+ 
 
   useEffect(() => {
     axios
-      .get("http://localhost:5000/api/productos")
+      .get("http://localhost:5000/api/productos") 
       .then((response) => {
         setData(response.data);
       })
@@ -21,7 +22,6 @@ const Vista = () => {
 
   const addToCart = (product) => {
     if (product.stock > 0) {
-      setCart([...cart, product]);
       alert(`${product.nombre} ha sido agregado al carrito.`);
     } else {
       alert("El producto no tiene stock disponible");
@@ -62,7 +62,6 @@ const Vista = () => {
                       <strong>Precio:</strong> Q{item.precio}
                     </Typography>
 
-                    {/* Indicador de stock agotado */}
                     {item.stock === 0 && (
                       <Chip label="Sin Stock" color="secondary" style={{ marginTop: '10px' }} />
                     )}

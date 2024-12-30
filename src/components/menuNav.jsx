@@ -1,23 +1,33 @@
-import { Link } from "react-router-dom";
-import { AppBar, Toolbar, Button, Container } from "@mui/material";
+import { AppBar, Toolbar, Typography, IconButton, Badge } from "@mui/material";
+import ShoppingCartIcon from "@mui/icons-material/ShoppingCart";
+import PropTypes from 'prop-types';
+import { Link } from 'react-router-dom';
 
-const NavBar = () => {
+const Navbar = ({ cart, goToCart }) => {
   return (
-    <div className="navbar-container">
-      <AppBar position="static">
-        <Toolbar>
-          <Container>
-            <Button color="inherit" component={Link} to="/">
-              Inicio
-            </Button>
-            <Button color="inherit" component={Link} to="/editar">
-              Editar Productos
-            </Button>
-          </Container>
-        </Toolbar>
-      </AppBar>
-    </div>
+    <AppBar position="sticky">
+      <Toolbar style={{ display: 'flex', justifyContent: 'space-between' }}>
+     
+        <Link to="/catalogo" style={{ textDecoration: 'none', color: 'white' }}>
+          <Typography variant="h6">
+            Mi Tienda
+          </Typography>
+        </Link>
+
+      
+        <IconButton color="inherit" onClick={goToCart}>
+          <Badge badgeContent={cart.length} color="error">
+            <ShoppingCartIcon />
+          </Badge>
+        </IconButton>
+      </Toolbar>
+    </AppBar>
   );
 };
 
-export default NavBar;
+Navbar.propTypes = {
+  cart: PropTypes.array.isRequired,
+  goToCart: PropTypes.func.isRequired,
+};
+
+export default Navbar;

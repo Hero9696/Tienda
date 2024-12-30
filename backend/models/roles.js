@@ -4,7 +4,7 @@ const obtenerRoles = async () => {
   try {
     const pool = await connectDB();
     const result = await pool.request().query("SELECT * FROM dbo.VistaRoles");
-    console.log(result);
+    
 
     if (result.recordset.length > 0) {
       return result.recordset;

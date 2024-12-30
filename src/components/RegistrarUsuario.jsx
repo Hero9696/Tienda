@@ -1,6 +1,7 @@
 import { useState, useEffect } from "react";
 import { TextField, Button, MenuItem, Box, Typography } from "@mui/material";
 import axios from "axios";
+import { useNavigate } from "react-router-dom"; 
 
 const RegistroUsuario = () => {
   const [formData, setFormData] = useState({
@@ -14,6 +15,7 @@ const RegistroUsuario = () => {
 
   const [roles, setRoles] = useState([]);
   const [loadingRoles, setLoadingRoles] = useState(true);
+  const navigate = useNavigate(); 
 
   useEffect(() => {
     const fetchRoles = async () => {
@@ -59,6 +61,10 @@ const RegistroUsuario = () => {
       console.error("Error al registrar el usuario:", error);
       alert("Hubo un problema al procesar el registro.");
     }
+  };
+
+  const handleRedirectToLogin = () => {
+    navigate("/"); // Redirige a la ruta de Login
   };
 
   return (
@@ -156,6 +162,16 @@ const RegistroUsuario = () => {
           Registrar
         </Button>
       </form>
+      {/* Botón para redirigir a Login */}
+      <Button
+        variant="contained"
+        color="secondary"
+        fullWidth
+        sx={{ mt: 2 }}
+        onClick={handleRedirectToLogin} // Llama a la función de redirección
+      >
+        Ya tienes cuenta? Iniciar sesión
+      </Button>
     </Box>
   );
 };
