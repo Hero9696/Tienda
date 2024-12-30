@@ -1,5 +1,6 @@
-import  { useState, useEffect } from "react";
+import { useState, useEffect } from "react";
 import { TextField, Button, MenuItem, Box, Typography } from "@mui/material";
+import axios from "axios";
 
 const RegistroUsuario = () => {
   const [formData, setFormData] = useState({
@@ -18,16 +19,11 @@ const RegistroUsuario = () => {
   useEffect(() => {
     const fetchRoles = async () => {
       try {
-        const response = await fetch("http://localhost:5000/api/obtenerroles");
-         console.log(response);
-        if (!response.ok) {
-          throw new Error("Error al obtener los roles");
-        }
-        const data = await response.json();
-        setRoles(data); // Asume que el endpoint devuelve un array de roles
-        setLoadingRoles(false);
+        const response = await axios.get("http://localhost:5000/api/obtenerroles");
+        setRoles(response.data); // Guardar los roles directamente
       } catch (error) {
-        console.error("Error al cargar los roles:", error);
+        console.error("Error al obtener los roles:", error);
+      } finally {
         setLoadingRoles(false);
       }
     };
@@ -86,14 +82,13 @@ const RegistroUsuario = () => {
           fullWidth
           margin="normal"
           required
-          disabled={loadingRoles || roles.length === 0}
         >
           {loadingRoles ? (
-            <MenuItem disabled>Cargando roles...</MenuItem>
+            <MenuItem>Cargando roles...</MenuItem>
           ) : (
             roles.map((rol) => (
               <MenuItem key={rol.idRol} value={rol.idRol}>
-                {rol.nombreRol}
+                {rol.nombre}
               </MenuItem>
             ))
           )}

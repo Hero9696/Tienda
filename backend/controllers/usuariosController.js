@@ -6,25 +6,35 @@ const createUsuario = async (req, res) => {
   try {
     const usuario = req.body;
 
+    // Hashea la contraseña
     const passwordHashed = await bcrypt.hash(usuario.password, 10);
     usuario.password = passwordHashed;
 
+    // Llama a insertarUsuario y obtén el idUsuario
     const result = await fusuarios.insertarUsuario(usuario);
-    console.log(result);
+    console.log("Resultado de insertarUsuario:", result); // Depuración
 
-    const token = generarToken({
-      idUsuarios: result.recordset[0].idUsuarios,
+    // Verifica que el idUsuario esté presente en el resultado
+    const idUsuario = result.idUsuarios;
+    if (!idUsuario) {
+      throw new Error("No se pudo obtener el ID del usuario insertado.");
+    }
+
+    // Genera un token
+    const token = generarToken.generarToken({
+      idUsuarios: idUsuario,
       correo: usuario.correo_electronico,
     });
 
-    res
-      .status(201)
-      .json({ message: "Usuario registrado exitosamente", token, result });
+    // Responde con éxito
+    res.status(201).json({ message: "Usuario registrado exitosamente", token, idUsuario });
   } catch (err) {
-    console.error(err);
-    res.status(500).json({ error: "Error al registrar el usuario", err });
+    console.error("Error en createUsuario:", err);
+    res.status(500).json({ error: "Error al registrar el usuario", details: err.message });
   }
 };
+
+
 
 const updateUsuario = async (req, res) => {
   try {

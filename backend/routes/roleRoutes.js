@@ -1,5 +1,5 @@
 import express from "express";
-import froles from "../models/roles.js";
+import froles from "../controllers/roleController.js";
 
 const router = express.Router();
 
