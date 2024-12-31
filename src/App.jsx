@@ -40,17 +40,17 @@ const addToCart = (product) => {
   };
 
   const goToCart = () => {
-    window.location.href = "/carrito";
+    window.location.href = "Tienda/carrito";
   };
 
   return (
     <Router>
       <Navbar cart={cart} goToCart={goToCart} />
       <Routes>
-        <Route path="/" element={<Login />} />
-        <Route path="/catalogo" element={<Vista addToCart={addToCart} />} />
-        <Route path="/registrar" element={<RegistrarUsuario />} />
-        <Route path="/carrito" element={<CarritoCompras cart={cart} cancelarCompra={vaciarCarrito} />} /> {/* Pasamos la función para cancelar la compra */}
+        <Route path="Tienda/home" element={<Login />} />
+        <Route path="Tienda/catalogo" element={<Vista addToCart={addToCart} />} />
+        <Route path="Tienda/registrar" element={<RegistrarUsuario />} />
+        <Route path="Tienda/carrito" element={<CarritoCompras cart={cart} cancelarCompra={vaciarCarrito} />} /> {/* Pasamos la función para cancelar la compra */}
       </Routes>
     </Router>
   );
