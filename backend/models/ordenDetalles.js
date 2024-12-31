@@ -46,6 +46,7 @@ const verProductoPorId = async (idProductos) => {
       .request()
       .input("idProductos", mssql.Int, idProductos)
       .execute("VerProductoPorId");
+      
 
     return result.recordset;
   } catch (err) {

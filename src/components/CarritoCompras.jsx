@@ -6,49 +6,62 @@ import {
   Button,
 } from "@mui/material";
 import PropTypes from "prop-types";
-import { useState } from "react";
-import axios from "axios"; // Asegúrate de importar axios
+import { useState, useEffect } from "react";
+import axios from "axios";
 
 const CarritoCompras = ({ cart, cancelarCompra }) => {
-  const [loading, setLoading] = useState(false); // Estado para la carga
-  const [error, setError] = useState(null); // Estado para errores
-  const [orden, setOrden] = useState(null); // Estado para la orden confirmada
+  const [loading, setLoading] = useState(false);
+  const [error, setError] = useState(null);
+  const [orden, setOrden] = useState(null);
+
+  // Depuración: registrar cambios en la orden
+  useEffect(() => {
+    if (orden) {
+      console.log("Detalles de la orden actualizada: ");
+    }
+  }, [orden]);
 
   const total = cart.reduce(
     (acc, item) => acc + item.precio * item.cantidad,
     0
-  ); // Calcular el total
+  );
 
-  // Función para confirmar la compra
   const confirmarCompra = async () => {
     setLoading(true);
     setError(null);
 
     try {
-      const idUsuario = 1; // Aquí debes obtener el ID del usuario, por ejemplo desde el estado o contexto de autenticación
+      // Obtener el ID del usuario desde localStorage
+      const idUsuario = localStorage.getItem("idUsuarios");
 
-      // Formato del carrito para enviarlo al backend
+      if (!idUsuario) {
+        throw new Error("Usuario no autenticado.");
+      }
+
       const detalles = cart.map((item) => ({
-        idProductos: item.id,
+        idProductos: item.idProductos,
         cantidad: item.cantidad,
       }));
 
-      // Enviar la solicitud POST con los detalles
       const response = await axios.post(
-        "http://localhost:500/api/insertarordendetalles",
+        "http://localhost:5000/api/insertarordendetalles",
         {
           idUsuarios: idUsuario,
           detalles: detalles,
         }
       );
 
-      // Manejar la respuesta
       if (response.data.success) {
-        setOrden(response.data.result); // Guardamos los detalles de la orden
-        cancelarCompra(); // Limpiar el carrito después de la compra
+        setOrden(response.data.result);
+      } else {
+        throw new Error("La API no confirmó el éxito de la operación.");
       }
     } catch (err) {
-      setError("Error al confirmar la compra." + err);
+      console.error("Error en confirmarCompra:", err.response || err.message);
+      setError(
+        "Error al confirmar la compra. " +
+          (err.response?.data?.message || err.message)
+      );
     } finally {
       setLoading(false);
     }
@@ -59,8 +72,7 @@ const CarritoCompras = ({ cart, cancelarCompra }) => {
       <Typography variant="h4" gutterBottom>
         Carrito de Compras
       </Typography>
-      {error && <Typography color="error">{error}</Typography>}{" "}
-      {/* Mostrar el error si ocurre */}
+      {error && <Typography color="error">{error}</Typography>}
       {cart.length > 0 ? (
         <div>
           <List>
@@ -79,8 +91,8 @@ const CarritoCompras = ({ cart, cancelarCompra }) => {
             variant="contained"
             color="primary"
             style={{ marginTop: "10px" }}
-            onClick={confirmarCompra} // Llamamos a la función de confirmar compra
-            disabled={loading} // Deshabilitamos el botón mientras estamos cargando
+            onClick={confirmarCompra}
+            disabled={loading}
           >
             {loading ? "Confirmando..." : "Confirmar Compra"}
           </Button>
@@ -88,24 +100,31 @@ const CarritoCompras = ({ cart, cancelarCompra }) => {
             variant="contained"
             color="secondary"
             style={{ marginTop: "10px", marginLeft: "10px" }}
-            onClick={cancelarCompra} // Llamamos a la función que cancela la compra
+            onClick={cancelarCompra}
           >
             Cancelar compra
           </Button>
-
-          {orden && ( // Si la orden ha sido creada, mostramos los detalles
+       
+          
+          {orden && (
             <div style={{ marginTop: "20px" }}>
               <Typography variant="h6" color="primary">
                 Compra Confirmada
               </Typography>
               <Typography variant="body1">
-                Número de Orden: {orden.idOrden}
+                Número de Orden: {orden.recordset[0].idOrden}
               </Typography>
               <Typography variant="body1">
-                Total: Q{orden.total_orden}
+                Total: Q{orden.recordset[0].total_orden}
               </Typography>
-              <Typography variant="body1" color="textSecondary">
-                Estado: {orden.estado}
+              <Typography variant="body1">
+                Nombre Completo: {orden.recordset[0].orden_nombre_completo}
+              </Typography>
+              <Typography variant="body1">
+                Teléfono: {orden.recordset[0].telefono}
+              </Typography>
+              <Typography variant="body1">
+                Correo Electrónico: {orden.recordset[0].correo_electronico}
               </Typography>
             </div>
           )}
@@ -119,10 +138,9 @@ const CarritoCompras = ({ cart, cancelarCompra }) => {
   );
 };
 
-// Validación de props con PropTypes
 CarritoCompras.propTypes = {
   cart: PropTypes.array.isRequired,
-  cancelarCompra: PropTypes.func.isRequired, // Aseguramos que cancelarCompra es una función
+  cancelarCompra: PropTypes.func.isRequired,
 };
 
 export default CarritoCompras;
