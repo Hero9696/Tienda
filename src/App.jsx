@@ -11,14 +11,27 @@ function App() {
   const [cart, setCart] = useState([]);
 
   // Función para agregar productos al carrito
-  const addToCart = (product) => {
-    if (product.stock > 0) {
-      setCart((prevCart) => [...prevCart, product]);
-      alert(`${product.nombre} ha sido agregado al carrito.`);
-    } else {
-      alert("El producto no tiene stock disponible");
-    }
-  };
+ // Función para agregar productos al carrito
+const addToCart = (product) => {
+  if (product.stock > 0) {
+    setCart((prevCart) => {
+      const existingProduct = prevCart.find((item) => item.id === product.id);
+      if (existingProduct) {
+        return prevCart.map((item) =>
+          item.id === product.id
+            ? { ...item, cantidad: item.cantidad + 1 }
+            : item
+        );
+      }
+      return [...prevCart, { ...product, cantidad: 1 }];
+    });
+    product.stock -= 1; // Reducir el stock del producto
+    alert(`${product.nombre} ha sido agregado al carrito.`);
+  } else {
+    alert("El producto no tiene stock disponible");
+  }
+};
+
 
   // Función para limpiar el carrito
   const vaciarCarrito = () => {

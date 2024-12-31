@@ -1,4 +1,10 @@
-import { Typography, List, ListItem, ListItemText, Button } from "@mui/material";
+import {
+  Typography,
+  List,
+  ListItem,
+  ListItemText,
+  Button,
+} from "@mui/material";
 import PropTypes from "prop-types";
 import { useState } from "react";
 import axios from "axios"; // Asegúrate de importar axios
@@ -8,7 +14,10 @@ const CarritoCompras = ({ cart, cancelarCompra }) => {
   const [error, setError] = useState(null); // Estado para errores
   const [orden, setOrden] = useState(null); // Estado para la orden confirmada
 
-  const total = cart.reduce((acc, item) => acc + item.precio * item.stock, 0); // Calcular el total
+  const total = cart.reduce(
+    (acc, item) => acc + item.precio * item.cantidad,
+    0
+  ); // Calcular el total
 
   // Función para confirmar la compra
   const confirmarCompra = async () => {
@@ -19,16 +28,19 @@ const CarritoCompras = ({ cart, cancelarCompra }) => {
       const idUsuario = 1; // Aquí debes obtener el ID del usuario, por ejemplo desde el estado o contexto de autenticación
 
       // Formato del carrito para enviarlo al backend
-      const detalles = cart.map(item => ({
+      const detalles = cart.map((item) => ({
         idProductos: item.id,
-        cantidad: item.cantidad
+        cantidad: item.cantidad,
       }));
 
       // Enviar la solicitud POST con los detalles
-      const response = await axios.post('http://localhost:500/api/insertarordendetalles', {
-        idUsuarios: idUsuario,
-        detalles: detalles
-      });
+      const response = await axios.post(
+        "http://localhost:500/api/insertarordendetalles",
+        {
+          idUsuarios: idUsuario,
+          detalles: detalles,
+        }
+      );
 
       // Manejar la respuesta
       if (response.data.success) {
@@ -36,7 +48,7 @@ const CarritoCompras = ({ cart, cancelarCompra }) => {
         cancelarCompra(); // Limpiar el carrito después de la compra
       }
     } catch (err) {
-      setError("Error al confirmar la compra."+err);
+      setError("Error al confirmar la compra." + err);
     } finally {
       setLoading(false);
     }
@@ -47,7 +59,8 @@ const CarritoCompras = ({ cart, cancelarCompra }) => {
       <Typography variant="h4" gutterBottom>
         Carrito de Compras
       </Typography>
-      {error && <Typography color="error">{error}</Typography>} {/* Mostrar el error si ocurre */}
+      {error && <Typography color="error">{error}</Typography>}{" "}
+      {/* Mostrar el error si ocurre */}
       {cart.length > 0 ? (
         <div>
           <List>
@@ -55,34 +68,33 @@ const CarritoCompras = ({ cart, cancelarCompra }) => {
               <ListItem key={index}>
                 <ListItemText
                   primary={item.nombre}
-                  secondary={`Precio: Q${item.precio} x ${item.stock}`}
+                  secondary={`Precio: Q${item.precio} x ${item.cantidad}`}
                 />
               </ListItem>
             ))}
           </List>
-          <Typography variant="h6">
-            Total: Q{total}
-          </Typography>
+
+          <Typography variant="h6">Total: Q{total}</Typography>
           <Button
             variant="contained"
             color="primary"
-            style={{ marginTop: '10px' }}
+            style={{ marginTop: "10px" }}
             onClick={confirmarCompra} // Llamamos a la función de confirmar compra
             disabled={loading} // Deshabilitamos el botón mientras estamos cargando
           >
-            {loading ? 'Confirmando...' : 'Confirmar Compra'}
+            {loading ? "Confirmando..." : "Confirmar Compra"}
           </Button>
           <Button
             variant="contained"
             color="secondary"
-            style={{ marginTop: '10px', marginLeft: '10px' }}
+            style={{ marginTop: "10px", marginLeft: "10px" }}
             onClick={cancelarCompra} // Llamamos a la función que cancela la compra
           >
             Cancelar compra
           </Button>
 
           {orden && ( // Si la orden ha sido creada, mostramos los detalles
-            <div style={{ marginTop: '20px' }}>
+            <div style={{ marginTop: "20px" }}>
               <Typography variant="h6" color="primary">
                 Compra Confirmada
               </Typography>
