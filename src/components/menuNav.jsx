@@ -7,13 +7,13 @@ const Navbar = ({ cart }) => {
   const navigate = useNavigate(); // Hook para redirección
 
   const goToCart = () => {
-    navigate("Tienda/carrito"); // Redirige al carrito
+    navigate("/carrito"); // Redirige al carrito
   };
 
   return (
     <AppBar position="sticky">
       <Toolbar style={{ display: 'flex', justifyContent: 'space-between' }}>
-        <Link to="Tienda/catalogo" style={{ textDecoration: 'none', color: 'white' }}>
+        <Link to="/catalogo" style={{ textDecoration: 'none', color: 'white' }}>
           <Typography variant="h6">
             Mi Tienda
           </Typography>

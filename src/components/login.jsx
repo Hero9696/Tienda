@@ -44,7 +44,7 @@ const Login = () => {
   
 
   const handleRegister = () => {
-    navigate('/registrar'); 
+    navigate('/registrar',{ replace: true }); 
   };
 
   return (

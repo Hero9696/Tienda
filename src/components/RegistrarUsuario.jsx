@@ -64,7 +64,7 @@ const RegistroUsuario = () => {
   };
 
   const handleRedirectToLogin = () => {
-    navigate("/"); // Redirige a la ruta de Login
+    navigate("/home",{ replace: true }); // Redirige a la ruta de Login
   };
 
   return (
