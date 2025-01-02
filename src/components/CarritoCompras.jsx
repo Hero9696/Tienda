@@ -9,7 +9,7 @@ import PropTypes from "prop-types";
 import { useState, useEffect } from "react";
 import axios from "axios";
 
-const CarritoCompras = ({ cart, cancelarCompra }) => {
+const CarritoCompras = ({ cart, cancelarCompra, actualizarCarrito, eliminarProducto }) => {
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState(null);
   const [orden, setOrden] = useState(null);
@@ -31,9 +31,7 @@ const CarritoCompras = ({ cart, cancelarCompra }) => {
     setError(null);
 
     try {
-      // Obtener el ID del usuario desde localStorage
       const idUsuario = localStorage.getItem("idUsuarios");
-      
 
       if (!idUsuario) {
         throw new Error("Usuario no autenticado.");
@@ -51,10 +49,9 @@ const CarritoCompras = ({ cart, cancelarCompra }) => {
           detalles: detalles,
         }
       );
-      console.log(response.data);
+      
       if (response.data.success) {
         setOrden(response.data.result);
-
       } else {
         throw new Error("La API no confirmó el éxito de la operación.");
       }
@@ -67,6 +64,18 @@ const CarritoCompras = ({ cart, cancelarCompra }) => {
     } finally {
       setLoading(false);
     }
+  };
+
+  const aumentarCantidad = (idProducto) => {
+    actualizarCarrito(idProducto, 1); // Aumentar cantidad en 1
+  };
+
+  const reducirCantidad = (idProducto) => {
+    actualizarCarrito(idProducto, -1); // Reducir cantidad en 1
+  };
+
+  const handleEliminarProducto = (idProducto) => {
+    eliminarProducto(idProducto); // Eliminar producto del carrito
   };
 
   return (
@@ -82,8 +91,32 @@ const CarritoCompras = ({ cart, cancelarCompra }) => {
               <ListItem key={index}>
                 <ListItemText
                   primary={item.nombre}
-                  secondary={`Precio: Q${item.precio} x ${item.cantidad}`}
+                  secondary={`Precio: Q${item.precio} x ${item.cantidad} = Q${
+                    item.precio * item.cantidad
+                  }`}
                 />
+                <Button
+                  variant="outlined"
+                  color="primary"
+                  onClick={() => aumentarCantidad(item.idProductos)}
+                >
+                  Aumentar
+                </Button>
+                <Button
+                  variant="outlined"
+                  color="secondary"
+                  onClick={() => reducirCantidad(item.idProductos)}
+                  disabled={item.cantidad === 1}
+                >
+                  Reducir
+                </Button>
+                <Button
+                  variant="outlined"
+                  color="error"
+                  onClick={() => handleEliminarProducto(item.idProductos)}
+                >
+                  Eliminar
+                </Button>
               </ListItem>
             ))}
           </List>
@@ -106,8 +139,7 @@ const CarritoCompras = ({ cart, cancelarCompra }) => {
           >
             Cancelar compra
           </Button>
-       
-          
+
           {orden && (
             <div style={{ marginTop: "20px" }}>
               <Typography variant="h6" color="primary">
@@ -129,7 +161,7 @@ const CarritoCompras = ({ cart, cancelarCompra }) => {
                 Correo Electrónico: {orden.recordset[0].correo_electronico}
               </Typography>
               <Typography variant="body1">
-                Estado:  {orden.recordset[0].estado_nombre}
+                Estado: {orden.recordset[0].estado_nombre}
               </Typography>
             </div>
           )}
@@ -146,6 +178,8 @@ const CarritoCompras = ({ cart, cancelarCompra }) => {
 CarritoCompras.propTypes = {
   cart: PropTypes.array.isRequired,
   cancelarCompra: PropTypes.func.isRequired,
+  actualizarCarrito: PropTypes.func.isRequired,
+  eliminarProducto: PropTypes.func.isRequired,
 };
 
 export default CarritoCompras;

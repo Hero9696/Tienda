@@ -22,18 +22,19 @@ function App() {
     if (product.stock > 0) {
       setCart((prevCart) => {
         const existingProduct = prevCart.find(
-          (item) => item.idProductos === product.id
+          (item) => item.idProductos === product.idProductos 
+         // Comparar por idProductos
         );
         if (existingProduct) {
           return prevCart.map((item) =>
-            item.id === product.id
-              ? { ...item, cantidad: item.cantidad + 1 }
+            item.idProductos === product.idProductos // Asegurarse de comparar correctamente
+              ? { ...item, cantidad: item.stock + 1 }
               : item
           );
         }
         return [...prevCart, { ...product, cantidad: 1 }];
       });
-
+  
       const updatedProduct = { ...product, stock: product.stock - 1 };
       alert(
         `${updatedProduct.nombre} ha sido agregado al carrito. Stock restante: ${updatedProduct.stock}`
@@ -41,6 +42,23 @@ function App() {
     } else {
       alert("El producto no tiene stock disponible");
     }
+  };
+  
+
+  const actualizarCarrito = (idProducto, cantidad) => {
+    setCart((prevCart) => {
+      return prevCart.map((item) =>
+        item.idProductos === idProducto
+          ? { ...item, cantidad: item.cantidad + cantidad }
+          : item
+      );
+    });
+  };
+
+  const eliminarProducto = (idProducto) => {
+    setCart((prevCart) =>
+      prevCart.filter((item) => item.idProductos !== idProducto)
+    );
   };
 
   const vaciarCarrito = () => {
@@ -61,13 +79,14 @@ function App() {
     return (
       <>
         {(location.pathname === "/catalogo" ||
-          location.pathname === "/carrito" || location.pathname === "/historial") && (
-          <Navbar cart={cart} goToCart={goToCart} />
+          location.pathname === "/carrito" ||
+          location.pathname === "/historial") && (
+          <Navbar cart={cart} goToCart={goToCart} actualizarCarrito={actualizarCarrito} />
         )}
         {(location.pathname === "/catalogo/operador" ||
           location.pathname === "/carrito/operador" ||
           location.pathname === "/registrar") && (
-          <NavbarOperador cart={cart} goToCart={goToCartO} />
+          <NavbarOperador cart={cart} goToCart={goToCartO} actualizarCarrito={actualizarCarrito}/>
         )}
         {children}
       </>
@@ -83,22 +102,32 @@ function App() {
       <Layout>
         <Routes>
           <Route path="/" element={<Login />} />
-          <Route path="/catalogo" element={<Vista addToCart={addToCart} />} />
+          <Route path="/catalogo" element={<Vista addToCart={addToCart} actualizarCarrito={actualizarCarrito} />} />
           <Route
             path="/catalogo/operador"
-            element={<VistaOperador addToCart={addToCart} />}
+            element={<VistaOperador addToCart={addToCart}  actualizarCarrito={actualizarCarrito} />}
           />
           <Route path="/registrar" element={<RegistrarUsuario />} />
           <Route
             path="/carrito"
             element={
-              <CarritoCompras cart={cart} cancelarCompra={vaciarCarrito} />
+              <CarritoCompras
+                cart={cart}
+                cancelarCompra={vaciarCarrito}
+                actualizarCarrito={actualizarCarrito}
+                eliminarProducto={eliminarProducto}
+              />
             }
           />
           <Route
             path="/carrito/operador"
             element={
-              <CarritoCompras cart={cart} cancelarCompra={vaciarCarrito} />
+              <CarritoCompras
+                cart={cart}
+                cancelarCompra={vaciarCarrito}
+                actualizarCarrito={actualizarCarrito}
+                eliminarProducto={eliminarProducto}
+              />
             }
           />
           <Route path="/historial" element={<Historial />} />
