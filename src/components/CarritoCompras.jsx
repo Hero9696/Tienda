@@ -33,6 +33,7 @@ const CarritoCompras = ({ cart, cancelarCompra }) => {
     try {
       // Obtener el ID del usuario desde localStorage
       const idUsuario = localStorage.getItem("idUsuarios");
+      
 
       if (!idUsuario) {
         throw new Error("Usuario no autenticado.");

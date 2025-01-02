@@ -5,17 +5,18 @@ import {
   useLocation,
 } from "react-router-dom";
 import { useState } from "react";
-import PropTypes from "prop-types"; // Importar PropTypes
+import PropTypes from "prop-types";
 import Login from "./components/Login";
 import Vista from "./components/VistaProductos";
+import VistaOperador from "./components/VistaProductos";
 import RegistrarUsuario from "./components/RegistrarUsuario";
 import Navbar from "./components/menuNav";
-import CarritoCompras from "./components/CarritoCompras"; // Importar el componente CarritoCompras
+import NavbarOperador from "./components/menuNavOperador";
+import CarritoCompras from "./components/CarritoCompras";
+import Historial from "./components/Historial";
 
 function App() {
   const [cart, setCart] = useState([]);
-
-  // Función para agregar productos al carrito
 
   const addToCart = (product) => {
     if (product.stock > 0) {
@@ -24,18 +25,15 @@ function App() {
           (item) => item.idProductos === product.id
         );
         if (existingProduct) {
-          // Si el producto ya está en el carrito, aumentar la cantidad
           return prevCart.map((item) =>
             item.id === product.id
               ? { ...item, cantidad: item.cantidad + 1 }
               : item
           );
         }
-        // Si el producto no está en el carrito, agregarlo con cantidad inicial de 1
         return [...prevCart, { ...product, cantidad: 1 }];
       });
 
-      // Crear una copia del producto para reducir el stock
       const updatedProduct = { ...product, stock: product.stock - 1 };
       alert(
         `${updatedProduct.nombre} ha sido agregado al carrito. Stock restante: ${updatedProduct.stock}`
@@ -45,9 +43,8 @@ function App() {
     }
   };
 
-  // Función para limpiar el carrito
   const vaciarCarrito = () => {
-    setCart([]); // Vaciar el carrito
+    setCart([]);
     alert("Compra cancelada. El carrito ha sido limpiado.");
   };
 
@@ -55,24 +52,24 @@ function App() {
     window.location.href = "/carrito";
   };
 
-  // Componente para controlar el renderizado del Navbar
   const Layout = ({ children }) => {
-    const location = useLocation(); // Mover useLocation dentro de Router
+    const location = useLocation();
 
     return (
       <>
-        {/* Renderizar Navbar solo si no estamos en las rutas de Home o Registrar */}
-        {location.pathname !== "/" && (
+        {location.pathname === "/catalogo" && (
           <Navbar cart={cart} goToCart={goToCart} />
+        )}
+        {location.pathname === "/catalogo/operador" && (
+          <NavbarOperador cart={cart} goToCart={goToCart} />
         )}
         {children}
       </>
     );
   };
 
-  // Validar las props de Layout
   Layout.propTypes = {
-    children: PropTypes.node.isRequired, // Declarar children como requerido
+    children: PropTypes.node.isRequired,
   };
 
   return (
@@ -81,6 +78,10 @@ function App() {
         <Routes>
           <Route path="/" element={<Login />} />
           <Route path="/catalogo" element={<Vista addToCart={addToCart} />} />
+          <Route
+            path="/catalogo/operador"
+            element={<VistaOperador addToCart={addToCart} />}
+          />
           <Route path="/registrar" element={<RegistrarUsuario />} />
           <Route
             path="/carrito"
@@ -88,17 +89,11 @@ function App() {
               <CarritoCompras cart={cart} cancelarCompra={vaciarCarrito} />
             }
           />
+          <Route path="/historial" element={<Historial />} />
         </Routes>
       </Layout>
     </Router>
   );
 }
-
-App.propTypes = {
-  cart: PropTypes.array.isRequired,
-  addToCart: PropTypes.func.isRequired,
-  goToCart: PropTypes.func.isRequired,
-  vaciarCarrito: PropTypes.func.isRequired,
-};
 
 export default App;
