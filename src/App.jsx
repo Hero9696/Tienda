@@ -65,7 +65,8 @@ function App() {
           <Navbar cart={cart} goToCart={goToCart} />
         )}
         {(location.pathname === "/catalogo/operador" ||
-          location.pathname === "/carrito/operador") && (
+          location.pathname === "/carrito/operador" ||
+          location.pathname === "/registrar") && (
           <NavbarOperador cart={cart} goToCart={goToCartO} />
         )}
         {children}

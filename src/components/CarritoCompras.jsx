@@ -51,9 +51,10 @@ const CarritoCompras = ({ cart, cancelarCompra }) => {
           detalles: detalles,
         }
       );
-
+      console.log(response.data);
       if (response.data.success) {
         setOrden(response.data.result);
+
       } else {
         throw new Error("La API no confirmó el éxito de la operación.");
       }
@@ -126,6 +127,9 @@ const CarritoCompras = ({ cart, cancelarCompra }) => {
               </Typography>
               <Typography variant="body1">
                 Correo Electrónico: {orden.recordset[0].correo_electronico}
+              </Typography>
+              <Typography variant="body1">
+                Estado:  {orden.recordset[0].estado_nombre}
               </Typography>
             </div>
           )}
