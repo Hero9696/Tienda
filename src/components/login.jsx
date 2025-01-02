@@ -40,12 +40,7 @@ const Login = () => {
       }
     }
   };
-  
-  
 
-  const handleRegister = () => {
-    navigate('/registrar',{ replace: true }); 
-  };
 
   return (
     <Container maxWidth="sm">
@@ -88,16 +83,7 @@ const Login = () => {
           >
             Iniciar Sesión
           </Button>
-          <Button
-            type="button"
-            variant="contained"
-            color="secondary"
-            fullWidth
-            style={{ marginTop: '16px' }}
-            onClick={handleRegister}
-          >
-            Registrar Usuario
-          </Button>
+        
         </form>
       </Box>
     </Container>

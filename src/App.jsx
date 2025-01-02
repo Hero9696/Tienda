@@ -61,13 +61,12 @@ function App() {
 
     return (
       <>
-      {/* Renderizar Navbar solo si no estamos en las rutas de Home o Registrar */}
-      {location.pathname !== "/home" && location.pathname !== "/registrar" && (
-        <Navbar cart={cart} goToCart={goToCart} />
-      )}
-      {children}
-    </>
-    
+        {/* Renderizar Navbar solo si no estamos en las rutas de Home o Registrar */}
+        {location.pathname !== "/" && (
+          <Navbar cart={cart} goToCart={goToCart} />
+        )}
+        {children}
+      </>
     );
   };
 
@@ -80,11 +79,8 @@ function App() {
     <Router basename="/Tienda">
       <Layout>
         <Routes>
-          <Route path="/home" element={<Login />} />
-          <Route
-            path="/catalogo"
-            element={<Vista addToCart={addToCart} />}
-          />
+          <Route path="/" element={<Login />} />
+          <Route path="/catalogo" element={<Vista addToCart={addToCart} />} />
           <Route path="/registrar" element={<RegistrarUsuario />} />
           <Route
             path="/carrito"
