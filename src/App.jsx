@@ -35,10 +35,6 @@ function App() {
         return [...prevCart, { ...product, cantidad: 1 }];
       });
   
-      const updatedProduct = { ...product, stock: product.stock - 1 };
-      alert(
-        `${updatedProduct.nombre} ha sido agregado al carrito. Stock restante: ${updatedProduct.stock}`
-      );
     } else {
       alert("El producto no tiene stock disponible");
     }

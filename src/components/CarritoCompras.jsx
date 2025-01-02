@@ -8,6 +8,7 @@ import {
 import PropTypes from "prop-types";
 import { useState, useEffect } from "react";
 import axios from "axios";
+import { AddCircle, RemoveCircle } from "@mui/icons-material";
 
 const CarritoCompras = ({ cart, cancelarCompra, actualizarCarrito, eliminarProducto }) => {
   const [loading, setLoading] = useState(false);
@@ -66,10 +67,42 @@ const CarritoCompras = ({ cart, cancelarCompra, actualizarCarrito, eliminarProdu
     }
   };
 
-  const aumentarCantidad = (idProducto) => {
-    actualizarCarrito(idProducto, 1); // Aumentar cantidad en 1
-  };
+  const aumentarCantidad = async (idProductos) => {
+    try {
+      // Hacemos una solicitud para obtener los detalles de los productos
+      const response = await axios.get(`http://localhost:5000/api/productos`);
+      
+      
+  
+      // Buscar el producto específico en la respuesta de la API utilizando el idProductos
+      const productoEnApi = response.data.find((item) => item.idProductos === idProductos);
 
+      if (!productoEnApi) {
+        alert('Producto no encontrado en la base de datos.');
+        return;
+      }
+  
+      // Obtener el stock disponible del producto encontrado
+      const stockDisponible = productoEnApi.stock;
+     
+  
+      // Buscar el producto en el carrito
+      const producto = cart.find((item) => item.idProductos === idProductos);
+     
+  
+      // Verificar si la cantidad en el carrito es menor al stock disponible
+      if (producto.cantidad < stockDisponible) {
+        actualizarCarrito(idProductos, 1); // Aumentar cantidad en 1
+      } else {
+        alert('No puedes aumentar la cantidad más allá del stock disponible: ' + stockDisponible);
+      }
+    } catch (error) {
+      console.error("Error al obtener el stock:", error);
+      alert("Error al verificar el stock disponible.");
+    }
+  };
+  
+  
   const reducirCantidad = (idProducto) => {
     actualizarCarrito(idProducto, -1); // Reducir cantidad en 1
   };
@@ -99,16 +132,18 @@ const CarritoCompras = ({ cart, cancelarCompra, actualizarCarrito, eliminarProdu
                   variant="outlined"
                   color="primary"
                   onClick={() => aumentarCantidad(item.idProductos)}
+                  startIcon={<AddCircle />}
                 >
-                  Aumentar
+                  1
                 </Button>
                 <Button
                   variant="outlined"
                   color="secondary"
                   onClick={() => reducirCantidad(item.idProductos)}
                   disabled={item.cantidad === 1}
+                  startIcon={<RemoveCircle />}
                 >
-                  Reducir
+                 1
                 </Button>
                 <Button
                   variant="outlined"

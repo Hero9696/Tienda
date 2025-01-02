@@ -25,31 +25,9 @@ const Vista = ({ addToCart, actualizarCarrito }) => {
     return <Typography color="error">{error}</Typography>;
   }
 
-  // Aumentar cantidad en el producto
-  const aumentarCantidad = (idProductos) => {
-    setData((prevData) =>
-      prevData.map((item) =>
-        item.idProductos === idProductos && item.stock > (item.cantidad || 1)
-          ? { ...item, cantidad: (item.cantidad || 1) + 1 }
-          : item
-      )
-    );
-  };
-
-  // Reducir cantidad en el producto
-  const reducirCantidad = (idProductos) => {
-    setData((prevData) =>
-      prevData.map((item) =>
-        item.idProductos === idProductos && item.cantidad > 1
-          ? { ...item, cantidad: item.cantidad - 1 }
-          : item
-      )
-    );
-  };
-
   const handleAddToCart = (producto) => {
     const quantity = producto.cantidad || 1; // Obtiene la cantidad seleccionada
-console.log(quantity);
+    
     if (producto.stock >= quantity) {
       addToCart({ ...producto, stock: quantity });
       actualizarCarrito({ ...producto, stock: quantity });
@@ -94,17 +72,6 @@ console.log(quantity);
                   <Typography color="textSecondary" sx={{ marginBottom: 2 }}>
                     <strong>Precio:</strong> Q{item.precio}
                   </Typography>
-
-                  {/* Control de cantidad */}
-                  <Box sx={{ display: "flex", alignItems: "center", marginBottom: 2 }}>
-                    <Button variant="outlined" onClick={() => reducirCantidad(item.idProductos)} sx={{ marginRight: 1 }} disabled={item.cantidad === 1}>
-                      -
-                    </Button>
-                    <Typography>{item.cantidad || 1}</Typography>
-                    <Button variant="outlined" onClick={() => aumentarCantidad(item.idProductos)} sx={{ marginLeft: 1 }} disabled={item.cantidad === item.stock}>
-                      +
-                    </Button>
-                  </Box>
 
                   <Button
                     variant="contained"
