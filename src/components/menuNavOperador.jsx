@@ -7,7 +7,7 @@ const Navbar = ({ cart }) => {
   const navigate = useNavigate(); // Hook para redirección
 
   const goToCart = () => {
-    navigate("/carrito"); // Redirige al carrito
+    navigate("/carrito/operador"); // Redirige al carrito
   };
 
   return (

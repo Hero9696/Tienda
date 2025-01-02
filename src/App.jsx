@@ -51,17 +51,22 @@ function App() {
   const goToCart = () => {
     window.location.href = "/carrito";
   };
+  const goToCartO = () => {
+    window.location.href = "/carrito/operador";
+  };
 
   const Layout = ({ children }) => {
     const location = useLocation();
 
     return (
       <>
-        {location.pathname === "/catalogo" && (
+        {(location.pathname === "/catalogo" ||
+          location.pathname === "/carrito" || location.pathname === "/historial") && (
           <Navbar cart={cart} goToCart={goToCart} />
         )}
-        {location.pathname === "/catalogo/operador" && (
-          <NavbarOperador cart={cart} goToCart={goToCart} />
+        {(location.pathname === "/catalogo/operador" ||
+          location.pathname === "/carrito/operador") && (
+          <NavbarOperador cart={cart} goToCart={goToCartO} />
         )}
         {children}
       </>
@@ -85,6 +90,12 @@ function App() {
           <Route path="/registrar" element={<RegistrarUsuario />} />
           <Route
             path="/carrito"
+            element={
+              <CarritoCompras cart={cart} cancelarCompra={vaciarCarrito} />
+            }
+          />
+          <Route
+            path="/carrito/operador"
             element={
               <CarritoCompras cart={cart} cancelarCompra={vaciarCarrito} />
             }
