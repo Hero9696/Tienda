@@ -99,4 +99,25 @@ const actualizarOrden = async (idOrden, direccion, idEstado) => {
   }
 };
 
-export default { crearOrdenDetalles, actualizarOrdenDetalles, actualizarOrden };
+
+const obtenerOrdenDetalles = async (idUsuarios) => {
+  try {
+    // Conectar a la base de datos
+    const pool = await connectDB();
+
+    // Ejecutar el procedimiento almacenado
+    const result = await pool
+      .request()
+      .input("usuarios_idUsuarios", mssql.Int, idUsuarios)
+      .execute("ObtenerOrdenPorId");
+
+    // Devolver el resultado
+    return result.recordset;
+  } catch (err) {
+    console.error("Error al obtener los detalles de la orden:", err);
+    throw new Error("Error al obtener los detalles de la orden");
+  }
+};
+
+
+export default { crearOrdenDetalles, actualizarOrdenDetalles, actualizarOrden, obtenerOrdenDetalles };

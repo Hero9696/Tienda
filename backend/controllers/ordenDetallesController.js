@@ -80,4 +80,28 @@ const actualizarOrden = async (req, res) => {
   }
 }
 
-export default { insertarordendetalles, actualizarOrdenDetalles, actualizarOrden };
+const obtenerOrdenDetalles = async (req, res) => {
+  const { idUsuarios } = req.body;
+
+  // Validar que el idUsuarios está presente en la solicitud
+  if (!idUsuarios) {
+    return res.status(400).json({ error: "Falta el ID de usuario en la solicitud" });
+  }
+
+  try {
+    // Llamar a la función obtenerOrdenDetalles con el idUsuarios
+    const ordenDetalles = await fod.obtenerOrdenDetalles(idUsuarios);
+
+    // Verificar si se encontraron detalles de la orden
+    if (ordenDetalles.length > 0) {
+      return res.status(200).json({ success: true, orden: ordenDetalles });
+    } else {
+      return res.status(404).json({ error: "No se encontraron detalles de la orden para este usuario" });
+    }
+  } catch (error) {
+    console.error("Error al obtener los detalles de la orden:", error);
+    return res.status(500).json({ error: "Error al obtener los detalles de la orden" });
+  }
+}
+
+export default { insertarordendetalles, actualizarOrdenDetalles, actualizarOrden, obtenerOrdenDetalles };
