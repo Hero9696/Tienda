@@ -4,7 +4,7 @@ import {
   Route,
   useLocation,
 } from "react-router-dom";
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import PropTypes from "prop-types";
 import Login from "./components/Login";
 import Vista from "./components/VistaProductos";
@@ -18,43 +18,59 @@ import Historial from "./components/Historial";
 function App() {
   const [cart, setCart] = useState([]);
 
+  useEffect(() => {
+    const savedCart = localStorage.getItem('cart');
+    if (savedCart) {
+      setCart(JSON.parse(savedCart));
+    }
+  }, []);
+
+
   const addToCart = (product) => {
     if (product.stock > 0) {
       setCart((prevCart) => {
-        const existingProduct = prevCart.find(
-          (item) => item.idProductos === product.idProductos 
-         // Comparar por idProductos
+        const updatedCart = prevCart.map((item) =>
+          item.idProductos === product.idProductos
+            ? { ...item, cantidad: item.cantidad + 1 }
+            : item
         );
-        if (existingProduct) {
-          return prevCart.map((item) =>
-            item.idProductos === product.idProductos // Asegurarse de comparar correctamente
-              ? { ...item, cantidad: item.stock + 1 }
-              : item
-          );
-        }
-        return [...prevCart, { ...product, cantidad: 1 }];
-      });
   
+        // Si el producto no existe en el carrito, agregarlo
+        if (!updatedCart.some(item => item.idProductos === product.idProductos)) {
+          updatedCart.push({ ...product, cantidad: 1 });
+        }
+  
+        // Guardar el carrito actualizado en localStorage
+        localStorage.setItem('cart', JSON.stringify(updatedCart));
+        return updatedCart;
+      });
     } else {
       alert("El producto no tiene stock disponible");
     }
   };
   
-
   const actualizarCarrito = (idProducto, cantidad) => {
     setCart((prevCart) => {
-      return prevCart.map((item) =>
+      const updatedCart = prevCart.map((item) =>
         item.idProductos === idProducto
           ? { ...item, cantidad: item.cantidad + cantidad }
           : item
       );
+  
+      // Guardar el carrito actualizado en localStorage
+      localStorage.setItem('cart', JSON.stringify(updatedCart));
+      return updatedCart;
     });
   };
-
+  
   const eliminarProducto = (idProducto) => {
-    setCart((prevCart) =>
-      prevCart.filter((item) => item.idProductos !== idProducto)
-    );
+    setCart((prevCart) => {
+      const updatedCart = prevCart.filter((item) => item.idProductos !== idProducto);
+  
+      // Guardar el carrito actualizado en localStorage
+      localStorage.setItem('cart', JSON.stringify(updatedCart));
+      return updatedCart;
+    });
   };
 
   const vaciarCarrito = () => {
