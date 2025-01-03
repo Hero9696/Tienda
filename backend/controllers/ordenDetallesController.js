@@ -104,4 +104,24 @@ const obtenerOrdenDetalles = async (req, res) => {
   }
 }
 
-export default { insertarordendetalles, actualizarOrdenDetalles, actualizarOrden, obtenerOrdenDetalles };
+const eliminarOrdenDetalles = async (req, res) => {
+  const { idOrden } = req.params;
+
+  try {
+    // Llamar a la función para eliminar la orden
+    const resultado = await fod.eliminarOrden(parseInt(idOrden));
+
+    // Si la orden no se pudo eliminar, enviar un mensaje de error
+    if (resultado === "La orden no está en estado Pendiente y no se puede eliminar.") {
+      return res.status(400).json({ message: resultado });
+    }
+
+    // Si la orden fue eliminada exitosamente
+    return res.status(200).json({ message: resultado });
+  } catch (error) {
+    console.error("Error al eliminar la orden:", error);
+    return res.status(500).json({ message: "Hubo un error al eliminar la orden." });
+  }
+}
+
+export default { insertarordendetalles, actualizarOrdenDetalles, actualizarOrden, obtenerOrdenDetalles, eliminarOrdenDetalles };

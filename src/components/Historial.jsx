@@ -20,7 +20,7 @@ const BuscarOrdenes = () => {
   const handleBuscar = async (idUsuario) => {
     setLoading(true);
     try {
-      const response = await axios.post('http://localhost:5000/obtenerordendetalles', { idUsuarios: idUsuario });
+      const response = await axios.post('http://localhost:5000/api/obtenerordendetalles', { idUsuarios: idUsuario });
       setOrdenes(response.data.orden);
       setError('');
     } catch (err) {
@@ -28,6 +28,16 @@ const BuscarOrdenes = () => {
       setOrdenes([]);
     } finally {
       setLoading(false);
+    }
+  };
+
+  const eliminarOrden = async (idOrden) => {
+    try {
+      const response = await axios.delete(`http://localhost:5000/api/eliminarorden/${idOrden}`);
+      alert(response.data.message);
+      handleBuscar(localStorage.getItem('idUsuarios')); // Volver a buscar las órdenes después de eliminar
+    } catch (err) {
+      alert('Error al eliminar la orden: ' + err.response?.data?.message || err.message);
     }
   };
 
@@ -87,11 +97,19 @@ const BuscarOrdenes = () => {
                   </div>
                 }
               />
+              <Button
+                variant="contained"
+                color="secondary"
+                onClick={() => eliminarOrden( idOrden)}
+                style={{ marginTop: '10px' }}
+              >
+                Eliminar Orden
+              </Button>
             </ListItem>
           ))}
         </List>
       ) : (
-        !loading && <Typography variant="body1" component="span">No se encontraron órdenes.</Typography>
+        !loading 
       )}
     </Container>
   );

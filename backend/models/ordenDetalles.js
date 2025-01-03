@@ -119,5 +119,32 @@ const obtenerOrdenDetalles = async (idUsuarios) => {
   }
 };
 
+const eliminarOrden = async (idOrden) => {
+  try {
+    // Conectar a la base de datos
+    const pool = await connectDB();
 
-export default { crearOrdenDetalles, actualizarOrdenDetalles, actualizarOrden, obtenerOrdenDetalles };
+    // Ejecutar el procedimiento almacenado
+    const result = await pool
+      .request()
+      .input("idOrden", mssql.Int, idOrden)
+      .execute("EliminarOrden");
+
+    // Verificar si la orden fue eliminada o si se lanzó un mensaje de error
+    if (result.rowsAffected[0] === 0) {
+      console.log("La orden no estaba en estado Pendiente y no se pudo eliminar.");
+      return "La orden no está en estado Pendiente y no se puede eliminar.";
+    }
+
+    // Devolver mensaje de éxito
+    return "Orden eliminada exitosamente.";
+  } catch (err) {
+    console.error("Error al eliminar la orden:", err);
+    throw new Error("Error al eliminar la orden");
+  }
+};
+
+
+
+
+export default { crearOrdenDetalles, actualizarOrdenDetalles, actualizarOrden, obtenerOrdenDetalles , eliminarOrden};

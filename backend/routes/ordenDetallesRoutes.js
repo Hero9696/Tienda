@@ -10,6 +10,8 @@ router.put("/api/actualizarordendetalles", fod.actualizarOrdenDetalles);
 
 router.put("/api/actualizarorden", fod.actualizarOrden);
 
-router.post('/obtenerordendetalles', fod.obtenerOrdenDetalles);
+router.post('/api/obtenerordendetalles', fod.obtenerOrdenDetalles);
+
+router.delete("/api/eliminarorden/:idOrden", fod.eliminarOrdenDetalles);
 
 export default router;
