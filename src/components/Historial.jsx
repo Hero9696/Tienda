@@ -9,38 +9,34 @@ const BuscarOrdenes = () => {
   const [loading, setLoading] = useState(false);
 
   useEffect(() => {
-    // Obtener el idUsuarios desde localStorage
     const idUsuario = localStorage.getItem('idUsuarios');
-
     if (idUsuario) {
-      // Si el ID de usuario existe en localStorage, realizar la búsqueda
       handleBuscar(idUsuario);
     } else {
       setError('No se encontró el ID de usuario en el localStorage.');
     }
-  }, []); // Solo se ejecuta una vez cuando el componente se monta
+  }, []);
 
   const handleBuscar = async (idUsuario) => {
-    setLoading(true); // Iniciar carga
+    setLoading(true);
     try {
       const response = await axios.post('http://localhost:5000/obtenerordendetalles', { idUsuarios: idUsuario });
       setOrdenes(response.data.orden);
       setError('');
     } catch (err) {
-      setError('Aun no tienes Ordenes.', err);
+      setError(err.response?.data?.message || 'Aún no tienes órdenes.');
       setOrdenes([]);
     } finally {
-      setLoading(false); // Finaliza carga
+      setLoading(false);
     }
   };
 
-  // Agrupar las órdenes por idOrden y calcular el subtotal total por grupo
   const groupedOrders = ordenes.reduce((acc, orden) => {
     if (!acc[orden.idOrden]) {
-      acc[orden.idOrden] = { orders: [], total: 0, direccionEntrega: orden.direccion };
+      acc[orden.idOrden] = { orders: [], total: 0, direccionEntrega: orden.direccion, idEstado: orden.estado_orden};
     }
     acc[orden.idOrden].orders.push(orden);
-    acc[orden.idOrden].total += parseFloat(orden.subtotal); // Sumar el subtotal
+    acc[orden.idOrden].total += parseFloat(orden.subtotal) || 0;
     return acc;
   }, {});
 
@@ -54,7 +50,7 @@ const BuscarOrdenes = () => {
         variant="contained"
         color="primary"
         startIcon={<SearchIcon />}
-        onClick={() => handleBuscar(localStorage.getItem('idUsuarios'))}
+        onClick={() => !loading && handleBuscar(localStorage.getItem('idUsuarios'))}
         style={{ marginBottom: '20px' }}
       >
         Buscar
@@ -71,9 +67,12 @@ const BuscarOrdenes = () => {
               <ListItemText
                 primary={`ID Orden: ${idOrden}`}
                 secondary={
-                  <>
+                  <div>
                     <Typography variant="body2" style={{ fontWeight: 'bold' }}>
                       Dirección de Entrega: {groupedOrders[idOrden].direccionEntrega}
+                    </Typography>
+                    <Typography variant="body2" style={{ fontWeight: 'bold' }}>
+                      Estado De La Compra: {groupedOrders[idOrden].idEstado}
                     </Typography>
                     {groupedOrders[idOrden].orders.map((orden, index) => (
                       <div key={index}>
@@ -85,14 +84,14 @@ const BuscarOrdenes = () => {
                     <Typography variant="body1" style={{ fontWeight: 'bold', marginTop: '10px' }}>
                       Total: Q{groupedOrders[idOrden].total.toFixed(2)}
                     </Typography>
-                  </>
+                  </div>
                 }
               />
             </ListItem>
           ))}
         </List>
       ) : (
-        !loading && <Typography variant="body1">{setError}.</Typography>
+        !loading && <Typography variant="body1" component="span">No se encontraron órdenes.</Typography>
       )}
     </Container>
   );
