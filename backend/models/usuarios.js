@@ -1,11 +1,11 @@
 import mssql from "mssql";
 import connectDB from "../db.js";
 import bcrypt from "bcrypt";
-
 const insertarUsuario = async (usuario) => {
   try {
     const pool = await connectDB();
 
+    // Verificar si el correo electrónico ya está registrado
     const resultBusqueda = await pool
       .request()
       .input("Correo", mssql.NVarChar, usuario.correo_electronico)
@@ -15,6 +15,7 @@ const insertarUsuario = async (usuario) => {
       throw new Error("El correo electrónico ya está registrado.");
     }
 
+    // Insertar el usuario con todos los campos, incluyendo dirección
     const result = await pool
       .request()
       .input("rol_idRol", mssql.Int, usuario.rol_idRol)
@@ -23,10 +24,12 @@ const insertarUsuario = async (usuario) => {
       .input("password", mssql.NVarChar, usuario.password)
       .input("telefono", mssql.NVarChar, usuario.telefono)
       .input("fecha_nacimiento", mssql.Date, usuario.fecha_nacimiento)
+      .input("direccion", mssql.NVarChar, usuario.direccion) // Nueva entrada
       .execute("InsertarUsuarios");
 
     console.log("Resultado de InsertarUsuarios:", result);
 
+    // Obtener el ID del usuario insertado
     if (result.recordset && result.recordset.length > 0) {
       const idUsuario = result.recordset[0].idUsuarios;
       return { idUsuarios: idUsuario };
@@ -38,6 +41,7 @@ const insertarUsuario = async (usuario) => {
     throw err;
   }
 };
+
 
 const actualizarUsuario = async (req, res) => {
   try {

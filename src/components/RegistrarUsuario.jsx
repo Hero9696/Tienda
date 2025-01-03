@@ -1,7 +1,7 @@
 import { useState, useEffect } from "react";
 import { TextField, Button, MenuItem, Box, Typography } from "@mui/material";
 import axios from "axios";
-//import { useNavigate } from "react-router-dom"; 
+// import { useNavigate } from "react-router-dom"; 
 
 const RegistroUsuario = () => {
   const [formData, setFormData] = useState({
@@ -11,11 +11,15 @@ const RegistroUsuario = () => {
     password: "",
     telefono: "",
     fecha_nacimiento: "",
+    direccion: "", // Añadir el campo 'direccion'
   });
 
   const [roles, setRoles] = useState([]);
   const [loadingRoles, setLoadingRoles] = useState(true);
- // const navigate = useNavigate(); 
+  const [error, setError] = useState(""); // Para mostrar el error de edad
+  const [telefonoError, setTelefonoError] = useState(""); // Para mostrar el error de teléfono
+
+  // const navigate = useNavigate(); 
 
   useEffect(() => {
     const fetchRoles = async () => {
@@ -39,8 +43,38 @@ const RegistroUsuario = () => {
     setFormData({ ...formData, [name]: value });
   };
 
+  // Función para calcular la edad y verificar si es mayor de 18 años
+  const calcularEdad = (fechaNacimiento) => {
+    const nacimiento = new Date(fechaNacimiento);
+    const hoy = new Date();
+    let edad = hoy.getFullYear() - nacimiento.getFullYear();
+    const m = hoy.getMonth() - nacimiento.getMonth();
+    if (m < 0 || (m === 0 && hoy.getDate() < nacimiento.getDate())) {
+      edad--;
+    }
+    return edad;
+  };
+
   const handleSubmit = async (e) => {
     e.preventDefault();
+
+    // Validación de la edad (18 años o más)
+    const edad = calcularEdad(formData.fecha_nacimiento);
+    if (edad < 18) {
+      setError("Debes tener al menos 18 años para registrarte.");
+      return;
+    }
+
+    // Validación de teléfono (máximo 8 dígitos)
+    if (formData.telefono.length !== 8) {
+      setTelefonoError("El teléfono debe tener 8 dígitos.");
+      return;
+    } else {
+      setTelefonoError(""); // Limpiar mensaje de error de teléfono
+    }
+
+    setError(""); // Limpiar mensaje de error de edad
+
     try {
       const response = await fetch(
         "http://localhost:5000/api/insertarusuarios",
@@ -62,8 +96,6 @@ const RegistroUsuario = () => {
       alert("Hubo un problema al procesar el registro.");
     }
   };
-
- 
 
   return (
     <Box
@@ -138,7 +170,11 @@ const RegistroUsuario = () => {
           fullWidth
           margin="normal"
           required
+          inputProps={{ maxLength: 8 }} // Limita la longitud a 8 caracteres
         />
+        {/* Mostrar error si el teléfono no tiene 8 dígitos */}
+        {telefonoError && <Typography color="error">{telefonoError}</Typography>}
+
         <TextField
           label="Fecha de Nacimiento"
           name="fecha_nacimiento"
@@ -150,6 +186,20 @@ const RegistroUsuario = () => {
           margin="normal"
           required
         />
+        {/* Nuevo campo para Dirección */}
+        <TextField
+          label="Dirección"
+          name="direccion"
+          value={formData.direccion}
+          onChange={handleChange}
+          fullWidth
+          margin="normal"
+          required
+        />
+        
+        {/* Mostrar error si la edad es menor de 18 */}
+        {error && <Typography color="error">{error}</Typography>}
+
         <Button
           type="submit"
           variant="contained"
@@ -160,7 +210,6 @@ const RegistroUsuario = () => {
           Registrar
         </Button>
       </form>
-     
     </Box>
   );
 };

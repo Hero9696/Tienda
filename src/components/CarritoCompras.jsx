@@ -26,23 +26,23 @@ const CarritoCompras = ({ cart, cancelarCompra, actualizarCarrito, eliminarProdu
     (acc, item) => acc + item.precio * item.cantidad,
     0
   );
-
   const confirmarCompra = async () => {
     setLoading(true);
     setError(null);
-
+  
     try {
       const idUsuario = localStorage.getItem("idUsuarios");
-
+  
       if (!idUsuario) {
         throw new Error("Usuario no autenticado.");
       }
-
+  
       const detalles = cart.map((item) => ({
         idProductos: item.idProductos,
         cantidad: item.cantidad,
       }));
-
+  
+      // Crear una nueva orden sin importar si ya existe una previa
       const response = await axios.post(
         "http://localhost:5000/api/insertarordendetalles",
         {
@@ -50,9 +50,9 @@ const CarritoCompras = ({ cart, cancelarCompra, actualizarCarrito, eliminarProdu
           detalles: detalles,
         }
       );
-      
+  console.log(response.data)
       if (response.data.success) {
-        setOrden(response.data.result);
+        setOrden(response.data.result); // Actualizar estado con la nueva orden creada
       } else {
         throw new Error("La API no confirmó el éxito de la operación.");
       }
@@ -66,6 +66,7 @@ const CarritoCompras = ({ cart, cancelarCompra, actualizarCarrito, eliminarProdu
       setLoading(false);
     }
   };
+  
 
   const aumentarCantidad = async (idProductos) => {
     try {
@@ -194,6 +195,9 @@ const CarritoCompras = ({ cart, cancelarCompra, actualizarCarrito, eliminarProdu
               </Typography>
               <Typography variant="body1">
                 Correo Electrónico: {orden.recordset[0].correo_electronico}
+              </Typography>
+              <Typography variant="body1">
+                Dirección: {orden.recordset[0].direccion}
               </Typography>
               <Typography variant="body1">
                 Estado: {orden.recordset[0].estado_nombre}
