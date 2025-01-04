@@ -10,10 +10,16 @@ import { useState, useEffect } from "react";
 import axios from "axios";
 import { AddCircle, RemoveCircle } from "@mui/icons-material";
 
-const CarritoCompras = ({ cart, cancelarCompra, actualizarCarrito, eliminarProducto }) => {
+const CarritoCompras = ({
+  cart,
+  cancelarCompra,
+  actualizarCarrito,
+  eliminarProducto,
+}) => {
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState(null);
   const [orden, setOrden] = useState(null);
+  const [compraConfirmada, setCompraConfirmada] = useState(false); // Nueva variable de estado
 
   // Depuración: registrar cambios en la orden
   useEffect(() => {
@@ -26,22 +32,24 @@ const CarritoCompras = ({ cart, cancelarCompra, actualizarCarrito, eliminarProdu
     (acc, item) => acc + item.precio * item.cantidad,
     0
   );
+
   const confirmarCompra = async () => {
     setLoading(true);
     setError(null);
-  
+    setCompraConfirmada(true); // Bloquear después de confirmar la compra
+
     try {
       const idUsuario = localStorage.getItem("idUsuarios");
-  
+
       if (!idUsuario) {
         throw new Error("Usuario no autenticado.");
       }
-  
+
       const detalles = cart.map((item) => ({
         idProductos: item.idProductos,
         cantidad: item.cantidad,
       }));
-  
+
       // Crear una nueva orden sin importar si ya existe una previa
       const response = await axios.post(
         "http://localhost:5000/api/insertarordendetalles",
@@ -50,9 +58,10 @@ const CarritoCompras = ({ cart, cancelarCompra, actualizarCarrito, eliminarProdu
           detalles: detalles,
         }
       );
-  console.log(response.data)
+      console.log(response.data);
       if (response.data.success) {
         setOrden(response.data.result); // Actualizar estado con la nueva orden creada
+        localStorage.removeItem("cart"); // Borrar el carrito del localStorage
       } else {
         throw new Error("La API no confirmó el éxito de la operación.");
       }
@@ -66,44 +75,43 @@ const CarritoCompras = ({ cart, cancelarCompra, actualizarCarrito, eliminarProdu
       setLoading(false);
     }
   };
-  
 
   const aumentarCantidad = async (idProductos) => {
     try {
       // Hacemos una solicitud para obtener los detalles de los productos
       const response = await axios.get(`http://localhost:5000/api/productos`);
-      
-      
-  
+
       // Buscar el producto específico en la respuesta de la API utilizando el idProductos
-      const productoEnApi = response.data.find((item) => item.idProductos === idProductos);
+      const productoEnApi = response.data.find(
+        (item) => item.idProductos === idProductos
+      );
 
       if (!productoEnApi) {
-        alert('Producto no encontrado en la base de datos.');
+        alert("Producto no encontrado en la base de datos.");
         return;
       }
-  
+
       // Obtener el stock disponible del producto encontrado
       const stockDisponible = productoEnApi.stock;
-     
-  
+
       // Buscar el producto en el carrito
       const producto = cart.find((item) => item.idProductos === idProductos);
-     
-  
+
       // Verificar si la cantidad en el carrito es menor al stock disponible
       if (producto.cantidad < stockDisponible) {
         actualizarCarrito(idProductos, 1); // Aumentar cantidad en 1
       } else {
-        alert('No puedes aumentar la cantidad más allá del stock disponible: ' + stockDisponible);
+        alert(
+          "No puedes aumentar la cantidad más allá del stock disponible: " +
+            stockDisponible
+        );
       }
     } catch (error) {
       console.error("Error al obtener el stock:", error);
       alert("Error al verificar el stock disponible.");
     }
   };
-  
-  
+
   const reducirCantidad = (idProducto) => {
     actualizarCarrito(idProducto, -1); // Reducir cantidad en 1
   };
@@ -134,6 +142,7 @@ const CarritoCompras = ({ cart, cancelarCompra, actualizarCarrito, eliminarProdu
                   color="primary"
                   onClick={() => aumentarCantidad(item.idProductos)}
                   startIcon={<AddCircle />}
+                  disabled={compraConfirmada} // Deshabilitar botón después de confirmar compra
                 >
                   1
                 </Button>
@@ -141,15 +150,16 @@ const CarritoCompras = ({ cart, cancelarCompra, actualizarCarrito, eliminarProdu
                   variant="outlined"
                   color="secondary"
                   onClick={() => reducirCantidad(item.idProductos)}
-                  disabled={item.cantidad === 1}
+                  disabled={item.cantidad === 1 || compraConfirmada} // Deshabilitar botón después de confirmar compra
                   startIcon={<RemoveCircle />}
                 >
-                 1
+                  1
                 </Button>
                 <Button
                   variant="outlined"
                   color="error"
                   onClick={() => handleEliminarProducto(item.idProductos)}
+                  disabled={compraConfirmada} // Deshabilitar botón después de confirmar compra
                 >
                   Eliminar
                 </Button>
@@ -163,7 +173,7 @@ const CarritoCompras = ({ cart, cancelarCompra, actualizarCarrito, eliminarProdu
             color="primary"
             style={{ marginTop: "10px" }}
             onClick={confirmarCompra}
-            disabled={loading}
+            disabled={loading || compraConfirmada} // Deshabilitar botón después de confirmar compra
           >
             {loading ? "Confirmando..." : "Confirmar Compra"}
           </Button>
@@ -172,6 +182,7 @@ const CarritoCompras = ({ cart, cancelarCompra, actualizarCarrito, eliminarProdu
             color="secondary"
             style={{ marginTop: "10px", marginLeft: "10px" }}
             onClick={cancelarCompra}
+            disabled={compraConfirmada} // Deshabilitar botón después de confirmar compra
           >
             Cancelar compra
           </Button>
