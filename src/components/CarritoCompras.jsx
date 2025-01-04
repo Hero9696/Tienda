@@ -32,25 +32,24 @@ const CarritoCompras = ({
     (acc, item) => acc + item.precio * item.cantidad,
     0
   );
-
   const confirmarCompra = async () => {
     setLoading(true);
     setError(null);
-    setCompraConfirmada(true); // Bloquear después de confirmar la compra
-
+    setCompraConfirmada(true); // Actualizar estado para deshabilitar botones
+  
     try {
       const idUsuario = localStorage.getItem("idUsuarios");
-
+  
       if (!idUsuario) {
         throw new Error("Usuario no autenticado.");
       }
-
+  
       const detalles = cart.map((item) => ({
         idProductos: item.idProductos,
         cantidad: item.cantidad,
       }));
-
-      // Crear una nueva orden sin importar si ya existe una previa
+  
+      // Crear una nueva orden
       const response = await axios.post(
         "http://localhost:5000/api/insertarordendetalles",
         {
@@ -58,10 +57,15 @@ const CarritoCompras = ({
           detalles: detalles,
         }
       );
+  
       console.log(response.data);
+  
       if (response.data.success) {
         setOrden(response.data.result); // Actualizar estado con la nueva orden creada
-        localStorage.removeItem("cart"); // Borrar el carrito del localStorage
+  
+        // Eliminar productos del carrito después de confirmar la compra
+        cart.forEach((item) => handleEliminarProducto(item.idProductos)); // Vaciar el carrito
+        localStorage.setItem("cart", JSON.stringify([])); // Vaciar carrito en localStorage
       } else {
         throw new Error("La API no confirmó el éxito de la operación.");
       }
@@ -75,6 +79,7 @@ const CarritoCompras = ({
       setLoading(false);
     }
   };
+  
 
   const aumentarCantidad = async (idProductos) => {
     try {
