@@ -64,4 +64,30 @@ const actualizarEstado = async (req, res) => {
         res.status(500).send("Error al conectar a la base de datos");
       }
     }
-export default { insertarEstado, actualizarEstado, estados };
+
+    const alternarEstadoProducto = async (req, res) => {
+      try {
+        const { idProducto } = req.body; // Obtenemos el idProducto desde el cuerpo de la solicitud
+    
+        // Validamos que el idProducto exista y sea un número entero
+        if (!idProducto || isNaN(idProducto)) {
+          return res.status(400).send("El ID del producto es inválido.");
+        }
+    
+        
+    
+        // Ejecutamos el procedimiento almacenado AlternarEstadoProducto
+        const result = await festados.alternarEstadoProducto(idProducto);
+    
+        if (result.rowsAffected[0] === 0) {
+          return res.status(404).send("Producto no encontrado o no se pudo alternar el estado.");
+        }
+    
+        res.status(200).send("Estado del producto alternado con éxito.");
+        
+      } catch (err) {
+        console.error("Error al alternar el estado del producto:", err);
+        res.status(500).send("Error al conectar a la base de datos.");
+      }
+    }
+export default { insertarEstado, actualizarEstado, estados, alternarEstadoProducto };

@@ -16,7 +16,7 @@ const Productos = () => {
       try {
         const response = await axios.get("http://localhost:5000/api/verproductos");
         setProductos(response.data);
-       
+       console.log(response.data);
       } catch (error) {
         console.error("Error al obtener los productos", error);
       }
@@ -26,7 +26,7 @@ const Productos = () => {
       try {
         const response = await axios.get("http://localhost:5000/api/estados");
         setEstados(response.data);
-        console.log(response.data);
+       
       } catch (error) {
         console.error("Error al obtener los estados", error);
       }
@@ -82,9 +82,14 @@ const Productos = () => {
   // Función para cambiar el estado del producto
   const handleChangeStatus = async (id) => {
     const producto = productos.find((producto) => producto.idProductos === id);
+   
     const updatedStatus = producto.estados_idEstados === 1 ? 2 : 1; // 1: Activo, 2: Inactivo
+  
     try {
-      await axios.put(`/api/productos/${id}`, { estados_idEstados: updatedStatus });
+      // Cambiamos la URL y el cuerpo de la solicitud
+      await axios.post('http://localhost:5000/api/alternarestado', { idProducto: id });
+  
+      // Actualizamos el estado del producto en el estado local
       setProductos((prevProductos) =>
         prevProductos.map((producto) =>
           producto.idProductos === id
@@ -96,6 +101,7 @@ const Productos = () => {
       console.error("Error al cambiar el estado", error);
     }
   };
+  
 
   // Obtener el nombre del estado por ID
   const getEstadoNombre = (idEstados) => {
@@ -150,6 +156,14 @@ const Productos = () => {
                       fullWidth
                       margin="normal"
                       type="number"
+                    />
+                    <TextField
+                      label="Nuevo Codigo"
+                      value={producto.codigo}
+                      onChange={(e) => setNewStock(e.target.value)}
+                      fullWidth
+                      margin="normal"
+                      
                     />
                     <Button onClick={() => handleSave(producto.idProductos)} variant="contained" color="primary" style={{ marginRight: 8 }}>
                       Guardar

@@ -43,4 +43,26 @@ const getEstados = async () => {
   }
 };
 
-export default { insertarEstado, ActualizarEstados, getEstados };
+
+const alternarEstadoProducto = async (idProducto) => {
+  try {
+    const pool = await connectDB();
+
+    // Ejecutamos el procedimiento almacenado AlternarEstadoProducto
+    const result = await pool
+      .request()
+      .input("idProductos", mssql.Int, idProducto)
+      .execute("AlternarEstadoProducto");
+
+    return result;
+    
+  } catch (err) {
+    console.error("Error al alternar el estado del producto:", err);
+    throw new Error("Error al alternar el estado del producto");
+  }
+};
+
+
+
+
+export default { insertarEstado, ActualizarEstados, getEstados, alternarEstadoProducto };
