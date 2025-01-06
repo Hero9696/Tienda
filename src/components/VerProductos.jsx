@@ -4,6 +4,7 @@ import { Grid, Card, CardContent, Typography, Button, TextField, CardMedia, Sele
 
 const Productos = () => {
   const [productos, setProductos] = useState([]);
+  const [categorias, setCategorias] = useState([]);
   const [estados, setEstados] = useState([]);
   const [editing, setEditing] = useState(null);
   const [newName, setNewName] = useState("");
@@ -13,9 +14,9 @@ const Productos = () => {
   const [newFoto, setNewFoto] = useState("");
   const [newCategoriaId, setNewCategoriaId] = useState("");
   const [newMarca, setNewMarca] = useState("");
-  const [newEstadoId, setNewEstadoId] = useState("");  // Nueva variable de estado para el ID del estado
+  const [newEstadoId, setNewEstadoId] = useState(""); 
 
-  // Obtener los productos y los estados desde el API
+  // Obtener los productos, categorías y estados desde el API
   useEffect(() => {
     const fetchProductos = async () => {
       try {
@@ -23,6 +24,15 @@ const Productos = () => {
         setProductos(response.data);
       } catch (error) {
         console.error("Error al obtener los productos", error);
+      }
+    };
+
+    const fetchCategorias = async () => {
+      try {
+        const response = await axios.get("http://localhost:5000/api/categoriasproductos");
+        setCategorias(response.data);
+      } catch (error) {
+        console.error("Error al obtener las categorías", error);
       }
     };
 
@@ -36,8 +46,15 @@ const Productos = () => {
     };
 
     fetchProductos();
+    fetchCategorias();
     fetchEstados();
   }, []);
+
+  // Función para obtener el nombre de la categoría por ID
+  const getCategoriaNombre = (idCategoria) => {
+    const categoria = categorias.find((c) => c.idCategoriaProductos === idCategoria);
+    return categoria ? categoria.nombre_categoria : "Desconocido";
+  };
 
   // Función para obtener el nombre del estado por ID
   const getEstadoNombre = (idEstados) => {
@@ -55,7 +72,7 @@ const Productos = () => {
     setNewFoto(producto.foto);
     setNewCategoriaId(producto.categoriaProductos_idCategoriaProductos);
     setNewMarca(producto.marca);
-    setNewEstadoId(producto.estados_idEstados);  // Cargar el estado actual del producto
+    setNewEstadoId(producto.estados_idEstados);
     setEditing(id);
   };
 
@@ -79,7 +96,7 @@ const Productos = () => {
         categoriaProductos_idCategoriaProductos: newCategoriaId,
         marca: newMarca,
         usuarios_idUsuarios: idUsuarios,
-        estados_idEstados: newEstadoId  // Enviar el ID del estado seleccionado
+        estados_idEstados: newEstadoId
       });
 
       setProductos((prevProductos) =>
@@ -95,7 +112,7 @@ const Productos = () => {
                 categoriaProductos_idCategoriaProductos: newCategoriaId,
                 marca: newMarca,
                 usuarios_idUsuarios: idUsuarios,
-                estados_idEstados: newEstadoId  // Actualizar el estado con el ID seleccionado
+                estados_idEstados: newEstadoId
               }
             : producto
         )
@@ -109,7 +126,7 @@ const Productos = () => {
       setNewFoto("");
       setNewCategoriaId("");
       setNewMarca("");
-      setNewEstadoId("");  // Limpiar el estado después de guardar
+      setNewEstadoId("");
     } catch (error) {
       console.error("Error al guardar el producto", error);
     }
@@ -128,7 +145,7 @@ const Productos = () => {
   // Función para cambiar el estado del producto
   const handleChangeStatus = async (id) => {
     const producto = productos.find((producto) => producto.idProductos === id);
-    const updatedStatus = producto.estados_idEstados === 1 ? 2 : 1; // 1: Activo, 2: Inactivo
+    const updatedStatus = producto.estados_idEstados === 1 ? 2 : 1;
 
     try {
       await axios.post('http://localhost:5000/api/alternarestado', { idProducto: id });
@@ -165,6 +182,7 @@ const Productos = () => {
                 <Typography variant="body2">Precio: Q{producto.precio}</Typography>
                 <Typography variant="body2">Stock: {producto.stock}</Typography>
                 <Typography variant="body2">Estado: {getEstadoNombre(producto.estados_idEstados)}</Typography>
+                <Typography variant="body2">Categoría: {getCategoriaNombre(producto.categoriaProductos_idCategoriaProductos)}</Typography>
 
                 {editing === producto.idProductos ? (
                   <>
@@ -212,15 +230,20 @@ const Productos = () => {
                       fullWidth
                       margin="normal"
                     />
-                    <TextField
-                      label="Nueva Categoria ID"
-                      value={newCategoriaId}
-                      onChange={(e) => setNewCategoriaId(e.target.value)}
-                      fullWidth
-                      margin="normal"
-                    />
-
-                    {/* Selección de estado */}
+                    <FormControl fullWidth margin="normal">
+                      <InputLabel>Categoria</InputLabel>
+                      <Select
+                        value={newCategoriaId}
+                        onChange={(e) => setNewCategoriaId(e.target.value)}
+                        label="Categoria"
+                      >
+                        {categorias.map((categoria) => (
+                          <MenuItem key={categoria.idCategoriaProductos} value={categoria.idCategoriaProductos}>
+                            {categoria.nombre_categoria}
+                          </MenuItem>
+                        ))}
+                      </Select>
+                    </FormControl>
                     <FormControl fullWidth margin="normal">
                       <InputLabel>Estado</InputLabel>
                       <Select
@@ -235,7 +258,6 @@ const Productos = () => {
                         ))}
                       </Select>
                     </FormControl>
-
                     <Button onClick={() => handleSave(producto.idProductos)} variant="contained" color="primary" style={{ marginRight: 8 }}>
                       Guardar
                     </Button>

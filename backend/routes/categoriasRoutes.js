@@ -8,7 +8,7 @@ const router = express.Router();
 
 router.get("/api/categorias/activas", categoriasController.catergoriasActivas);
 
-router.get("/api/categorias/productos", categoriasController.catergoriasProductos);
+router.get("/api/categoriasproductos", categoriasController.catergoriasProductos);
 
 router.post("/api/insertarcategorias", categoriasController.insertarCategorias);
 
