@@ -6,6 +6,7 @@ import PropTypes from "prop-types";
 const Vista = ({ addToCart, actualizarCarrito }) => {
   const [data, setData] = useState([]);
   const [error, setError] = useState(null);
+  const [loading, setLoading] = useState(true); // Añadimos estado de carga
 
   // Obtener los productos desde la API
   useEffect(() => {
@@ -13,9 +14,11 @@ const Vista = ({ addToCart, actualizarCarrito }) => {
       .get("http://localhost:5000/api/productos")
       .then((response) => {
         setData(response.data);
+        setLoading(false); // Terminamos de cargar los productos
       })
       .catch((err) => {
         setError("Error al obtener los datos");
+        setLoading(false); // Terminamos de cargar aunque haya error
         console.error(err);
       });
   }, []);
@@ -32,6 +35,7 @@ const Vista = ({ addToCart, actualizarCarrito }) => {
       addToCart({ ...producto, stock: quantity });
       actualizarCarrito({ ...producto, stock: quantity });
 
+      // Actualizamos el stock localmente solo para la vista, si no es un error
       setData((prevData) =>
         prevData.map((item) =>
           item.idProductos === producto.idProductos
@@ -59,10 +63,21 @@ const Vista = ({ addToCart, actualizarCarrito }) => {
           textTransform: "uppercase",
         }}
       >
-        🛒 Bienvenido a SuperMarket
+        🛒 Bienvenido a Mi Tiendita
       </Typography>
 
-      {data.length > 0 ? (
+      {loading ? (
+        <Box
+          sx={{
+            display: "flex",
+            justifyContent: "center",
+            alignItems: "center",
+            minHeight: "50vh",
+          }}
+        >
+          <CircularProgress color="secondary" />
+        </Box>
+      ) : (
         <Grid container spacing={4}>
           {data.map((item) => (
             <Grid item xs={12} sm={6} md={4} key={item.idProductos}>
@@ -127,17 +142,6 @@ const Vista = ({ addToCart, actualizarCarrito }) => {
             </Grid>
           ))}
         </Grid>
-      ) : (
-        <Box
-          sx={{
-            display: "flex",
-            justifyContent: "center",
-            alignItems: "center",
-            minHeight: "50vh",
-          }}
-        >
-          <CircularProgress color="secondary" />
-        </Box>
       )}
     </Box>
   );

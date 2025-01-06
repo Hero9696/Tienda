@@ -14,17 +14,17 @@ import Navbar from "./components/menuNav";
 import NavbarOperador from "./components/menuNavOperador";
 import CarritoCompras from "./components/CarritoCompras";
 import Historial from "./components/Historial";
+import Productos from "./components/Productos";
 
 function App() {
   const [cart, setCart] = useState([]);
 
   useEffect(() => {
-    const savedCart = localStorage.getItem('cart');
+    const savedCart = localStorage.getItem("cart");
     if (savedCart) {
       setCart(JSON.parse(savedCart));
     }
   }, []);
-
 
   const addToCart = (product) => {
     if (product.stock > 0) {
@@ -34,21 +34,23 @@ function App() {
             ? { ...item, cantidad: item.cantidad + 1 }
             : item
         );
-  
+
         // Si el producto no existe en el carrito, agregarlo
-        if (!updatedCart.some(item => item.idProductos === product.idProductos)) {
+        if (
+          !updatedCart.some((item) => item.idProductos === product.idProductos)
+        ) {
           updatedCart.push({ ...product, cantidad: 1 });
         }
-  
+
         // Guardar el carrito actualizado en localStorage
-        localStorage.setItem('cart', JSON.stringify(updatedCart));
+        localStorage.setItem("cart", JSON.stringify(updatedCart));
         return updatedCart;
       });
     } else {
       alert("El producto no tiene stock disponible");
     }
   };
-  
+
   const actualizarCarrito = (idProducto, cantidad) => {
     setCart((prevCart) => {
       const updatedCart = prevCart.map((item) =>
@@ -56,19 +58,21 @@ function App() {
           ? { ...item, cantidad: item.cantidad + cantidad }
           : item
       );
-  
+
       // Guardar el carrito actualizado en localStorage
-      localStorage.setItem('cart', JSON.stringify(updatedCart));
+      localStorage.setItem("cart", JSON.stringify(updatedCart));
       return updatedCart;
     });
   };
-  
+
   const eliminarProducto = (idProducto) => {
     setCart((prevCart) => {
-      const updatedCart = prevCart.filter((item) => item.idProductos !== idProducto);
-  
+      const updatedCart = prevCart.filter(
+        (item) => item.idProductos !== idProducto
+      );
+
       // Guardar el carrito actualizado en localStorage
-      localStorage.setItem('cart', JSON.stringify(updatedCart));
+      localStorage.setItem("cart", JSON.stringify(updatedCart));
       return updatedCart;
     });
   };
@@ -93,12 +97,27 @@ function App() {
         {(location.pathname === "/catalogo" ||
           location.pathname === "/carrito" ||
           location.pathname === "/historial") && (
-          <Navbar cart={cart} goToCart={goToCart} actualizarCarrito={actualizarCarrito} />
+          <Navbar
+            cart={cart}
+            goToCart={goToCart}
+            actualizarCarrito={actualizarCarrito}
+          />
         )}
         {(location.pathname === "/catalogo/operador" ||
           location.pathname === "/carrito/operador" ||
-          location.pathname === "/registrar") && (
-          <NavbarOperador cart={cart} goToCart={goToCartO} actualizarCarrito={actualizarCarrito}/>
+          location.pathname === "/usuarios/crear" ||
+        location.pathname === "/usuarios/editar" ||
+        location.pathname === "/usuarios/lista" || 
+      location.pathname === "/productos/crear" || 
+      location.pathname === "/productos/editar" || 
+      location.pathname === "/productos/lista" || 
+      location.pathname === "/ventas/nueva"|| 
+      location.pathname === "/ventas/lista")  && (
+          <NavbarOperador
+            cart={cart}
+            goToCart={goToCartO}
+            actualizarCarrito={actualizarCarrito}
+          />
         )}
         {children}
       </>
@@ -114,12 +133,25 @@ function App() {
       <Layout>
         <Routes>
           <Route path="/" element={<Login />} />
-          <Route path="/catalogo" element={<Vista addToCart={addToCart} actualizarCarrito={actualizarCarrito} />} />
+          <Route
+            path="/catalogo"
+            element={
+              <Vista
+                addToCart={addToCart}
+                actualizarCarrito={actualizarCarrito}
+              />
+            }
+          />
           <Route
             path="/catalogo/operador"
-            element={<VistaOperador addToCart={addToCart}  actualizarCarrito={actualizarCarrito} />}
+            element={
+              <VistaOperador
+                addToCart={addToCart}
+                actualizarCarrito={actualizarCarrito}
+              />
+            }
           />
-          <Route path="/registrar" element={<RegistrarUsuario />} />
+          <Route path="/usuarios/crear" element={<RegistrarUsuario />} />
           <Route
             path="/carrito"
             element={
@@ -143,6 +175,7 @@ function App() {
             }
           />
           <Route path="/historial" element={<Historial />} />
+          <Route path="/productos/crear" element={<Productos />} />
         </Routes>
       </Layout>
     </Router>
