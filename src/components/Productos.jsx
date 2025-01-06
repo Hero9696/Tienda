@@ -17,13 +17,14 @@ const ProductoForm = ({ onSubmit, producto }) => {
     categoriaProductos_idCategoriaProductos: producto
       ? producto.categoriaProductos_idCategoriaProductos
       : "",
-    usuarios_idUsuarios: "", // Inicializamos el campo idUsuarios vacío
+    usuarios_idUsuarios: "",
     nombre: producto ? producto.nombre : "",
     marca: producto ? producto.marca : "",
     codigo: producto ? producto.codigo : "",
     stock: producto ? producto.stock : "",
     estados_idEstados: producto ? producto.estados_idEstados : "",
     precio: producto ? producto.precio : "",
+    foto: producto ? producto.foto : "",
   });
 
   const [categorias, setCategorias] = useState([]);
@@ -60,14 +61,10 @@ const ProductoForm = ({ onSubmit, producto }) => {
 
   const handleChange = (e) => {
     const { name, value } = e.target;
-    if (
-      ["stock", "precio", "usuarios_idUsuarios", "estados_idEstados"].includes(
-        name
-      )
-    ) {
+    if (["stock", "precio", "estados_idEstados"].includes(name)) {
       setFormData((prevData) => ({
         ...prevData,
-        [name]: value ? Number(value) : "",
+        [name]: value ? parseFloat(value) : "",
       }));
     } else {
       setFormData((prevData) => ({
@@ -77,33 +74,52 @@ const ProductoForm = ({ onSubmit, producto }) => {
     }
   };
 
-  const handleSubmit = async (e) => {
+  const validateForm = () => {
+    const requiredFields = [
+      "categoriaProductos_idCategoriaProductos",
+      "nombre",
+      "marca",
+      "codigo",
+      "stock",
+      "estados_idEstados",
+      "precio",
+      "foto",
+    ];
+    for (const field of requiredFields) {
+      if (!formData[field]) {
+        alert(`El campo ${field} es obligatorio.`);
+        return false;
+      }
+    }
+    return true;
+  };const handleSubmit = async (e) => {
     e.preventDefault();
-
+  
+    if (!validateForm()) return;
+  
     if (!window.confirm("¿Estás seguro de enviar los datos?")) return;
-
+  
     setIsSubmitting(true);
-    const data = new FormData();
-
-    Object.keys(formData).forEach((key) => {
-      data.append(key, formData[key]);
-    });
-
+  
+    // Log para verificar los datos que se están enviando
+    console.log("Datos del formulario:", formData);
+  
     try {
-      const url = producto
-        ? "http://localhost:5000/api/actualizarProducto"
-        : "http://localhost:5000/api/insertarProducto";
-      const response = await axios.post(url, data, {
-        headers: { "Content-Type": "multipart/form-data" },
-      });
-
+      const response = await axios.post(
+        "http://localhost:5000/api/insertarProducto", 
+        formData, // Enviar los datos directamente como JSON
+        {
+          headers: {
+            "Content-Type": "application/json", // Establecer el tipo de contenido como JSON
+          },
+        }
+      );
+  
       alert(
-        producto
-          ? "Producto actualizado correctamente."
-          : "Producto agregado correctamente."
+        producto ? "Producto actualizado correctamente." : "Producto agregado correctamente."
       );
       onSubmit && onSubmit(response.data);
-
+  
       setFormData({
         categoriaProductos_idCategoriaProductos: "",
         usuarios_idUsuarios: "",
@@ -113,72 +129,69 @@ const ProductoForm = ({ onSubmit, producto }) => {
         stock: "",
         estados_idEstados: "",
         precio: "",
+        foto: "",
       });
     } catch (error) {
       console.error(error);
-      const message =
-        error.response?.data?.message || "Error al guardar el producto.";
-      alert(message);
+      if (error.response) {
+        alert(`Error: ${error.response.data.message}`);
+      } else if (error.request) {
+        alert("Error de red. Verifica tu conexión.");
+      } else {
+        alert("Error desconocido al guardar el producto.");
+      }
     } finally {
       setIsSubmitting(false);
     }
+  };
+  
+  
+
+  const styles = {
+    formContainer: {
+      maxWidth: "800px",
+      margin: "auto",
+      background: "#ffffff",
+      borderRadius: "8px",
+      padding: "20px",
+      boxShadow: "0 4px 20px rgba(0, 0, 0, 0.1)",
+    },
+    input: {
+      backgroundColor: "#f4f7fb",
+      borderRadius: "4px",
+      padding: "10px",
+    },
+    button: {
+      backgroundColor: "#1e88e5",
+      color: "#fff",
+      padding: "12px 24px",
+      borderRadius: "4px",
+      textTransform: "none",
+      boxShadow: "0 4px 10px rgba(0, 0, 0, 0.15)",
+    },
   };
 
   return (
     <section
       className="form-section"
-      style={{
-        background: "#f4f7fb",
-        padding: "40px 0",
-      }}
+      style={{ background: "#f4f7fb", padding: "40px 0" }}
     >
-      <form
-        onSubmit={handleSubmit}
-        className="form-container"
-        style={{
-          maxWidth: "800px",
-          margin: "auto",
-          background: "#ffffff",
-          borderRadius: "8px",
-          padding: "20px",
-          boxShadow: "0 4px 20px rgba(0, 0, 0, 0.1)",
-        }}
-      >
-        <h2
-          style={{
-            textAlign: "center",
-            color: "#333",
-            marginBottom: "20px",
-            fontSize: "24px",
-            fontFamily: "'Roboto', sans-serif",
-          }}
-        >
+      <form onSubmit={handleSubmit} style={styles.formContainer}>
+        <h2 style={{ textAlign: "center", marginBottom: "20px" }}>
           {producto ? "Actualizar Producto" : "Formulario de Producto"}
         </h2>
 
         <Grid container spacing={2}>
           <Grid item xs={12} md={6}>
             <FormControl fullWidth>
-              <InputLabel
-                id="categoria-label"
-                style={{
-                  color: "#555",
-                }}
-              >
-                Categoría
-              </InputLabel>
+              <InputLabel id="categoria-label">Categoría</InputLabel>
               <Select
                 labelId="categoria-label"
                 name="categoriaProductos_idCategoriaProductos"
                 value={formData.categoriaProductos_idCategoriaProductos}
                 onChange={handleChange}
                 required
-                style={{
-                  backgroundColor: "#f4f7fb",
-                  borderRadius: "4px",
-                  padding: "10px",
-                  boxShadow: "0 1px 4px rgba(0, 0, 0, 0.1)",
-                }}
+                style={styles.input}
               >
                 <MenuItem value="">Selecciona una categoría</MenuItem>
                 {categorias.map((categoria) => (
@@ -194,147 +207,36 @@ const ProductoForm = ({ onSubmit, producto }) => {
           </Grid>
 
           <Grid item xs={12} md={6}>
-            <Box
-              display="flex"
-              alignItems="center"
-              justifyContent="space-between"
-            >
-              <InputLabel
-                id="usuario-label"
-                style={{
-                  color: "#555",
-                }}
-              >
-                ID Usuario
-              </InputLabel>
-              <span
-                style={{
-                  backgroundColor: "#f4f7fb",
-                  padding: "10px 20px",
-                  borderRadius: "4px",
-                  boxShadow: "0 1px 4px rgba(0, 0, 0, 0.1)",
-                  fontWeight: "bold",
-                }}
-              >
-                {formData.usuarios_idUsuarios}
-              </span>
+            <Box display="flex" alignItems="center" justifyContent="space-between">
+              <InputLabel id="usuario-label">ID Usuario</InputLabel>
+              <span style={styles.input}>{formData.usuarios_idUsuarios}</span>
             </Box>
           </Grid>
 
-          <Grid item xs={12} md={6}>
-            <TextField
-              type="text"
-              name="nombre"
-              label="Nombre"
-              value={formData.nombre}
-              onChange={handleChange}
-              fullWidth
-              required
-              InputProps={{
-                style: {
-                  backgroundColor: "#f4f7fb",
-                  borderRadius: "4px",
-                  padding: "10px",
-                },
-              }}
-            />
-          </Grid>
-
-          <Grid item xs={12} md={6}>
-            <TextField
-              type="text"
-              name="marca"
-              label="Marca"
-              value={formData.marca}
-              onChange={handleChange}
-              fullWidth
-              required
-              InputProps={{
-                style: {
-                  backgroundColor: "#f4f7fb",
-                  borderRadius: "4px",
-                  padding: "10px",
-                },
-              }}
-            />
-          </Grid>
-
-          <Grid item xs={12} md={6}>
-            <TextField
-              type="text"
-              name="codigo"
-              label="Código"
-              value={formData.codigo}
-              onChange={handleChange}
-              fullWidth
-              required
-              InputProps={{
-                style: {
-                  backgroundColor: "#f4f7fb",
-                  borderRadius: "4px",
-                  padding: "10px",
-                },
-              }}
-            />
-          </Grid>
-
-          <Grid item xs={12} md={6}>
-            <TextField
-              type="number"
-              name="stock"
-              label="Stock"
-              value={formData.stock}
-              onChange={handleChange}
-              fullWidth
-              required
-              InputProps={{
-                style: {
-                  backgroundColor: "#f4f7fb",
-                  borderRadius: "4px",
-                  padding: "10px",
-                },
-              }}
-            />
-          </Grid>
-
-          <Grid item xs={12} md={6}>
-            <TextField
-              type="number"
-              name="estados_idEstados"
-              label="ID Estado"
-              value={formData.estados_idEstados}
-              onChange={handleChange}
-              fullWidth
-              required
-              InputProps={{
-                style: {
-                  backgroundColor: "#f4f7fb",
-                  borderRadius: "4px",
-                  padding: "10px",
-                },
-              }}
-            />
-          </Grid>
-
-          <Grid item xs={12} md={6}>
-            <TextField
-              type="number"
-              step="0.01"
-              name="precio"
-              label="Precio"
-              value={formData.precio}
-              onChange={handleChange}
-              fullWidth
-              required
-              InputProps={{
-                style: {
-                  backgroundColor: "#f4f7fb",
-                  borderRadius: "4px",
-                  padding: "10px",
-                },
-              }}
-            />
-          </Grid>
+          {/* TextField inputs */}
+          {[
+            { name: "nombre", label: "Nombre", type: "text" },
+            { name: "marca", label: "Marca", type: "text" },
+            { name: "codigo", label: "Código", type: "text" },
+            { name: "foto", label: "Foto", type: "text" },
+            { name: "stock", label: "Stock", type: "number" },
+            { name: "estados_idEstados", label: "ID Estado", type: "number" },
+            { name: "precio", label: "Precio", type: "number", step: "0.01" },
+          ].map(({ name, label, type, step }, index) => (
+            <Grid item xs={12} md={6} key={index}>
+              <TextField
+                name={name}
+                label={label}
+                type={type}
+                step={step}
+                value={formData[name]}
+                onChange={handleChange}
+                fullWidth
+                required
+                InputProps={{ style: styles.input }}
+              />
+            </Grid>
+          ))}
 
           <Grid item xs={12}>
             <Box sx={{ textAlign: "center" }}>
@@ -343,14 +245,7 @@ const ProductoForm = ({ onSubmit, producto }) => {
                 variant="contained"
                 color="primary"
                 disabled={isSubmitting}
-                style={{
-                  backgroundColor: "#1e88e5",
-                  color: "#fff",
-                  padding: "12px 24px",
-                  borderRadius: "4px",
-                  textTransform: "none",
-                  boxShadow: "0 4px 10px rgba(0, 0, 0, 0.15)",
-                }}
+                style={styles.button}
               >
                 {isSubmitting
                   ? "Guardando..."

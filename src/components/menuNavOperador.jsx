@@ -76,7 +76,6 @@ const Navbar = ({ cart }) => {
           >
             <MenuItem onClick={() => navigate("/productos/crear")}>Crear Producto</MenuItem>
             <MenuItem onClick={() => navigate("/productos/lista")}>Lista de Productos</MenuItem>
-            <MenuItem onClick={() => navigate("/productos/editar")}>Editar Producto</MenuItem>
           </Menu>
 
           {/* Menú de Ventas */}
@@ -88,7 +87,6 @@ const Navbar = ({ cart }) => {
             open={Boolean(anchorElVentas)}
             onClose={handleCloseVentasMenu}
           >
-            <MenuItem onClick={() => navigate("/ventas/nueva")}>Nueva Venta</MenuItem>
             <MenuItem onClick={() => navigate("/ventas/lista")}>Lista de Ventas</MenuItem>
           </Menu>
 

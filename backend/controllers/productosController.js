@@ -15,11 +15,13 @@ const verProductos = async (req, res) => {
 
 const insertarProducto = async (req, res) => {
   const producto = req.body;
+  console.log("Datos recibidos en el servidor:", producto); // Verifica qué datos llegan
 
   try {
     const result = await fproductos.insertarProducto({ ...producto });
     res.status(200).json(result);
   } catch (err) {
+    console.error("Error al insertar el producto:", err);
     res.status(500).json({ error: err.message });
   }
 }

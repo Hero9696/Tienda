@@ -132,15 +132,7 @@ const Productos = () => {
     }
   };
 
-  // Función para eliminar un producto
-  const handleDelete = async (id) => {
-    try {
-      await axios.delete(`/api/productos/${id}`);
-      setProductos(productos.filter((producto) => producto.idProductos !== id));
-    } catch (error) {
-      console.error("Error al eliminar el producto", error);
-    }
-  };
+
 
   // Función para cambiar el estado del producto
   const handleChangeStatus = async (id) => {
@@ -270,9 +262,7 @@ const Productos = () => {
                     <Button onClick={() => handleEdit(producto.idProductos)} variant="outlined" color="secondary" style={{ marginRight: 8 }}>
                       Editar
                     </Button>
-                    <Button onClick={() => handleDelete(producto.idProductos)} variant="outlined" color="error" style={{ marginRight: 8 }}>
-                      Eliminar
-                    </Button>
+                   
                     <Button onClick={() => handleChangeStatus(producto.idProductos)} variant="outlined" color="info">
                       Cambiar Estado
                     </Button>

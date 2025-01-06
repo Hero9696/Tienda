@@ -111,9 +111,7 @@ function App() {
         location.pathname === "/usuarios/editar" ||
         location.pathname === "/usuarios/lista" || 
       location.pathname === "/productos/crear" || 
-      location.pathname === "/productos/editar" || 
       location.pathname === "/productos/lista" || 
-      location.pathname === "/ventas/nueva"|| 
       location.pathname === "/ventas/lista")  && (
           <NavbarOperador
             cart={cart}

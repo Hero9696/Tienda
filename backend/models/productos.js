@@ -16,21 +16,24 @@ const getProductosActivosConStock = async () => {
 
 const insertarProducto = async (producto) => {
   try {
+    // Convertir valores a tipos adecuados
+    const categoriaProductos_idCategoriaProductos = parseInt(producto.categoriaProductos_idCategoriaProductos);
+    const usuarios_idUsuarios = parseInt(producto.usuarios_idUsuarios);
+    const stock = parseInt(producto.stock);
+    const precio = parseFloat(producto.precio);
+    const estados_idEstados = parseInt(producto.estados_idEstados);
+
     const pool = await connectDB();
     const result = await pool
       .request()
-      .input(
-        "categoriaProductos_idCategoriaProductos",
-        mssql.Int,
-        producto.categoriaProductos_idCategoriaProductos
-      )
-      .input("usuarios_idUsuarios", mssql.Int, producto.usuarios_idUsuarios)
+      .input("categoriaProductos_idCategoriaProductos", mssql.Int, categoriaProductos_idCategoriaProductos)
+      .input("usuarios_idUsuarios", mssql.Int, usuarios_idUsuarios)
       .input("nombre", mssql.NVarChar, producto.nombre)
       .input("marca", mssql.NVarChar, producto.marca)
       .input("codigo", mssql.NVarChar, producto.codigo)
-      .input("stock", mssql.Int, producto.stock)
-      .input("estados_idEstados", mssql.Int, producto.estados_idEstados)
-      .input("precio", mssql.Float, producto.precio)
+      .input("stock", mssql.Int, stock)
+      .input("estados_idEstados", mssql.Int, estados_idEstados)
+      .input("precio", mssql.Float, precio)
       .input("foto", mssql.NVarChar, producto.foto)
       .execute("InsertarProductos");
     return result;
