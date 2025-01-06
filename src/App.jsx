@@ -75,7 +75,7 @@ function App() {
 
   const vaciarCarrito = () => {
     setCart([]);
-    alert("Compra cancelada. El carrito ha sido limpiado.");
+    alert("El carrito ha sido limpiado.");
   };
 
   const goToCart = () => {

@@ -15,16 +15,16 @@ const CarritoCompras = ({
   cancelarCompra,
   actualizarCarrito,
   eliminarProducto,
+   // Nueva función pasada como prop
 }) => {
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState(null);
   const [orden, setOrden] = useState(null);
-  const [compraConfirmada, setCompraConfirmada] = useState(false); // Nueva variable de estado
+  const [compraConfirmada, setCompraConfirmada] = useState(false);
 
-  // Depuración: registrar cambios en la orden
   useEffect(() => {
     if (orden) {
-      console.log("Detalles de la orden actualizada: ");
+      console.log("Detalles de la orden actualizada: ", orden);
     }
   }, [orden]);
 
@@ -32,24 +32,24 @@ const CarritoCompras = ({
     (acc, item) => acc + item.precio * item.cantidad,
     0
   );
+
   const confirmarCompra = async () => {
     setLoading(true);
     setError(null);
-    setCompraConfirmada(true); // Actualizar estado para deshabilitar botones
-  
+    setCompraConfirmada(true);
+
     try {
       const idUsuario = localStorage.getItem("idUsuarios");
-  
+
       if (!idUsuario) {
         throw new Error("Usuario no autenticado.");
       }
-  
+
       const detalles = cart.map((item) => ({
         idProductos: item.idProductos,
         cantidad: item.cantidad,
       }));
-  
-      // Crear una nueva orden
+
       const response = await axios.post(
         "http://localhost:5000/api/insertarordendetalles",
         {
@@ -57,15 +57,9 @@ const CarritoCompras = ({
           detalles: detalles,
         }
       );
-  
-      console.log(response.data);
-  
+
       if (response.data.success) {
-        setOrden(response.data.result); // Actualizar estado con la nueva orden creada
-  
-        // Eliminar productos del carrito después de confirmar la compra
-        cart.forEach((item) => handleEliminarProducto(item.idProductos)); // Vaciar el carrito
-        localStorage.setItem("cart", JSON.stringify([])); // Vaciar carrito en localStorage
+        setOrden(response.data.result);
       } else {
         throw new Error("La API no confirmó el éxito de la operación.");
       }
@@ -79,14 +73,10 @@ const CarritoCompras = ({
       setLoading(false);
     }
   };
-  
 
   const aumentarCantidad = async (idProductos) => {
     try {
-      // Hacemos una solicitud para obtener los detalles de los productos
       const response = await axios.get(`http://localhost:5000/api/productos`);
-
-      // Buscar el producto específico en la respuesta de la API utilizando el idProductos
       const productoEnApi = response.data.find(
         (item) => item.idProductos === idProductos
       );
@@ -96,15 +86,11 @@ const CarritoCompras = ({
         return;
       }
 
-      // Obtener el stock disponible del producto encontrado
       const stockDisponible = productoEnApi.stock;
-
-      // Buscar el producto en el carrito
       const producto = cart.find((item) => item.idProductos === idProductos);
 
-      // Verificar si la cantidad en el carrito es menor al stock disponible
       if (producto.cantidad < stockDisponible) {
-        actualizarCarrito(idProductos, 1); // Aumentar cantidad en 1
+        actualizarCarrito(idProductos, 1);
       } else {
         alert(
           "No puedes aumentar la cantidad más allá del stock disponible: " +
@@ -118,11 +104,11 @@ const CarritoCompras = ({
   };
 
   const reducirCantidad = (idProducto) => {
-    actualizarCarrito(idProducto, -1); // Reducir cantidad en 1
+    actualizarCarrito(idProducto, -1);
   };
 
   const handleEliminarProducto = (idProducto) => {
-    eliminarProducto(idProducto); // Eliminar producto del carrito
+    eliminarProducto(idProducto);
   };
 
   return (
@@ -147,7 +133,7 @@ const CarritoCompras = ({
                   color="primary"
                   onClick={() => aumentarCantidad(item.idProductos)}
                   startIcon={<AddCircle />}
-                  disabled={compraConfirmada} // Deshabilitar botón después de confirmar compra
+                  disabled={compraConfirmada}
                 >
                   1
                 </Button>
@@ -155,7 +141,7 @@ const CarritoCompras = ({
                   variant="outlined"
                   color="secondary"
                   onClick={() => reducirCantidad(item.idProductos)}
-                  disabled={item.cantidad === 1 || compraConfirmada} // Deshabilitar botón después de confirmar compra
+                  disabled={item.cantidad === 1 || compraConfirmada}
                   startIcon={<RemoveCircle />}
                 >
                   1
@@ -164,7 +150,7 @@ const CarritoCompras = ({
                   variant="outlined"
                   color="error"
                   onClick={() => handleEliminarProducto(item.idProductos)}
-                  disabled={compraConfirmada} // Deshabilitar botón después de confirmar compra
+                  disabled={compraConfirmada}
                 >
                   Eliminar
                 </Button>
@@ -178,7 +164,7 @@ const CarritoCompras = ({
             color="primary"
             style={{ marginTop: "10px" }}
             onClick={confirmarCompra}
-            disabled={loading || compraConfirmada} // Deshabilitar botón después de confirmar compra
+            disabled={loading || compraConfirmada}
           >
             {loading ? "Confirmando..." : "Confirmar Compra"}
           </Button>
@@ -187,7 +173,7 @@ const CarritoCompras = ({
             color="secondary"
             style={{ marginTop: "10px", marginLeft: "10px" }}
             onClick={cancelarCompra}
-            disabled={compraConfirmada} // Deshabilitar botón después de confirmar compra
+            disabled={compraConfirmada}
           >
             Cancelar compra
           </Button>
@@ -218,6 +204,18 @@ const CarritoCompras = ({
               <Typography variant="body1">
                 Estado: {orden.recordset[0].estado_nombre}
               </Typography>
+              <Button
+                variant="contained"
+                color="warning"
+                style={{ marginTop: "20px" }}
+                onClick={() => {
+                  cancelarCompra();
+
+                  eliminarProducto();
+                }}
+              >
+                Vaciar Carrito
+              </Button>
             </div>
           )}
         </div>
@@ -235,6 +233,7 @@ CarritoCompras.propTypes = {
   cancelarCompra: PropTypes.func.isRequired,
   actualizarCarrito: PropTypes.func.isRequired,
   eliminarProducto: PropTypes.func.isRequired,
+   
 };
 
 export default CarritoCompras;
