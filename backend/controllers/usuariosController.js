@@ -1,37 +1,38 @@
 import fusuarios from "../models/usuarios.js";
 import generarToken from "../utils/jwtUtils.js";
 import bcrypt from "bcrypt";
-
 const createUsuario = async (req, res) => {
   try {
     const usuario = req.body;
 
+    // Encriptar la contraseña antes de insertarla
     const passwordHashed = await bcrypt.hash(usuario.password, 10);
     usuario.password = passwordHashed;
 
+    // Insertar el usuario y el cliente en la base de datos
     const result = await fusuarios.insertarUsuario(usuario);
     console.log("Resultado de insertarUsuario:", result);
 
-    const idUsuario = result.idUsuarios;
-    if (!idUsuario) {
-      throw new Error("No se pudo obtener el ID del usuario insertado.");
+    // Obtener el ID del cliente (y no del usuario, ya que se genera en el procedimiento almacenado)
+    const idCliente = result.idCliente;
+    if (!idCliente) {
+      throw new Error("No se pudo obtener el ID del cliente insertado.");
     }
 
+    // Generar un token JWT para el usuario
     const token = generarToken.generarToken({
-      idUsuarios: idUsuario,
+      idClientes: idCliente,  // Cambiar a idClientes en lugar de idUsuarios
       correo: usuario.correo_electronico,
     });
 
-    res
-      .status(201)
-      .json({ message: "Usuario registrado exitosamente", token, idUsuario });
+    // Responder al cliente con el mensaje de éxito y el token
+    res.status(201).json({ message: "Usuario registrado exitosamente", token, idCliente });
   } catch (err) {
     console.error("Error en createUsuario:", err);
-    res
-      .status(500)
-      .json({ error: "Error al registrar el usuario", details: err.message });
+    res.status(500).json({ error: "Error al registrar el usuario", details: err.message });
   }
 };
+
 
 const updateUsuario = async (req, res) => {
   try {

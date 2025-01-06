@@ -4,13 +4,18 @@ import axios from "axios";
 
 const RegistroUsuario = () => {
   const [formData, setFormData] = useState({
+    razon_social: "",
+    nombre_comercial: "",
+    direccion_entrega: "",
+    telefono: "",
+    email: "",
     rol_idRol: "",
+    estados_idEstados: "",
     correo_electronico: "",
     nombre_completo: "",
     password: "",
-    telefono: "",
+    telefono_usuario: "",
     fecha_nacimiento: "",
-    direccion: "", // Añadir el campo 'direccion'
   });
 
   const [roles, setRoles] = useState([]);
@@ -112,6 +117,78 @@ const RegistroUsuario = () => {
       </Typography>
       <form onSubmit={handleSubmit}>
         <TextField
+          label="Razón Social"
+          name="razon_social"
+          value={formData.razon_social}
+          onChange={handleChange}
+          fullWidth
+          margin="normal"
+          required
+          sx={{
+            backgroundColor: "#e3f2fd", // Azul claro
+            borderRadius: 1,
+            marginBottom: 2,
+          }}
+        />
+        <TextField
+          label="Nombre Comercial"
+          name="nombre_comercial"
+          value={formData.nombre_comercial}
+          onChange={handleChange}
+          fullWidth
+          margin="normal"
+          required
+          sx={{
+            backgroundColor: "#e3f2fd", // Azul claro
+            borderRadius: 1,
+            marginBottom: 2,
+          }}
+        />
+        <TextField
+          label="Dirección de Entrega"
+          name="direccion_entrega"
+          value={formData.direccion_entrega}
+          onChange={handleChange}
+          fullWidth
+          margin="normal"
+          required
+          sx={{
+            backgroundColor: "#e3f2fd", // Azul claro
+            borderRadius: 1,
+            marginBottom: 2,
+          }}
+        />
+        <TextField
+          label="Teléfono"
+          name="telefono"
+          value={formData.telefono}
+          onChange={handleChange}
+          fullWidth
+          margin="normal"
+          required
+          inputProps={{ maxLength: 8 }}
+          sx={{
+            backgroundColor: "#e3f2fd", // Azul claro
+            borderRadius: 1,
+            marginBottom: 2,
+          }}
+        />
+        {telefonoError && <Typography color="error">{telefonoError}</Typography>}
+        <TextField
+          label="Email"
+          name="email"
+          value={formData.email}
+          onChange={handleChange}
+          fullWidth
+          margin="normal"
+          required
+          sx={{
+            backgroundColor: "#e3f2fd", // Azul claro
+            borderRadius: 1,
+            marginBottom: 2,
+          }}
+        />
+        <TextField
           select
           label="Rol"
           name="rol_idRol"
@@ -136,6 +213,20 @@ const RegistroUsuario = () => {
             ))
           )}
         </TextField>
+        <TextField
+          label="Estado"
+          name="estados_idEstados"
+          value={formData.estados_idEstados}
+          onChange={handleChange}
+          fullWidth
+          margin="normal"
+          required
+          sx={{
+            backgroundColor: "#e3f2fd", // Azul claro
+            borderRadius: 1,
+            marginBottom: 2,
+          }}
+        />
         <TextField
           label="Correo Electrónico"
           name="correo_electronico"
@@ -181,22 +272,19 @@ const RegistroUsuario = () => {
           }}
         />
         <TextField
-          label="Teléfono"
-          name="telefono"
-          value={formData.telefono}
+          label="Teléfono Usuario"
+          name="telefono_usuario"
+          value={formData.telefono_usuario}
           onChange={handleChange}
           fullWidth
           margin="normal"
           required
-          inputProps={{ maxLength: 8 }}
           sx={{
             backgroundColor: "#e3f2fd", // Azul claro
             borderRadius: 1,
             marginBottom: 2,
           }}
         />
-        {telefonoError && <Typography color="error">{telefonoError}</Typography>}
-
         <TextField
           label="Fecha de Nacimiento"
           name="fecha_nacimiento"
@@ -213,21 +301,7 @@ const RegistroUsuario = () => {
             marginBottom: 2,
           }}
         />
-        <TextField
-          label="Dirección"
-          name="direccion"
-          value={formData.direccion}
-          onChange={handleChange}
-          fullWidth
-          margin="normal"
-          required
-          sx={{
-            backgroundColor: "#e3f2fd", // Azul claro
-            borderRadius: 1,
-            marginBottom: 2,
-          }}
-        />
-        
+
         {error && <Typography color="error">{error}</Typography>}
 
         <Button
