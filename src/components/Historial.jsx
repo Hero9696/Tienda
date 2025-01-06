@@ -1,6 +1,6 @@
 import { useState, useEffect } from 'react';
 import axios from 'axios';
-import { Container, Typography, Button, List, ListItem, ListItemText, CircularProgress, Alert } from '@mui/material';
+import { Container, Typography, Button, List, ListItem, ListItemText, CircularProgress, Alert,  } from '@mui/material';
 import { Search as SearchIcon } from '@mui/icons-material';
 
 const BuscarOrdenes = () => {
@@ -52,7 +52,7 @@ const BuscarOrdenes = () => {
 
   return (
     <Container maxWidth="sm" style={{ display: 'flex', flexDirection: 'column', alignItems: 'center', marginTop: '20px' }}>
-      <Typography variant="h4" gutterBottom align="center" style={{ fontWeight: 'bold' }}>
+      <Typography variant="h4" gutterBottom align="center" style={{ fontWeight: 'bold', color: '#004d40' }}>
         Buscar Detalles de la Orden
       </Typography>
 
@@ -61,12 +61,16 @@ const BuscarOrdenes = () => {
         color="primary"
         startIcon={<SearchIcon />}
         onClick={() => !loading && handleBuscar(localStorage.getItem('idUsuarios'))}
-        style={{ marginBottom: '20px' }}
+        style={{
+          marginBottom: '20px',
+          backgroundColor: '#FF5722',
+          ":hover": { backgroundColor: '#E64A19' },
+        }}
       >
         Buscar
       </Button>
 
-      {loading && <CircularProgress />}
+      {loading && <CircularProgress sx={{ color: '#FF5722' }} />}
 
       {error && <Alert severity="error" style={{ width: '100%', marginBottom: '20px' }}>{error}</Alert>}
 
@@ -78,20 +82,20 @@ const BuscarOrdenes = () => {
                 primary={`ID Orden: ${idOrden}`}
                 secondary={
                   <div>
-                    <Typography variant="body2" style={{ fontWeight: 'bold' }}>
+                    <Typography variant="body2" style={{ fontWeight: 'bold', color: '#00796b' }}>
                       Dirección de Entrega: {groupedOrders[idOrden].direccionEntrega}
                     </Typography>
-                    <Typography variant="body2" style={{ fontWeight: 'bold' }}>
+                    <Typography variant="body2" style={{ fontWeight: 'bold', color: '#00796b' }}>
                       Estado De La Compra: {groupedOrders[idOrden].idEstado}
                     </Typography>
                     {groupedOrders[idOrden].orders.map((orden, index) => (
                       <div key={index}>
-                        <Typography variant="body2">Nombre del Producto: {orden.nombre_producto}</Typography>
-                        <Typography variant="body2">Cantidad: {orden.cantidad}</Typography>
-                        <Typography variant="body2">Subtotal: Q{orden.subtotal}</Typography>
+                        <Typography variant="body2" style={{ color: '#004d40' }}>Nombre del Producto: {orden.nombre_producto}</Typography>
+                        <Typography variant="body2" style={{ color: '#004d40' }}>Cantidad: {orden.cantidad}</Typography>
+                        <Typography variant="body2" style={{ color: '#004d40' }}>Subtotal: Q{orden.subtotal}</Typography>
                       </div>
                     ))}
-                    <Typography variant="body1" style={{ fontWeight: 'bold', marginTop: '10px' }}>
+                    <Typography variant="body1" style={{ fontWeight: 'bold', marginTop: '10px', color: '#004d40' }}>
                       Total: Q{groupedOrders[idOrden].total.toFixed(2)}
                     </Typography>
                   </div>
@@ -100,8 +104,12 @@ const BuscarOrdenes = () => {
               <Button
                 variant="contained"
                 color="secondary"
-                onClick={() => eliminarOrden( idOrden)}
-                style={{ marginTop: '10px' }}
+                onClick={() => eliminarOrden(idOrden)}
+                style={{
+                  marginTop: '10px',
+                  backgroundColor: '#004d40',
+                  ":hover": { backgroundColor: '#00251a' },
+                }}
               >
                 Eliminar Orden
               </Button>
@@ -109,7 +117,11 @@ const BuscarOrdenes = () => {
           ))}
         </List>
       ) : (
-        !loading 
+        !loading && (
+          <Typography variant="body1" style={{ color: '#00796b', fontWeight: 'bold' }}>
+            No hay órdenes para mostrar.
+          </Typography>
+        )
       )}
     </Container>
   );

@@ -47,35 +47,43 @@ const Login = () => {
         alignItems: "center",
         justifyContent: "center",
         minHeight: "100vh",
-        backgroundImage: `url('https://images.unsplash.com/photo-1589739900882-40ce3ae272bc?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&q=80&w=1080')`,
-        backgroundSize: "cover",
-        backgroundPosition: "center",
+        backgroundColor: "#e0f7fa",
       }}
     >
       <Container maxWidth="xs">
-        <Paper elevation={4} sx={{ padding: 4, borderRadius: 2 }}>
-          <Box
-            display="flex"
-            flexDirection="column"
-            alignItems="center"
-            justifyContent="center"
-          >
-            {/* Simulación de un logotipo */}
+        <Paper
+          elevation={6}
+          sx={{
+            padding: 4,
+            borderRadius: 3,
+            boxShadow: "0px 8px 15px rgba(0, 77, 64, 0.2)",
+          }}
+        >
+          <Box display="flex" flexDirection="column" alignItems="center" justifyContent="center">
+            {/* Logotipo o encabezado */}
             <Typography
               variant="h4"
               component="h1"
               gutterBottom
-              sx={{ color: "#FF5722", fontWeight: "bold" }}
+              sx={{
+                color: "#004d40",
+                fontWeight: "bold",
+                textTransform: "uppercase",
+              }}
             >
-              🛒 Mi Tiendita
+              🛒 SuperMarket
             </Typography>
 
             <Typography
               variant="h6"
               component="p"
-              sx={{ marginBottom: 3, color: "#757575" }}
+              sx={{
+                marginBottom: 3,
+                color: "#00796b",
+                textAlign: "center",
+              }}
             >
-              Bienvenido a su tienda de confianza
+              ¡Inicia sesión para disfrutar de la mejor experiencia de compra!
             </Typography>
 
             <form noValidate autoComplete="off" onSubmit={handleLogin} style={{ width: "100%" }}>
@@ -87,6 +95,19 @@ const Login = () => {
                 required
                 value={correoElectronico}
                 onChange={(e) => setCorreoElectronico(e.target.value)}
+                sx={{
+                  "& .MuiOutlinedInput-root": {
+                    "& fieldset": {
+                      borderColor: "#004d40",
+                    },
+                    "&:hover fieldset": {
+                      borderColor: "#00796b",
+                    },
+                    "&.Mui-focused fieldset": {
+                      borderColor: "#004d40",
+                    },
+                  },
+                }}
               />
               <TextField
                 label="Contraseña"
@@ -97,6 +118,19 @@ const Login = () => {
                 required
                 value={password}
                 onChange={(e) => setPassword(e.target.value)}
+                sx={{
+                  "& .MuiOutlinedInput-root": {
+                    "& fieldset": {
+                      borderColor: "#004d40",
+                    },
+                    "&:hover fieldset": {
+                      borderColor: "#00796b",
+                    },
+                    "&.Mui-focused fieldset": {
+                      borderColor: "#004d40",
+                    },
+                  },
+                }}
               />
               <Button
                 type="submit"
@@ -104,8 +138,9 @@ const Login = () => {
                 fullWidth
                 sx={{
                   marginTop: 3,
-                  backgroundColor: "#FF5722",
-                  ":hover": { backgroundColor: "#E64A19" },
+                  backgroundColor: "#004d40",
+                  color: "#fff",
+                  ":hover": { backgroundColor: "#00251a" },
                 }}
               >
                 Iniciar Sesión

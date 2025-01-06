@@ -4,6 +4,7 @@ import {
   ListItem,
   ListItemText,
   Button,
+  Box,
 } from "@mui/material";
 import PropTypes from "prop-types";
 import { useState, useEffect } from "react";
@@ -15,7 +16,6 @@ const CarritoCompras = ({
   cancelarCompra,
   actualizarCarrito,
   eliminarProducto,
-   // Nueva función pasada como prop
 }) => {
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState(null);
@@ -112,21 +112,25 @@ const CarritoCompras = ({
   };
 
   return (
-    <div>
-      <Typography variant="h4" gutterBottom>
+    <Box sx={{ padding: 3 }}>
+      <Typography variant="h4" gutterBottom align="center" sx={{ color: '#004d40', fontWeight: 'bold' }}>
         Carrito de Compras
       </Typography>
-      {error && <Typography color="error">{error}</Typography>}
+
+      {error && (
+        <Typography variant="body1" color="error" align="center" sx={{ marginBottom: 2 }}>
+          {error}
+        </Typography>
+      )}
+
       {cart.length > 0 ? (
-        <div>
+        <Box>
           <List>
             {cart.map((item, index) => (
-              <ListItem key={index}>
+              <ListItem key={index} sx={{ marginBottom: 2, padding: 2, border: "1px solid #ddd", borderRadius: 2 }}>
                 <ListItemText
                   primary={item.nombre}
-                  secondary={`Precio: Q${item.precio} x ${item.cantidad} = Q${
-                    item.precio * item.cantidad
-                  }`}
+                  secondary={`Precio: Q${item.precio} x ${item.cantidad} = Q${item.precio * item.cantidad}`}
                 />
                 <Button
                   variant="outlined"
@@ -134,8 +138,9 @@ const CarritoCompras = ({
                   onClick={() => aumentarCantidad(item.idProductos)}
                   startIcon={<AddCircle />}
                   disabled={compraConfirmada}
+                  sx={{ marginRight: 1 }}
                 >
-                  1
+                  +
                 </Button>
                 <Button
                   variant="outlined"
@@ -143,8 +148,9 @@ const CarritoCompras = ({
                   onClick={() => reducirCantidad(item.idProductos)}
                   disabled={item.cantidad === 1 || compraConfirmada}
                   startIcon={<RemoveCircle />}
+                  sx={{ marginRight: 1 }}
                 >
-                  1
+                  -
                 </Button>
                 <Button
                   variant="outlined"
@@ -158,28 +164,33 @@ const CarritoCompras = ({
             ))}
           </List>
 
-          <Typography variant="h6">Total: Q{total}</Typography>
-          <Button
-            variant="contained"
-            color="primary"
-            style={{ marginTop: "10px" }}
-            onClick={confirmarCompra}
-            disabled={loading || compraConfirmada}
-          >
-            {loading ? "Confirmando..." : "Confirmar Compra"}
-          </Button>
-          <Button
-            variant="contained"
-            color="secondary"
-            style={{ marginTop: "10px", marginLeft: "10px" }}
-            onClick={cancelarCompra}
-            disabled={compraConfirmada}
-          >
-            Cancelar compra
-          </Button>
+          <Typography variant="h6" align="center" sx={{ fontWeight: 'bold', marginTop: 2 }}>
+            Total: Q{total}
+          </Typography>
+
+          <Box sx={{ display: 'flex', justifyContent: 'center', marginTop: 3 }}>
+            <Button
+              variant="contained"
+              color="primary"
+              onClick={confirmarCompra}
+              disabled={loading || compraConfirmada}
+              sx={{ marginRight: 2, backgroundColor: '#FF5722', ":hover": { backgroundColor: '#E64A19' } }}
+            >
+              {loading ? "Confirmando..." : "Confirmar Compra"}
+            </Button>
+            <Button
+              variant="contained"
+              color="secondary"
+              onClick={cancelarCompra}
+              disabled={compraConfirmada}
+              sx={{ backgroundColor: '#004d40', ":hover": { backgroundColor: '#00251a' } }}
+            >
+              Cancelar compra
+            </Button>
+          </Box>
 
           {orden && (
-            <div style={{ marginTop: "20px" }}>
+            <Box sx={{ marginTop: 3 }}>
               <Typography variant="h6" color="primary">
                 Compra Confirmada
               </Typography>
@@ -207,24 +218,23 @@ const CarritoCompras = ({
               <Button
                 variant="contained"
                 color="warning"
-                style={{ marginTop: "20px" }}
+                sx={{ marginTop: 3 }}
                 onClick={() => {
                   cancelarCompra();
-
                   eliminarProducto();
                 }}
               >
                 Vaciar Carrito
               </Button>
-            </div>
+            </Box>
           )}
-        </div>
+        </Box>
       ) : (
-        <Typography variant="h6" color="error">
+        <Typography variant="h6" color="error" align="center">
           El carrito está vacío.
         </Typography>
       )}
-    </div>
+    </Box>
   );
 };
 
@@ -233,7 +243,6 @@ CarritoCompras.propTypes = {
   cancelarCompra: PropTypes.func.isRequired,
   actualizarCarrito: PropTypes.func.isRequired,
   eliminarProducto: PropTypes.func.isRequired,
-   
 };
 
 export default CarritoCompras;

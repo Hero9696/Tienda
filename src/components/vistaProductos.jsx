@@ -26,13 +26,12 @@ const Vista = ({ addToCart, actualizarCarrito }) => {
   }
 
   const handleAddToCart = (producto) => {
-    const quantity = producto.cantidad || 1; // Obtiene la cantidad seleccionada
-    
+    const quantity = producto.cantidad || 1;
+
     if (producto.stock >= quantity) {
       addToCart({ ...producto, stock: quantity });
       actualizarCarrito({ ...producto, stock: quantity });
 
-      // Reducir el stock en el array de productos
       setData((prevData) =>
         prevData.map((item) =>
           item.idProductos === producto.idProductos
@@ -48,38 +47,78 @@ const Vista = ({ addToCart, actualizarCarrito }) => {
   };
 
   return (
-    <Box sx={{ backgroundColor: "#f5f5f5", minHeight: "100vh", padding: 4 }}>
-      <Typography variant="h3" gutterBottom align="center" sx={{ marginBottom: 4 }}>
-        🛒 Bienvenido a Mi Tiendita
+    <Box sx={{ backgroundColor: "#e0f7fa", minHeight: "100vh", padding: 4 }}>
+      <Typography
+        variant="h3"
+        gutterBottom
+        align="center"
+        sx={{
+          marginBottom: 4,
+          color: "#004d40",
+          fontWeight: "bold",
+          textTransform: "uppercase",
+        }}
+      >
+        🛒 Bienvenido a SuperMarket
       </Typography>
 
       {data.length > 0 ? (
-        <Grid container spacing={3}>
+        <Grid container spacing={4}>
           {data.map((item) => (
             <Grid item xs={12} sm={6} md={4} key={item.idProductos}>
-              <Card sx={{ borderRadius: 2, boxShadow: 3 }}>
-                <CardMedia component="img" alt={item.nombre} height="200" image={item.foto} sx={{ objectFit: "cover" }} />
+              <Card
+                sx={{
+                  borderRadius: 3,
+                  boxShadow: 5,
+                  transition: "transform 0.3s, box-shadow 0.3s",
+                  ":hover": {
+                    transform: "scale(1.05)",
+                    boxShadow: 10,
+                  },
+                }}
+              >
+                <CardMedia
+                  component="img"
+                  alt={item.nombre}
+                  height="200"
+                  image={item.foto}
+                  sx={{
+                    objectFit: "cover",
+                    borderBottom: "2px solid #004d40",
+                  }}
+                />
                 <CardContent>
-                  <Typography variant="h5" sx={{ fontWeight: "bold" }}>
+                  <Typography variant="h6" sx={{ fontWeight: "bold", color: "#004d40" }}>
                     {item.nombre}
                   </Typography>
                   <Typography color="textSecondary">
                     <strong>Marca:</strong> {item.marca}
                   </Typography>
                   <Typography color="textSecondary">
-                    <strong>Cantidad:</strong> {item.stock}
+                    <strong>Stock disponible:</strong> {item.stock}
                   </Typography>
-                  <Typography color="textSecondary" sx={{ marginBottom: 2 }}>
+                  <Typography
+                    color="textPrimary"
+                    sx={{
+                      marginBottom: 2,
+                      fontSize: "1.2rem",
+                      fontWeight: "bold",
+                      color: "#00796b",
+                    }}
+                  >
                     <strong>Precio:</strong> Q{item.precio}
                   </Typography>
 
                   <Button
                     variant="contained"
-                    color="primary"
                     onClick={() => handleAddToCart(item)}
                     disabled={item.stock === 0}
                     fullWidth
-                    sx={{ backgroundColor: "#1976d2", ":hover": { backgroundColor: "#1565c0" } }}
+                    sx={{
+                      backgroundColor: "#004d40",
+                      color: "#fff",
+                      ":hover": { backgroundColor: "#00251a" },
+                    }}
                   >
                     {item.stock === 0 ? "Sin Stock" : "Agregar al Carrito"}
                   </Button>
@@ -89,8 +128,15 @@ const Vista = ({ addToCart, actualizarCarrito }) => {
           ))}
         </Grid>
       ) : (
-        <Box sx={{ display: "flex", justifyContent: "center", alignItems: "center", minHeight: "50vh" }}>
-          <CircularProgress />
+        <Box
+          sx={{
+            display: "flex",
+            justifyContent: "center",
+            alignItems: "center",
+            minHeight: "50vh",
+          }}
+        >
+          <CircularProgress color="secondary" />
         </Box>
       )}
     </Box>
@@ -99,7 +145,7 @@ const Vista = ({ addToCart, actualizarCarrito }) => {
 
 Vista.propTypes = {
   addToCart: PropTypes.func.isRequired,
-  actualizarCarrito: PropTypes.func.isRequired, // Asegúrate de pasar esta función
+  actualizarCarrito: PropTypes.func.isRequired,
 };
 
 export default Vista;
