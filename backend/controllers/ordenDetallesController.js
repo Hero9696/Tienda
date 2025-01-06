@@ -50,20 +50,20 @@ const actualizarOrdenDetalles = async (req, res) => {
 }
 
 const actualizarOrden = async (req, res) => {
-  const { usuarioId, direccion, estado } = req.body;
+  const { idOrden, direccion, estado } = req.body;
 
-  if (!usuarioId || !direccion || !estado) {
+  if (!idOrden || !direccion || !estado) {
     return res
       .status(400)
       .json({
         message:
-          "Faltan parámetros: usuarioId, dirección y estado son necesarios",
+          "Faltan parámetros: idOrden, dirección y estado son necesarios",
       });
   }
 
   try {
     const result = await fod.actualizarOrden(
-      parseInt(usuarioId),
+      parseInt(idOrden),
       direccion,
       estado
     );
