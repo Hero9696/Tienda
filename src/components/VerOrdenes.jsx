@@ -1,6 +1,18 @@
 import { useEffect, useState } from 'react';
 import axios from 'axios';
-import { Button, TextField, Table, TableBody, TableCell, TableContainer, TableHead, TableRow, Paper, CircularProgress, Typography } from '@mui/material';
+import {
+  Button,
+  TextField,
+  Table,
+  TableBody,
+  TableCell,
+  TableContainer,
+  TableHead,
+  TableRow,
+  Paper,
+  CircularProgress,
+  Typography,
+} from '@mui/material';
 
 const VerOrdenes = () => {
   const [ordenes, setOrdenes] = useState([]);
@@ -14,7 +26,7 @@ const VerOrdenes = () => {
         setOrdenes(response.data);
         console.log(response.data);
       } catch (err) {
-        setError("Error al obtener los datos.",err);
+        setError('Error al obtener los datos.',err);
       } finally {
         setLoading(false);
       }
@@ -23,24 +35,55 @@ const VerOrdenes = () => {
     fetchOrdenes();
   }, []);
 
+  
+
   const handleChange = (e, idOrden) => {
     const { name, value } = e.target;
-    setOrdenes(prevOrdenes =>
-      prevOrdenes.map(orden =>
+    setOrdenes((prevOrdenes) =>
+      prevOrdenes.map((orden) =>
         orden.idOrden === idOrden ? { ...orden, [name]: value } : orden
       )
     );
   };
 
   const handleSave = async (idOrden) => {
-    const ordenToUpdate = ordenes.find(orden => orden.idOrden === idOrden);
+    const ordenToUpdate = ordenes.find((orden) => orden.idOrden === idOrden);
+  
+    // Datos para actualizar los detalles
+    const detalles = [
+      {
+        estado_nombre: ordenToUpdate.estado_nombre,
+        usuario_nombre_completo: ordenToUpdate.usuario_nombre_completo,
+        direccion: ordenToUpdate.direccion,
+        total_orden: ordenToUpdate.total_orden,
+      },
+    ];
+  
+    // Datos para actualizar el estado de la orden
+    const ordenData = {
+      idUsuario: ordenToUpdate.usuarios_idUsuarios,
+      direccion: ordenToUpdate.direccion,
+      estados_idEstados: 3, // Cambiamos el estado a 3
+    };
+  
     try {
-      await axios.put(`http://localhost:5000/api/ordenes/${idOrden}`, ordenToUpdate);
-      alert('Orden actualizada');
+      // Actualizar los detalles de la orden
+      await axios.put('http://localhost:5000/api/actualizarordendetalles', {
+        idOrden,
+        detalles,
+      });
+  
+      // Actualizar el estado de la orden
+      await axios.put('http://localhost:5000/api/actualizarorden', ordenData);
+  
+      alert('Orden actualizada correctamente');
     } catch (err) {
-      alert('Error al actualizar la orden',err);
+      console.error(err);
+      alert('Error al actualizar la orden');
     }
   };
+  
+  
 
   if (loading) {
     return <CircularProgress />;
@@ -52,7 +95,9 @@ const VerOrdenes = () => {
 
   return (
     <div style={{ padding: '20px' }}>
-      <Typography variant="h4" gutterBottom>Ordenes</Typography>
+      <Typography variant="h4" gutterBottom>
+        Ordenes
+      </Typography>
       <TableContainer component={Paper}>
         <Table>
           <TableHead>
@@ -116,7 +161,7 @@ const VerOrdenes = () => {
                     color="primary"
                     onClick={() => handleSave(orden.idOrden)}
                   >
-                    Guardar
+                    Guardar Cambios
                   </Button>
                 </TableCell>
               </TableRow>
