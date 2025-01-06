@@ -113,12 +113,22 @@ const CarritoCompras = ({
 
   return (
     <Box sx={{ padding: 3 }}>
-      <Typography variant="h4" gutterBottom align="center" sx={{ color: '#004d40', fontWeight: 'bold' }}>
+      <Typography
+        variant="h4"
+        gutterBottom
+        align="center"
+        sx={{ color: "#004d40", fontWeight: "bold" }}
+      >
         Carrito de Compras
       </Typography>
 
       {error && (
-        <Typography variant="body1" color="error" align="center" sx={{ marginBottom: 2 }}>
+        <Typography
+          variant="body1"
+          color="error"
+          align="center"
+          sx={{ marginBottom: 2 }}
+        >
           {error}
         </Typography>
       )}
@@ -127,10 +137,20 @@ const CarritoCompras = ({
         <Box>
           <List>
             {cart.map((item, index) => (
-              <ListItem key={index} sx={{ marginBottom: 2, padding: 2, border: "1px solid #ddd", borderRadius: 2 }}>
+              <ListItem
+                key={index}
+                sx={{
+                  marginBottom: 2,
+                  padding: 2,
+                  border: "1px solid #ddd",
+                  borderRadius: 2,
+                }}
+              >
                 <ListItemText
                   primary={item.nombre}
-                  secondary={`Precio: Q${item.precio} x ${item.cantidad} = Q${item.precio * item.cantidad}`}
+                  secondary={`Precio: Q${item.precio} x ${item.cantidad} = Q${
+                    item.precio * item.cantidad
+                  }`}
                 />
                 <Button
                   variant="outlined"
@@ -164,17 +184,25 @@ const CarritoCompras = ({
             ))}
           </List>
 
-          <Typography variant="h6" align="center" sx={{ fontWeight: 'bold', marginTop: 2 }}>
+          <Typography
+            variant="h6"
+            align="center"
+            sx={{ fontWeight: "bold", marginTop: 2 }}
+          >
             Total: Q{total}
           </Typography>
 
-          <Box sx={{ display: 'flex', justifyContent: 'center', marginTop: 3 }}>
+          <Box sx={{ display: "flex", justifyContent: "center", marginTop: 3 }}>
             <Button
               variant="contained"
               color="primary"
               onClick={confirmarCompra}
               disabled={loading || compraConfirmada}
-              sx={{ marginRight: 2, backgroundColor: '#FF5722', ":hover": { backgroundColor: '#E64A19' } }}
+              sx={{
+                marginRight: 2,
+                backgroundColor: "#FF5722",
+                ":hover": { backgroundColor: "#E64A19" },
+              }}
             >
               {loading ? "Confirmando..." : "Confirmar Compra"}
             </Button>
@@ -183,42 +211,59 @@ const CarritoCompras = ({
               color="secondary"
               onClick={cancelarCompra}
               disabled={compraConfirmada}
-              sx={{ backgroundColor: '#004d40', ":hover": { backgroundColor: '#00251a' } }}
+              sx={{
+                backgroundColor: "#004d40",
+                ":hover": { backgroundColor: "#00251a" },
+              }}
             >
               Cancelar compra
             </Button>
           </Box>
 
           {orden && (
-            <Box sx={{ marginTop: 3 }}>
-              <Typography variant="h6" color="primary">
-                Compra Confirmada
+            <Box
+              sx={{
+                marginTop: 3,
+                display: "flex",
+                flexDirection: "column",
+                alignItems: "center",
+                justifyContent: "center",
+                textAlign: "center",
+                fontSize: "1.2rem", // Aumenta el tamaño de la fuente
+              }}
+            >
+              <Typography
+                variant="h4"
+                color="primary"
+                sx={{ fontWeight: "bold" }}
+              >
+                Compra Realizada
               </Typography>
-              <Typography variant="body1">
+              <Typography variant="body1" sx={{ marginTop: 1 }}>
                 Número de Orden: {orden.recordset[0].idOrden}
               </Typography>
-              <Typography variant="body1">
+              <Typography variant="body1" sx={{ marginTop: 1 }}>
                 Total: Q{orden.recordset[0].total_orden}
               </Typography>
-              <Typography variant="body1">
+              <Typography variant="body1" sx={{ marginTop: 1 }}>
                 Nombre Completo: {orden.recordset[0].orden_nombre_completo}
               </Typography>
-              <Typography variant="body1">
+              <Typography variant="body1" sx={{ marginTop: 1 }}>
                 Teléfono: {orden.recordset[0].telefono}
               </Typography>
-              <Typography variant="body1">
+              <Typography variant="body1" sx={{ marginTop: 1 }}>
                 Correo Electrónico: {orden.recordset[0].correo_electronico}
               </Typography>
-              <Typography variant="body1">
+              <Typography variant="body1" sx={{ marginTop: 1 }}>
                 Dirección: {orden.recordset[0].direccion}
               </Typography>
-              <Typography variant="body1">
+              <Typography variant="body1" sx={{ marginTop: 1 }}>
                 Estado: {orden.recordset[0].estado_nombre}
               </Typography>
               <Button
                 variant="contained"
                 color="warning"
-                sx={{ marginTop: 3 }}
+                sx={{ marginTop: 3, fontSize: "1rem" }} // Aumenta el tamaño del botón
                 onClick={() => {
                   cancelarCompra();
                   eliminarProducto();
