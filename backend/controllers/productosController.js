@@ -36,4 +36,18 @@ const actualizarProducto =  async (req, res) => {
     }
   }
 
-export default { verProductos, insertarProducto, actualizarProducto };
+  const productos = async (req, res) => {
+    try {
+      const productos = await fproductos.getProductos();
+      if (productos.length === 0) {
+        return res.status(404).send("No se encontraron datos.");
+      }
+      res.json(productos);
+    } catch (err) {
+      console.error("Error al obtener datos:", err);
+      res.status(500).send("Error al conectar a la base de datos");
+    }
+  }
+  
+
+export default { verProductos, insertarProducto, actualizarProducto, productos };

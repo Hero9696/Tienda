@@ -16,6 +16,7 @@ import CarritoCompras from "./components/CarritoCompras";
 import Historial from "./components/Historial";
 import Productos from "./components/Productos";
 import VerOrdenes from "./components/VerOrdenes";
+import VerProductos from "./components/VerProductos";
 
 function App() {
   const [cart, setCart] = useState([]);
@@ -177,6 +178,7 @@ function App() {
           />
           <Route path="/historial" element={<Historial />} />
           <Route path="/productos/crear" element={<Productos />} />
+          <Route path="/productos/lista" element={<VerProductos />} />
           <Route path="/ventas/lista" element={<VerOrdenes />} />
         </Routes>
       </Layout>

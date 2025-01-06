@@ -30,4 +30,17 @@ const ActualizarEstados = async (estado) => {
   }
 };
 
-export default { insertarEstado, ActualizarEstados };
+const getEstados = async () => {
+  try {
+    const pool = await connectDB();
+    const result = await pool
+      .request()
+      .query("SELECT * FROM VistaEstados");
+    return result.recordset;
+  } catch (err) {
+    console.error("Error al obtener datos:", err);
+    throw new Error("Error al obtener datos de la base de datos");
+  }
+};
+
+export default { insertarEstado, ActualizarEstados, getEstados };

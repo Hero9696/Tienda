@@ -73,6 +73,7 @@ const getProductos = async () => {
     const result = await pool
       .request()
       .query("SELECT * FROM dbo.Vista_Productos");
+      console.log("desde la funcion",result.recordset);
     return result.recordset;
   } catch (err) {
     console.error("Error al obtener datos:", err);

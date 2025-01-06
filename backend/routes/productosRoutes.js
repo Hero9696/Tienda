@@ -6,6 +6,8 @@ const router = express.Router();
 
 router.get("/api/productos", fproductos.verProductos);
 
+router.get("/api/verproductos", fproductos.productos);
+
 router.post("/api/insertarProducto", fproductos.insertarProducto);
 
 router.put("/api/actualizarProducto", fproductos.actualizarProducto);

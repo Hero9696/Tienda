@@ -44,7 +44,7 @@ const VerOrdenes = () => {
           ? {
               ...orden,
               [name]: value,
-              estados_idEstados: value === 'Confirmar' ? 3 : 5, // Asignar 3 para "Confirmar" y 5 para "Pendiente"
+              estados_idEstados: value === 'Confirmar' ? 3 : 5,
             }
           : orden
       )
@@ -66,9 +66,8 @@ const VerOrdenes = () => {
     const ordenData = {
       idOrden,
       direccion: ordenToUpdate.direccion,
-      estado: ordenToUpdate.estados_idEstados, 
+      estado: ordenToUpdate.estados_idEstados,
     };
-   
 
     try {
       await axios.put('http://localhost:5000/api/actualizarordendetalles', {
@@ -82,6 +81,16 @@ const VerOrdenes = () => {
     } catch (err) {
       console.error(err);
       alert('Error al actualizar la orden');
+    }
+  };
+
+  const eliminarOrden = async (idOrden) => {
+    try {
+      const response = await axios.delete(`http://localhost:5000/api/eliminarorden/${idOrden}`);
+      alert(response.data.message);
+      setOrdenes((prevOrdenes) => prevOrdenes.filter((orden) => orden.idOrden !== idOrden));
+    } catch (err) {
+      alert('Error al eliminar la orden: ' + err.response?.data?.message || err.message);
     }
   };
 
@@ -161,8 +170,16 @@ const VerOrdenes = () => {
                     variant="contained"
                     color="primary"
                     onClick={() => handleSave(orden.idOrden)}
+                    style={{ marginRight: '10px' }}
                   >
                     Guardar Cambios
+                  </Button>
+                  <Button
+                    variant="contained"
+                    color="secondary"
+                    onClick={() => eliminarOrden(orden.idOrden)}
+                  >
+                    Eliminar
                   </Button>
                 </TableCell>
               </TableRow>
