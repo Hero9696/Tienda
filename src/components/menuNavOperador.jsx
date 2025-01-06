@@ -61,7 +61,6 @@ const Navbar = ({ cart }) => {
             onClose={handleCloseUserMenu}
           >
             <MenuItem onClick={() => navigate("/usuarios/crear")}>Crear Usuario</MenuItem>
-            <MenuItem onClick={() => navigate("/usuarios/editar")}>Editar Usuario</MenuItem>
             <MenuItem onClick={() => navigate("/usuarios/lista")}>Lista de Usuarios</MenuItem>
           </Menu>
 

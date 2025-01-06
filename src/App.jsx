@@ -108,7 +108,6 @@ function App() {
         {(location.pathname === "/catalogo/operador" ||
           location.pathname === "/carrito/operador" ||
           location.pathname === "/usuarios/crear" ||
-        location.pathname === "/usuarios/editar" ||
         location.pathname === "/usuarios/lista" || 
       location.pathname === "/productos/crear" || 
       location.pathname === "/productos/lista" || 
