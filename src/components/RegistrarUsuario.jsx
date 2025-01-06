@@ -1,7 +1,6 @@
 import { useState, useEffect } from "react";
 import { TextField, Button, MenuItem, Box, Typography } from "@mui/material";
 import axios from "axios";
-// import { useNavigate } from "react-router-dom"; 
 
 const RegistroUsuario = () => {
   const [formData, setFormData] = useState({
@@ -18,8 +17,6 @@ const RegistroUsuario = () => {
   const [loadingRoles, setLoadingRoles] = useState(true);
   const [error, setError] = useState(""); // Para mostrar el error de edad
   const [telefonoError, setTelefonoError] = useState(""); // Para mostrar el error de teléfono
-
-  // const navigate = useNavigate(); 
 
   useEffect(() => {
     const fetchRoles = async () => {
@@ -106,10 +103,11 @@ const RegistroUsuario = () => {
         p: 3,
         borderRadius: 2,
         boxShadow: 3,
-        bgcolor: "background.paper",
+        bgcolor: "#ff9800", // Naranja como el gi de Goku
+        border: "3px solid #4caf50", // Borde verde
       }}
     >
-      <Typography variant="h5" align="center" gutterBottom>
+      <Typography variant="h5" align="center" gutterBottom sx={{ color: "#1e88e5" }}>
         Registro de Usuario
       </Typography>
       <form onSubmit={handleSubmit}>
@@ -122,6 +120,11 @@ const RegistroUsuario = () => {
           fullWidth
           margin="normal"
           required
+          sx={{
+            backgroundColor: "#e3f2fd", // Azul claro
+            borderRadius: 1,
+            marginBottom: 2,
+          }}
         >
           {loadingRoles ? (
             <MenuItem>Cargando roles...</MenuItem>
@@ -142,6 +145,11 @@ const RegistroUsuario = () => {
           fullWidth
           margin="normal"
           required
+          sx={{
+            backgroundColor: "#e3f2fd", // Azul claro
+            borderRadius: 1,
+            marginBottom: 2,
+          }}
         />
         <TextField
           label="Nombre Completo"
@@ -151,6 +159,11 @@ const RegistroUsuario = () => {
           fullWidth
           margin="normal"
           required
+          sx={{
+            backgroundColor: "#e3f2fd", // Azul claro
+            borderRadius: 1,
+            marginBottom: 2,
+          }}
         />
         <TextField
           label="Contraseña"
@@ -161,6 +174,11 @@ const RegistroUsuario = () => {
           fullWidth
           margin="normal"
           required
+          sx={{
+            backgroundColor: "#e3f2fd", // Azul claro
+            borderRadius: 1,
+            marginBottom: 2,
+          }}
         />
         <TextField
           label="Teléfono"
@@ -170,9 +188,13 @@ const RegistroUsuario = () => {
           fullWidth
           margin="normal"
           required
-          inputProps={{ maxLength: 8 }} // Limita la longitud a 8 caracteres
+          inputProps={{ maxLength: 8 }}
+          sx={{
+            backgroundColor: "#e3f2fd", // Azul claro
+            borderRadius: 1,
+            marginBottom: 2,
+          }}
         />
-        {/* Mostrar error si el teléfono no tiene 8 dígitos */}
         {telefonoError && <Typography color="error">{telefonoError}</Typography>}
 
         <TextField
@@ -185,8 +207,12 @@ const RegistroUsuario = () => {
           fullWidth
           margin="normal"
           required
+          sx={{
+            backgroundColor: "#e3f2fd", // Azul claro
+            borderRadius: 1,
+            marginBottom: 2,
+          }}
         />
-        {/* Nuevo campo para Dirección */}
         <TextField
           label="Dirección"
           name="direccion"
@@ -195,9 +221,13 @@ const RegistroUsuario = () => {
           fullWidth
           margin="normal"
           required
+          sx={{
+            backgroundColor: "#e3f2fd", // Azul claro
+            borderRadius: 1,
+            marginBottom: 2,
+          }}
         />
         
-        {/* Mostrar error si la edad es menor de 18 */}
         {error && <Typography color="error">{error}</Typography>}
 
         <Button
@@ -205,7 +235,14 @@ const RegistroUsuario = () => {
           variant="contained"
           color="primary"
           fullWidth
-          sx={{ mt: 2 }}
+          sx={{
+            mt: 2,
+            borderRadius: 1,
+            backgroundColor: "#fbc02d", // Amarillo como el aura de Goku
+            "&:hover": {
+              backgroundColor: "#f57f17", // Naranja oscuro
+            },
+          }}
         >
           Registrar
         </Button>

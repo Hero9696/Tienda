@@ -71,7 +71,7 @@ const Login = () => {
                 textTransform: "uppercase",
               }}
             >
-              🛒 SuperMarket
+              🛒 Mi Tiendita
             </Typography>
 
             <Typography

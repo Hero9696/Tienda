@@ -1,8 +1,9 @@
-import { AppBar, Toolbar, Typography, IconButton, Badge, Menu, MenuItem } from "@mui/material";
+import { AppBar, Toolbar, Typography, IconButton, Badge, Menu, MenuItem, Box } from "@mui/material";
 import { useState } from "react";
 import ShoppingCartIcon from "@mui/icons-material/ShoppingCart";
 import AccountCircleIcon from "@mui/icons-material/AccountCircle";
-import MoreVertIcon from '@mui/icons-material/MoreVert'; // Ícono para el submenú
+import StoreIcon from '@mui/icons-material/Store'; // Ícono para Productos
+import ShoppingBasketIcon from '@mui/icons-material/ShoppingBasket'; // Ícono para Ventas
 import PropTypes from 'prop-types';
 import { Link, useNavigate } from 'react-router-dom';
 
@@ -41,18 +42,18 @@ const Navbar = ({ cart }) => {
   };
 
   return (
-    <AppBar position="sticky" sx={{ backgroundColor: 'black' }}>
-      <Toolbar style={{ display: 'flex', justifyContent: 'space-between' }}>
+    <AppBar position="sticky" sx={{ backgroundColor: '#ff6f00', boxShadow: 3 }}>
+      <Toolbar style={{ display: 'flex', justifyContent: 'space-between', padding: '0 20px' }}>
         <Link to="/catalogo/operador" style={{ textDecoration: 'none', color: 'white' }}>
-          <Typography variant="h6">
+          <Typography variant="h6" sx={{ fontWeight: 'bold', color: '#0040ff' }}>
             Mi Tienda
           </Typography>
         </Link>
 
-        <div>
+        <Box display="flex" alignItems="center">
           {/* Menú de Usuarios */}
-          <IconButton color="inherit" onClick={handleUserMenuClick}>
-            <AccountCircleIcon />  Usuarios
+          <IconButton color="inherit" onClick={handleUserMenuClick} sx={{ marginRight: 2 }}>
+            <AccountCircleIcon sx={{ color: '#ffdd00' }} /> Usuarios
           </IconButton>
           <Menu
             anchorEl={anchorEl}
@@ -65,8 +66,8 @@ const Navbar = ({ cart }) => {
           </Menu>
 
           {/* Menú de Productos */}
-          <IconButton color="inherit" onClick={handleProductosMenuClick}>
-            <MoreVertIcon /> Productos
+          <IconButton color="inherit" onClick={handleProductosMenuClick} sx={{ marginRight: 2 }}>
+            <StoreIcon sx={{ color: '#ffdd00' }} /> Productos
           </IconButton>
           <Menu
             anchorEl={anchorElProductos}
@@ -79,8 +80,8 @@ const Navbar = ({ cart }) => {
           </Menu>
 
           {/* Menú de Ventas */}
-          <IconButton color="inherit" onClick={handleVentasMenuClick}>
-            <MoreVertIcon /> Ventas
+          <IconButton color="inherit" onClick={handleVentasMenuClick} sx={{ marginRight: 2 }}>
+            <ShoppingBasketIcon sx={{ color: '#ffdd00' }} /> Ventas
           </IconButton>
           <Menu
             anchorEl={anchorElVentas}
@@ -91,12 +92,13 @@ const Navbar = ({ cart }) => {
             <MenuItem onClick={() => navigate("/ventas/lista")}>Lista de Ventas</MenuItem>
           </Menu>
 
-          <IconButton color="inherit" onClick={goToCart}>
+          {/* Icono de Carrito */}
+          <IconButton color="inherit" onClick={goToCart} sx={{ marginRight: 2 }}>
             <Badge badgeContent={cart.length} color="error">
-              <ShoppingCartIcon />
+              <ShoppingCartIcon sx={{ color: '#ffdd00' }} /> Carrito
             </Badge>
           </IconButton>
-        </div>
+        </Box>
       </Toolbar>
     </AppBar>
   );

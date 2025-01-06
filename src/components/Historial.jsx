@@ -111,7 +111,7 @@ const BuscarOrdenes = () => {
                   ":hover": { backgroundColor: '#00251a' },
                 }}
               >
-                Eliminar Orden
+                Cancelar Compra
               </Button>
             </ListItem>
           ))}
