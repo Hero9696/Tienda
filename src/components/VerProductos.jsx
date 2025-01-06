@@ -9,6 +9,10 @@ const Productos = () => {
   const [newName, setNewName] = useState("");
   const [newPrice, setNewPrice] = useState("");
   const [newStock, setNewStock] = useState("");
+  const [newCodigo, setNewCodigo] = useState("");
+  const [newFoto, setNewFoto] = useState("");
+  const [newCategoriaId, setNewCategoriaId] = useState("");
+  const [newMarca, setNewMarca] = useState("");
 
   // Obtener los productos desde el API
   useEffect(() => {
@@ -16,7 +20,7 @@ const Productos = () => {
       try {
         const response = await axios.get("http://localhost:5000/api/verproductos");
         setProductos(response.data);
-       console.log(response.data);
+        console.log(response.data);
       } catch (error) {
         console.error("Error al obtener los productos", error);
       }
@@ -26,7 +30,6 @@ const Productos = () => {
       try {
         const response = await axios.get("http://localhost:5000/api/estados");
         setEstados(response.data);
-       
       } catch (error) {
         console.error("Error al obtener los estados", error);
       }
@@ -42,6 +45,10 @@ const Productos = () => {
     setNewName(producto.nombre);
     setNewPrice(producto.precio);
     setNewStock(producto.stock);
+    setNewCodigo(producto.codigo);
+    setNewFoto(producto.foto);
+    setNewCategoriaId(producto.categoriaProductos_idCategoriaProductos);
+    setNewMarca(producto.marca);
     setEditing(id);
   };
 
@@ -51,12 +58,16 @@ const Productos = () => {
       await axios.put(`/api/productos/${id}`, { 
         nombre: newName, 
         precio: newPrice, 
-        stock: newStock 
+        stock: newStock,
+        codigo: newCodigo,
+        foto: newFoto,
+        categoriaProductos_idCategoriaProductos: newCategoriaId,
+        marca: newMarca
       });
       setProductos((prevProductos) =>
         prevProductos.map((producto) =>
           producto.idProductos === id
-            ? { ...producto, nombre: newName, precio: newPrice, stock: newStock }
+            ? { ...producto, nombre: newName, precio: newPrice, stock: newStock, codigo: newCodigo, foto: newFoto, categoriaProductos_idCategoriaProductos: newCategoriaId, marca: newMarca }
             : producto
         )
       );
@@ -64,6 +75,10 @@ const Productos = () => {
       setNewName("");
       setNewPrice("");
       setNewStock("");
+      setNewCodigo("");
+      setNewFoto("");
+      setNewCategoriaId("");
+      setNewMarca("");
     } catch (error) {
       console.error("Error al guardar el producto", error);
     }
@@ -86,10 +101,8 @@ const Productos = () => {
     const updatedStatus = producto.estados_idEstados === 1 ? 2 : 1; // 1: Activo, 2: Inactivo
   
     try {
-      // Cambiamos la URL y el cuerpo de la solicitud
       await axios.post('http://localhost:5000/api/alternarestado', { idProducto: id });
   
-      // Actualizamos el estado del producto en el estado local
       setProductos((prevProductos) =>
         prevProductos.map((producto) =>
           producto.idProductos === id
@@ -102,10 +115,8 @@ const Productos = () => {
     }
   };
   
-
   // Obtener el nombre del estado por ID
   const getEstadoNombre = (idEstados) => {
-    
     const estado = estados.find((e) => e.idEstados === idEstados);
     return estado ? estado.nombre : "Desconocido";
   };
@@ -121,14 +132,13 @@ const Productos = () => {
                   <CardMedia
                     component="img"
                     height="140"
-                    image={producto.foto} // Se utiliza el campo 'foto' para la imagen
+                    image={producto.foto}
                     alt={producto.nombre}
                   />
                 )}
                 <Typography variant="h6">{producto.nombre}</Typography>
-                <Typography variant="body2">Marca: {producto.idProductos}</Typography>
                 <Typography variant="body2">Marca: {producto.marca}</Typography>
-                <Typography variant="body2">Precio: ${producto.precio}</Typography>
+                <Typography variant="body2">Precio: Q{producto.precio}</Typography>
                 <Typography variant="body2">Stock: {producto.stock}</Typography>
                 <Typography variant="body2">Estado: {getEstadoNombre(producto.estados_idEstados)}</Typography>
 
@@ -159,11 +169,31 @@ const Productos = () => {
                     />
                     <TextField
                       label="Nuevo Codigo"
-                      value={producto.codigo}
-                      onChange={(e) => setNewStock(e.target.value)}
+                      value={newCodigo}
+                      onChange={(e) => setNewCodigo(e.target.value)}
                       fullWidth
                       margin="normal"
-                      
+                    />
+                    <TextField
+                      label="Nueva Foto URL"
+                      value={newFoto}
+                      onChange={(e) => setNewFoto(e.target.value)}
+                      fullWidth
+                      margin="normal"
+                    />
+                    <TextField
+                      label="Nueva Marca"
+                      value={newMarca}
+                      onChange={(e) => setNewMarca(e.target.value)}
+                      fullWidth
+                      margin="normal"
+                    />
+                    <TextField
+                      label="Nueva Categoria ID"
+                      value={newCategoriaId}
+                      onChange={(e) => setNewCategoriaId(e.target.value)}
+                      fullWidth
+                      margin="normal"
                     />
                     <Button onClick={() => handleSave(producto.idProductos)} variant="contained" color="primary" style={{ marginRight: 8 }}>
                       Guardar
