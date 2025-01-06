@@ -26,10 +26,10 @@ const insertarProducto = async (req, res) => {
 
 const actualizarProducto =  async (req, res) => {
     const producto = req.body;
-    const foto = req.file ? `/uploads/${req.file.filename}` : null;
+   
   
     try {
-      const result = await fproductos.actualizarProducto({ ...producto, foto });
+      const result = await fproductos.actualizarProducto({ ...producto });
       res.status(200).json(result);
     } catch (err) {
       res.status(500).json({ error: err.message });

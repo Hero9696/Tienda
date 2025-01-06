@@ -1,6 +1,6 @@
 import { useEffect, useState } from "react";
 import axios from "axios";
-import { Grid, Card, CardContent, Typography, Button, TextField, CardMedia } from "@mui/material";
+import { Grid, Card, CardContent, Typography, Button, TextField, CardMedia, Select, MenuItem, InputLabel, FormControl } from "@mui/material";
 
 const Productos = () => {
   const [productos, setProductos] = useState([]);
@@ -13,14 +13,14 @@ const Productos = () => {
   const [newFoto, setNewFoto] = useState("");
   const [newCategoriaId, setNewCategoriaId] = useState("");
   const [newMarca, setNewMarca] = useState("");
+  const [newEstadoId, setNewEstadoId] = useState("");  // Nueva variable de estado para el ID del estado
 
-  // Obtener los productos desde el API
+  // Obtener los productos y los estados desde el API
   useEffect(() => {
     const fetchProductos = async () => {
       try {
         const response = await axios.get("http://localhost:5000/api/verproductos");
         setProductos(response.data);
-        console.log(response.data);
       } catch (error) {
         console.error("Error al obtener los productos", error);
       }
@@ -39,6 +39,12 @@ const Productos = () => {
     fetchEstados();
   }, []);
 
+  // Función para obtener el nombre del estado por ID
+  const getEstadoNombre = (idEstados) => {
+    const estado = estados.find((e) => e.idEstados === idEstados);
+    return estado ? estado.nombre : "Desconocido";
+  };
+
   // Función para manejar la edición de un producto
   const handleEdit = (id) => {
     const producto = productos.find((producto) => producto.idProductos === id);
@@ -49,28 +55,52 @@ const Productos = () => {
     setNewFoto(producto.foto);
     setNewCategoriaId(producto.categoriaProductos_idCategoriaProductos);
     setNewMarca(producto.marca);
+    setNewEstadoId(producto.estados_idEstados);  // Cargar el estado actual del producto
     setEditing(id);
   };
 
   // Función para guardar los cambios del producto
   const handleSave = async (id) => {
     try {
-      await axios.put(`/api/productos/${id}`, { 
-        nombre: newName, 
-        precio: newPrice, 
+      const idUsuarios = localStorage.getItem("idUsuarios");
+
+      if (!idUsuarios) {
+        console.error("No se encontró el id del usuario en localStorage.");
+        return;
+      }
+
+      await axios.put("http://localhost:5000/api/actualizarProducto", {
+        idProductos: id,
+        nombre: newName,
+        precio: newPrice,
         stock: newStock,
         codigo: newCodigo,
         foto: newFoto,
         categoriaProductos_idCategoriaProductos: newCategoriaId,
-        marca: newMarca
+        marca: newMarca,
+        usuarios_idUsuarios: idUsuarios,
+        estados_idEstados: newEstadoId  // Enviar el ID del estado seleccionado
       });
+
       setProductos((prevProductos) =>
         prevProductos.map((producto) =>
           producto.idProductos === id
-            ? { ...producto, nombre: newName, precio: newPrice, stock: newStock, codigo: newCodigo, foto: newFoto, categoriaProductos_idCategoriaProductos: newCategoriaId, marca: newMarca }
+            ? {
+                ...producto,
+                nombre: newName,
+                precio: newPrice,
+                stock: newStock,
+                codigo: newCodigo,
+                foto: newFoto,
+                categoriaProductos_idCategoriaProductos: newCategoriaId,
+                marca: newMarca,
+                usuarios_idUsuarios: idUsuarios,
+                estados_idEstados: newEstadoId  // Actualizar el estado con el ID seleccionado
+              }
             : producto
         )
       );
+
       setEditing(null);
       setNewName("");
       setNewPrice("");
@@ -79,6 +109,7 @@ const Productos = () => {
       setNewFoto("");
       setNewCategoriaId("");
       setNewMarca("");
+      setNewEstadoId("");  // Limpiar el estado después de guardar
     } catch (error) {
       console.error("Error al guardar el producto", error);
     }
@@ -97,12 +128,11 @@ const Productos = () => {
   // Función para cambiar el estado del producto
   const handleChangeStatus = async (id) => {
     const producto = productos.find((producto) => producto.idProductos === id);
-   
     const updatedStatus = producto.estados_idEstados === 1 ? 2 : 1; // 1: Activo, 2: Inactivo
-  
+
     try {
       await axios.post('http://localhost:5000/api/alternarestado', { idProducto: id });
-  
+
       setProductos((prevProductos) =>
         prevProductos.map((producto) =>
           producto.idProductos === id
@@ -113,12 +143,6 @@ const Productos = () => {
     } catch (error) {
       console.error("Error al cambiar el estado", error);
     }
-  };
-  
-  // Obtener el nombre del estado por ID
-  const getEstadoNombre = (idEstados) => {
-    const estado = estados.find((e) => e.idEstados === idEstados);
-    return estado ? estado.nombre : "Desconocido";
   };
 
   return (
@@ -195,6 +219,23 @@ const Productos = () => {
                       fullWidth
                       margin="normal"
                     />
+
+                    {/* Selección de estado */}
+                    <FormControl fullWidth margin="normal">
+                      <InputLabel>Estado</InputLabel>
+                      <Select
+                        value={newEstadoId}
+                        onChange={(e) => setNewEstadoId(e.target.value)}
+                        label="Estado"
+                      >
+                        {estados.map((estado) => (
+                          <MenuItem key={estado.idEstados} value={estado.idEstados}>
+                            {estado.nombre}
+                          </MenuItem>
+                        ))}
+                      </Select>
+                    </FormControl>
+
                     <Button onClick={() => handleSave(producto.idProductos)} variant="contained" color="primary" style={{ marginRight: 8 }}>
                       Guardar
                     </Button>

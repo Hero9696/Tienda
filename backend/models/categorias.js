@@ -49,4 +49,20 @@ const actualizarCategoria = async (categoria) => {
   }
 };
 
-export default { getCategoriasActivas, insertarCategoria, actualizarCategoria };
+const getCategorias = async () => {
+  try {
+    const pool = await connectDB();
+    const result = await pool
+      .request()
+      .query("SELECT * FROM dbo.VistaCategoriaProductos");
+    return result.recordset;
+  } catch (err) {
+    console.error("Error al obtener las categorías:", err);
+    throw new Error(
+      "Error al obtener las categorías de la base de datos"
+    );
+  }
+};
+
+
+export default { getCategoriasActivas, insertarCategoria, actualizarCategoria, getCategorias };

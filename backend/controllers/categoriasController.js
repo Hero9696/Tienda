@@ -86,5 +86,18 @@ const catergoriasActivas= async (req, res) => {
         }
       }
 
+      const catergoriasProductos= async (req, res) => {
+        try {
+            const getCategorias = await fcategorias.getCategorias();
+            if (getCategorias.length === 0) {
+              return res.status(404).send("No se encontraron categorías activas.");
+            }
+            res.json(getCategorias);
+          } catch (err) {
+            console.error("Error al obtener las categorías activas:", err);
+            res.status(500).send("Error al obtener las categorías activas");
+          }
+        }
 
-export default { catergoriasActivas, insertarCategorias, actualizarCategorias };
+
+export default { catergoriasActivas, insertarCategorias, actualizarCategorias, catergoriasProductos };
