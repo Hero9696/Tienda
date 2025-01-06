@@ -22,6 +22,7 @@ const BuscarOrdenes = () => {
     try {
       const response = await axios.post('http://localhost:5000/api/obtenerordendetalles', { idUsuarios: idUsuario });
       setOrdenes(response.data.orden);
+      
       setError('');
     } catch (err) {
       setError(err.response?.data?.message || 'Aún no tienes órdenes.');
@@ -90,6 +91,7 @@ const BuscarOrdenes = () => {
                     </Typography>
                     {groupedOrders[idOrden].orders.map((orden, index) => (
                       <div key={index}>
+                        <Typography variant="body2" style={{ color: '#004d40' }}>Nombre del Cliente: {orden.nombre_completo}</Typography>
                         <Typography variant="body2" style={{ color: '#004d40' }}>Nombre del Producto: {orden.nombre_producto}</Typography>
                         <Typography variant="body2" style={{ color: '#004d40' }}>Cantidad: {orden.cantidad}</Typography>
                         <Typography variant="body2" style={{ color: '#004d40' }}>Subtotal: Q{orden.subtotal}</Typography>

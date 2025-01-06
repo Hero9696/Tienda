@@ -7,14 +7,15 @@ import {
 import { useState, useEffect } from "react";
 import PropTypes from "prop-types";
 import Login from "./components/Login";
-import Vista from "./components/VistaProductos";
-import VistaOperador from "./components/VistaProductos";
+import Vista from "./components/vistaProductos";
+import VistaOperador from "./components/vistaProductos";
 import RegistrarUsuario from "./components/RegistrarUsuario";
 import Navbar from "./components/menuNav";
 import NavbarOperador from "./components/menuNavOperador";
 import CarritoCompras from "./components/CarritoCompras";
 import Historial from "./components/Historial";
 import Productos from "./components/Productos";
+import VerOrdenes from "./components/VerOrdenes";
 
 function App() {
   const [cart, setCart] = useState([]);
@@ -176,6 +177,7 @@ function App() {
           />
           <Route path="/historial" element={<Historial />} />
           <Route path="/productos/crear" element={<Productos />} />
+          <Route path="/ventas/lista" element={<VerOrdenes />} />
         </Routes>
       </Layout>
     </Router>

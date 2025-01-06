@@ -144,7 +144,21 @@ const eliminarOrden = async (idOrden) => {
   }
 };
 
+const getOrdenes = async () => {
+  try {
+    const pool = await connectDB();
+    const result = await pool
+      .request()
+      .query("SELECT * FROM dbo.Vista_VerOrden");
+    return result.recordset;
+  } catch (err) {
+    console.error("Error al obtener datos:", err);
+    throw new Error("Error al obtener datos de la base de datos");
+  }
+};
 
 
 
-export default { crearOrdenDetalles, actualizarOrdenDetalles, actualizarOrden, obtenerOrdenDetalles , eliminarOrden};
+
+
+export default { crearOrdenDetalles, actualizarOrdenDetalles, actualizarOrden, obtenerOrdenDetalles , eliminarOrden, getOrdenes};

@@ -14,4 +14,6 @@ router.post('/api/obtenerordendetalles', fod.obtenerOrdenDetalles);
 
 router.delete("/api/eliminarorden/:idOrden", fod.eliminarOrdenDetalles);
 
+router.get("/api/ordenes", fod.verOrdenes);
+
 export default router;
