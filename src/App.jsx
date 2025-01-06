@@ -17,6 +17,7 @@ import Historial from "./components/Historial";
 import Productos from "./components/Productos";
 import VerOrdenes from "./components/VerOrdenes";
 import VerProductos from "./components/VerProductos";
+import Usuarios from "./components/Usuarios";
 
 function App() {
   const [cart, setCart] = useState([]);
@@ -177,6 +178,7 @@ function App() {
           <Route path="/productos/crear" element={<Productos />} />
           <Route path="/productos/lista" element={<VerProductos />} />
           <Route path="/ventas/lista" element={<VerOrdenes />} />
+          <Route path="/usuarios/lista" element={<Usuarios />} />
         </Routes>
       </Layout>
     </Router>

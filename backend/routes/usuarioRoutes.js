@@ -5,7 +5,7 @@ import fusuarios from "../models/usuarios.js";
 
 const router = express.Router();
 
-
+router.get("/api/verusuarios", fuscontroller.usuarios);
 
 router.post("/api/insertarusuarios", fuscontroller.createUsuario);
 

@@ -98,4 +98,18 @@ const actualizarUsuario = async (req, res) => {
     res.status(500).json({ error: "Error al actualizar usuario" });
   }
 };
-export default { insertarUsuario, actualizarUsuario };
+
+const getUsuarios = async () => {
+  try {
+    const pool = await connectDB();
+    const result = await pool
+      .request()
+      .query("SELECT * FROM dbo.Vista_Usuarios");
+     
+    return result.recordset;
+  } catch (err) {
+    console.error("Error al obtener datos:", err);
+    throw new Error("Error al obtener datos de la base de datos");
+  }
+};
+export default { insertarUsuario, actualizarUsuario, getUsuarios };
