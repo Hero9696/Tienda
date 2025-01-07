@@ -3,6 +3,7 @@ import ShoppingCartIcon from "@mui/icons-material/ShoppingCart";
 import HistoryIcon from "@mui/icons-material/History";
 import PropTypes from "prop-types";
 import { Link, useNavigate } from "react-router-dom";
+import EmojiFlagsIcon from "@mui/icons-material/EmojiFlags"; 
 
 const Navbar = ({ cart }) => {
   const navigate = useNavigate();
@@ -40,6 +41,9 @@ const Navbar = ({ cart }) => {
             alignItems: "center",
           }}
         >
+          {/* Icono de bandera */}
+          <EmojiFlagsIcon sx={{ fontSize: "3rem", color: "#1d3557" }} />
+          
           <Typography
             variant="h4"
             component="div"
@@ -50,7 +54,7 @@ const Navbar = ({ cart }) => {
               fontFamily: '"Rock Salt", cursive', // Tipografía inspirada en el estilo de One Piece
             }}
           >
-            🏴‍☠️ Mi Tiendita
+            Mi Tiendita
           </Typography>
         </Link>
 

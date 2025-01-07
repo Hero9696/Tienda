@@ -2,6 +2,7 @@ import { useEffect, useState } from "react";
 import axios from "axios";
 import { Card, CardContent, CardMedia, Typography, Grid, CircularProgress, Button, Box } from "@mui/material";
 import PropTypes from "prop-types";
+import EmojiFlagsIcon from "@mui/icons-material/EmojiFlags"; 
 
 const Vista = ({ addToCart, actualizarCarrito }) => {
   const [data, setData] = useState([]);
@@ -64,7 +65,7 @@ const Vista = ({ addToCart, actualizarCarrito }) => {
           fontFamily: '"Rock Salt", cursive', // Tipografía estilo manga
         }}
       >
-        🏴‍☠️ Bienvenido a Mi Tiendita
+         <EmojiFlagsIcon sx={{ fontSize: "3rem", color: "#1d3557" }} /> Bienvenido a Mi Tiendita
       </Typography>
 
       {loading ? (
