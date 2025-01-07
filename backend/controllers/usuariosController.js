@@ -11,7 +11,7 @@ const createUsuario = async (req, res) => {
 
     // Insertar el usuario y el cliente en la base de datos
     const result = await fusuarios.insertarUsuario(usuario);
-    console.log("Resultado de insertarUsuario:", result);
+   
 
     // Obtener el ID del cliente (y no del usuario, ya que se genera en el procedimiento almacenado)
     const idCliente = result.idCliente;
@@ -33,8 +33,7 @@ const createUsuario = async (req, res) => {
   }
 };
 
-
-const updateUsuario = async (req, res) => {
+const actualizarUsuario = async (req, res) => {
   try {
     if (!req.body) {
       return res.status(400).json({
@@ -42,33 +41,74 @@ const updateUsuario = async (req, res) => {
       });
     }
 
-    const { idUsuarios, nombre_completo, telefono, password } = req.body;
+    const {
+      idUsuarios,
+      razon_social,
+      nombre_comercial,
+      direccion_entrega,
+      telefono,
+      correo_electronico,
+      rol_idRol,
+      estados_idEstados,
+      nombre_completo,
+      password,
+      telefono_usuario,
+      fecha_nacimiento,
+    } = req.body;
 
     if (!idUsuarios) {
-      return res
-        .status(400)
-        .json({ error: "El campo idUsuarios es obligatorio" });
+      return res.status(400).json({ error: "El campo idUsuarios es obligatorio" });
     }
 
-    const hashedPassword = password
-      ? await bcrypt.hash(password, 10)
-      : undefined;
+    // Verificar que los campos obligatorios estén presentes
+    if (
+      !razon_social ||
+      !nombre_comercial ||
+      !direccion_entrega ||
+      !telefono ||
+      !correo_electronico ||
+      !rol_idRol ||
+      !estados_idEstados ||
+      !nombre_completo ||
+      !telefono_usuario ||
+      !fecha_nacimiento
+    ) {
+      return res.status(400).json({ error: "Faltan campos obligatorios" });
+    }
+
+    const hashedPassword = password ? await bcrypt.hash(password, 10) : undefined;
+
+    // Crear objeto para actualizar el usuario
     const usuario = {
       idUsuarios,
-      nombre_completo,
+      razon_social,
+      nombre_comercial,
+      direccion_entrega,
       telefono,
+      correo_electronico,
+      rol_idRol,
+      estados_idEstados,
+      nombre_completo,
       password: hashedPassword,
+      telefono_usuario,
+      fecha_nacimiento,
     };
 
+    // Llamar a la función que actualiza el usuario y el cliente
     const result = await fusuarios.actualizarUsuario(usuario);
-    res
-      .status(200)
-      .json({ message: "Usuario actualizado exitosamente", result });
+
+    // Verificar si el resultado tiene éxito
+    if (result && result.recordset) {
+      res.status(200).json({ message: "Usuario y cliente actualizados exitosamente", result });
+    } else {
+      res.status(500).json({ error: "No se pudo actualizar el usuario o el cliente" });
+    }
   } catch (err) {
-    console.error(err);
-    res.status(500).json({ error: "Error al actualizar el usuario" });
+    console.error("Error al actualizar el usuario:", err);
+    res.status(500).json({ error: "Error al actualizar el usuario", details: err.message });
   }
 };
+
 
 const usuarios = async (req, res) => {
   try {
@@ -83,4 +123,4 @@ const usuarios = async (req, res) => {
   }
 }
 
-export default { createUsuario, updateUsuario,  usuarios };
+export default { createUsuario, actualizarUsuario,  usuarios };
