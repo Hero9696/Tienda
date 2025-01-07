@@ -4,18 +4,13 @@ import axios from "axios";
 
 const RegistroUsuario = () => {
   const [formData, setFormData] = useState({
-    razon_social: "",
-    nombre_comercial: "",
-    direccion_entrega: "",
-    telefono: "",
-    email: "",
     rol_idRol: "",
-    estados_idEstados: "",
     correo_electronico: "",
     nombre_completo: "",
     password: "",
-    telefono_usuario: "",
+    telefono: "",
     fecha_nacimiento: "",
+    direccion_entrega: "",
   });
 
   const [roles, setRoles] = useState([]);
@@ -26,9 +21,7 @@ const RegistroUsuario = () => {
   useEffect(() => {
     const fetchRoles = async () => {
       try {
-        const response = await axios.get(
-          "http://localhost:5000/api/obtenerroles"
-        );
+        const response = await axios.get("http://localhost:5000/api/obtenerroles");
         setRoles(response.data);
       } catch (error) {
         console.error("Error al obtener los roles:", error);
@@ -76,22 +69,22 @@ const RegistroUsuario = () => {
     }
 
     setError(""); // Limpiar mensaje de error de edad
-
+    console.log("Datos del formulario:", formData);
     try {
-      const response = await fetch(
-        "http://localhost:5000/api/insertarusuarios",
-        {
-          method: "POST",
-          headers: { "Content-Type": "application/json" },
-          body: JSON.stringify(formData),
-        }
-      );
+      const response = await axios.post("http://localhost:5000/api/insertarusuarios", {
+        rol_idRol: formData.rol_idRol,
+        correo_electronico: formData.correo_electronico,
+        nombre_completo: formData.nombre_completo,
+        password: formData.password,
+        telefono: formData.telefono,
+        fecha_nacimiento: formData.fecha_nacimiento,
+        direccion: formData.direccion_entrega, // Usamos direccion_entrega como dirección
+      });
 
-      const result = await response.json();
-      if (response.ok) {
+      if (response.data) {
         alert("Usuario registrado con éxito.");
       } else {
-        alert(`Error: ${result.message}`);
+        alert("Error: No se pudo registrar el usuario.");
       }
     } catch (error) {
       console.error("Error al registrar el usuario:", error);
@@ -117,78 +110,6 @@ const RegistroUsuario = () => {
       </Typography>
       <form onSubmit={handleSubmit}>
         <TextField
-          label="Razón Social"
-          name="razon_social"
-          value={formData.razon_social}
-          onChange={handleChange}
-          fullWidth
-          margin="normal"
-          required
-          sx={{
-            backgroundColor: "#e3f2fd", // Azul claro
-            borderRadius: 1,
-            marginBottom: 2,
-          }}
-        />
-        <TextField
-          label="Nombre Comercial"
-          name="nombre_comercial"
-          value={formData.nombre_comercial}
-          onChange={handleChange}
-          fullWidth
-          margin="normal"
-          required
-          sx={{
-            backgroundColor: "#e3f2fd", // Azul claro
-            borderRadius: 1,
-            marginBottom: 2,
-          }}
-        />
-        <TextField
-          label="Dirección de Entrega"
-          name="direccion_entrega"
-          value={formData.direccion_entrega}
-          onChange={handleChange}
-          fullWidth
-          margin="normal"
-          required
-          sx={{
-            backgroundColor: "#e3f2fd", // Azul claro
-            borderRadius: 1,
-            marginBottom: 2,
-          }}
-        />
-        <TextField
-          label="Teléfono"
-          name="telefono"
-          value={formData.telefono}
-          onChange={handleChange}
-          fullWidth
-          margin="normal"
-          required
-          inputProps={{ maxLength: 8 }}
-          sx={{
-            backgroundColor: "#e3f2fd", // Azul claro
-            borderRadius: 1,
-            marginBottom: 2,
-          }}
-        />
-        {telefonoError && <Typography color="error">{telefonoError}</Typography>}
-        <TextField
-          label="Email"
-          name="email"
-          value={formData.email}
-          onChange={handleChange}
-          fullWidth
-          margin="normal"
-          required
-          sx={{
-            backgroundColor: "#e3f2fd", // Azul claro
-            borderRadius: 1,
-            marginBottom: 2,
-          }}
-        />
-        <TextField
           select
           label="Rol"
           name="rol_idRol"
@@ -213,20 +134,7 @@ const RegistroUsuario = () => {
             ))
           )}
         </TextField>
-        <TextField
-          label="Estado"
-          name="estados_idEstados"
-          value={formData.estados_idEstados}
-          onChange={handleChange}
-          fullWidth
-          margin="normal"
-          required
-          sx={{
-            backgroundColor: "#e3f2fd", // Azul claro
-            borderRadius: 1,
-            marginBottom: 2,
-          }}
-        />
+
         <TextField
           label="Correo Electrónico"
           name="correo_electronico"
@@ -272,19 +180,21 @@ const RegistroUsuario = () => {
           }}
         />
         <TextField
-          label="Teléfono Usuario"
-          name="telefono_usuario"
-          value={formData.telefono_usuario}
+          label="Teléfono"
+          name="telefono"
+          value={formData.telefono}
           onChange={handleChange}
           fullWidth
           margin="normal"
           required
+          inputProps={{ maxLength: 8 }}
           sx={{
             backgroundColor: "#e3f2fd", // Azul claro
             borderRadius: 1,
             marginBottom: 2,
           }}
         />
+        {telefonoError && <Typography color="error">{telefonoError}</Typography>}
         <TextField
           label="Fecha de Nacimiento"
           name="fecha_nacimiento"
@@ -301,7 +211,20 @@ const RegistroUsuario = () => {
             marginBottom: 2,
           }}
         />
-
+        <TextField
+          label="Dirección"
+          name="direccion_entrega"
+          value={formData.direccion_entrega}
+          onChange={handleChange}
+          fullWidth
+          margin="normal"
+          required
+          sx={{
+            backgroundColor: "#e3f2fd", // Azul claro
+            borderRadius: 1,
+            marginBottom: 2,
+          }}
+        />
         {error && <Typography color="error">{error}</Typography>}
 
         <Button

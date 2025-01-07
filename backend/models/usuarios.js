@@ -15,38 +15,33 @@ const insertarUsuario = async (usuario) => {
       throw new Error("El correo electrónico ya está registrado.");
     }
 
-    // Insertar el cliente y usuario con todos los campos
+    // Insertar el usuario con todos los campos del nuevo procedimiento
     const result = await pool
       .request()
-      .input("razon_social", mssql.NVarChar, usuario.razon_social)
-      .input("nombre_comercial", mssql.NVarChar, usuario.nombre_comercial)
-      .input("direccion_entrega", mssql.NVarChar, usuario.direccion_entrega)
-      .input("telefono", mssql.NVarChar, usuario.telefono)
-      .input("email", mssql.NVarChar, usuario.email)
       .input("rol_idRol", mssql.Int, usuario.rol_idRol)
-      .input("estados_idEstados", mssql.Int, usuario.estados_idEstados)
       .input("correo_electronico", mssql.NVarChar, usuario.correo_electronico)
       .input("nombre_completo", mssql.NVarChar, usuario.nombre_completo)
       .input("password", mssql.NVarChar, usuario.password)
-      .input("telefono_usuario", mssql.NVarChar, usuario.telefono_usuario)
+      .input("telefono", mssql.NVarChar, usuario.telefono)
       .input("fecha_nacimiento", mssql.Date, usuario.fecha_nacimiento)
       .input("direccion", mssql.NVarChar, usuario.direccion) // Nueva entrada
-      .execute("RegistrarClienteYUsuario");
+      .execute("InsertarUsuarios");
 
-    console.log("Resultado de RegistrarClienteYUsuario:", result);
+    console.log("Resultado de InsertarUsuarios:", result);
 
-    // Obtener el ID del cliente insertado
+    // Obtener el ID del usuario insertado
     if (result.recordset && result.recordset.length > 0) {
-      const idCliente = result.recordset[0].idCliente;
-      return { idCliente }; // Devolver solo el ID del cliente
+      const idUsuario = result.recordset[0].idUsuarios;
+      return { idUsuario }; // Devolver solo el ID del usuario
     } else {
-      throw new Error("No se obtuvo el ID del cliente.");
+      throw new Error("No se obtuvo el ID del usuario.");
     }
   } catch (err) {
     console.error("Error al insertar el usuario:", err);
     throw err;
   }
 };
+
 
 
 const actualizarUsuario = async (usuario, idUsuario) => {

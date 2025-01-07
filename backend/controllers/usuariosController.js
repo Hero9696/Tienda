@@ -9,29 +9,29 @@ const createUsuario = async (req, res) => {
     const passwordHashed = await bcrypt.hash(usuario.password, 10);
     usuario.password = passwordHashed;
 
-    // Insertar el usuario y el cliente en la base de datos
+    // Insertar el usuario en la base de datos (usando la función insertarUsuario)
     const result = await fusuarios.insertarUsuario(usuario);
-   
 
-    // Obtener el ID del cliente (y no del usuario, ya que se genera en el procedimiento almacenado)
-    const idCliente = result.idCliente;
-    if (!idCliente) {
-      throw new Error("No se pudo obtener el ID del cliente insertado.");
+    // Obtener el ID del usuario insertado
+    const idUsuario = result.idUsuario;
+    if (!idUsuario) {
+      throw new Error("No se pudo obtener el ID del usuario insertado.");
     }
 
     // Generar un token JWT para el usuario
     const token = generarToken.generarToken({
-      idClientes: idCliente,  // Cambiar a idClientes en lugar de idUsuarios
+      idUsuarios: idUsuario,  // Cambiar a idUsuarios en lugar de idClientes
       correo: usuario.correo_electronico,
     });
 
     // Responder al cliente con el mensaje de éxito y el token
-    res.status(201).json({ message: "Usuario registrado exitosamente", token, idCliente });
+    res.status(201).json({ message: "Usuario registrado exitosamente", token, idUsuario });
   } catch (err) {
     console.error("Error en createUsuario:", err);
     res.status(500).json({ error: "Error al registrar el usuario", details: err.message });
   }
 };
+
 
 const actualizarUsuario = async (req, res) => {
   try {
