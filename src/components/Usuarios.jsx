@@ -1,224 +1,234 @@
 import { useEffect, useState } from "react";
 import axios from "axios";
-import {
-  Container,
-  Grid,
-  Card,
-  CardContent,
-  Typography,
-  CircularProgress,
-  Alert,
-  TextField,
-  Button,
-  MenuItem,
-} from "@mui/material";
+import { Grid, Card, CardContent, Typography, Button, TextField, Select, MenuItem, InputLabel, FormControl } from "@mui/material";
 
-const UsuariosList = () => {
+const Usuarios = () => {
   const [usuarios, setUsuarios] = useState([]);
   const [roles, setRoles] = useState([]);
-  const [loadingUsuarios, setLoadingUsuarios] = useState(true);
-  const [loadingRoles, setLoadingRoles] = useState(true);
-  const [error, setError] = useState(null);
-  const [editingUsuario, setEditingUsuario] = useState(null); // Para el usuario que está siendo editado
-  const [formData, setFormData] = useState({
-    idUsuarios: "",
-    nombre_completo: "",
-    correo_electronico: "",
-    telefono: "",
-    fecha_nacimiento: "",
-    direccion: "",
-    rol_idRol: "",
-  });
+  const [estados, setEstados] = useState([]);
+  const [editing, setEditing] = useState(null);
+  const [newNombre, setNewNombre] = useState("");
+  const [newCorreo, setNewCorreo] = useState("");
+  const [newTelefono, setNewTelefono] = useState("");
+  const [newFechaNacimiento, setNewFechaNacimiento] = useState("");
+  const [newPassword, setNewPassword] = useState("");
+  const [newRolId, setNewRolId] = useState("");
+  const [newEstadoId, setNewEstadoId] = useState("");
+  const [newClienteId, setNewClienteId] = useState("");
 
-  // useEffect para cargar los usuarios
+  // Obtener los usuarios, roles y estados desde el API
   useEffect(() => {
     const fetchUsuarios = async () => {
       try {
         const response = await axios.get("http://localhost:5000/api/verusuarios");
         setUsuarios(response.data);
-        console.log("usuario", response.data);
-      } catch (err) {
-        setError(`Hubo un error al cargar los usuarios: ${err.message}`);
-      } finally {
-        setLoadingUsuarios(false);
+      } catch (error) {
+        console.error("Error al obtener los usuarios", error);
+      }
+    };
+
+    const fetchRoles = async () => {
+      try {
+        const response = await axios.get("http://localhost:5000/api/roles");
+        setRoles(response.data);
+      } catch (error) {
+        console.error("Error al obtener los roles", error);
+      }
+    };
+
+    const fetchEstados = async () => {
+      try {
+        const response = await axios.get("http://localhost:5000/api/estados");
+        setEstados(response.data);
+      } catch (error) {
+        console.error("Error al obtener los estados", error);
       }
     };
 
     fetchUsuarios();
-  }, []);
-
-  // useEffect para cargar los roles
-  useEffect(() => {
-    const fetchRoles = async () => {
-      try {
-        const response = await axios.get(
-          "http://localhost:5000/api/obtenerroles"
-        );
-        setRoles(response.data);
-        console.log("roles", response.data);
-      } catch (error) {
-        console.error("Error al obtener los roles:", error);
-      } finally {
-        setLoadingRoles(false);
-      }
-    };
-
     fetchRoles();
+    fetchEstados();
   }, []);
 
-  if (loadingUsuarios || loadingRoles) {
-    return (
-      <Container>
-        <CircularProgress />
-      </Container>
-    );
-  }
-
-  if (error) {
-    return (
-      <Container>
-        <Alert severity="error">{error}</Alert>
-      </Container>
-    );
-  }
-
-  // Función para mapear el ID de estado al nombre
-  const getRolesName = (rolId) => {
-    const rol = roles.find((role) => role.idRol === rolId);
-    console.log("Rol:", rol);
-    return rol ? rol.nombre : "Rol no encontrado";
+  // Función para manejar la edición de un usuario
+  const handleEdit = (id) => {
+    const usuario = usuarios.find((usuario) => usuario.idUsuarios === id);
+    setNewNombre(usuario.nombre_completo);
+    setNewCorreo(usuario.correo_electronico);
+    setNewTelefono(usuario.telefono);
+    setNewFechaNacimiento(usuario.fecha_nacimiento);
+    setNewPassword(usuario.password);
+    setNewRolId(usuario.rol_idRol);
+    setNewEstadoId(usuario.estados_idEstados);
+    setNewClienteId(usuario.clientes_idClientes);
+    setEditing(id);
   };
 
-  const handleEditClick = (usuario) => {
-    // Al hacer clic en el botón de editar, cargamos los datos en el formulario de edición
-    setEditingUsuario(usuario);
-    setFormData({
-      idUsuarios: usuario.idUsuarios,
-      nombre_completo: usuario.nombre_completo,
-      correo_electronico: usuario.correo_electronico,
-      telefono: usuario.telefono,
-      fecha_nacimiento: usuario.fecha_nacimiento,
-      direccion: usuario.direccion || "",
-      rol_idRol: usuario.rol_idRol,
-    });
-  };
-
-  const handleChange = (e) => {
-    const { name, value } = e.target;
-    setFormData({ ...formData, [name]: value });
-  };
-
-  const handleSave = async () => {
+  // Función para guardar los cambios del usuario
+  const handleSave = async (id) => {
     try {
-      const response = await axios.put("http://localhost:5000/api/actualizarusuarios", formData);
-      if (response.status === 200) {
-        setUsuarios((prevUsuarios) =>
-          prevUsuarios.map((usuario) =>
-            usuario.idUsuarios === formData.idUsuarios ? formData : usuario
-          )
-        );
-        setEditingUsuario(null); // Terminar la edición
-        alert("Usuario actualizado con éxito.");
+      const idUsuarios = localStorage.getItem("idUsuarios");
+
+      if (!idUsuarios) {
+        console.error("No se encontró el id del usuario en localStorage.");
+        return;
       }
-    } catch (err) {
-      alert(`Error al actualizar el usuario: ${err.message}`);
+
+      await axios.put("http://localhost:5000/api/actualizarusuarios", {
+        idUsuarios: id,
+        nombre_completo: newNombre,
+        correo_electronico: newCorreo,
+        telefono: newTelefono,
+        fecha_nacimiento: newFechaNacimiento,
+        password: newPassword,
+        rol_idRol: newRolId,
+        estados_idEstados: newEstadoId,
+        clientes_idClientes: newClienteId
+      });
+
+      setUsuarios((prevUsuarios) =>
+        prevUsuarios.map((usuario) =>
+          usuario.idUsuarios === id
+            ? {
+                ...usuario,
+                nombre_completo: newNombre,
+                correo_electronico: newCorreo,
+                telefono: newTelefono,
+                fecha_nacimiento: newFechaNacimiento,
+                password: newPassword,
+                rol_idRol: newRolId,
+                estados_idEstados: newEstadoId,
+                clientes_idClientes: newClienteId
+              }
+            : usuario
+        )
+      );
+
+      setEditing(null);
+      setNewNombre("");
+      setNewCorreo("");
+      setNewTelefono("");
+      setNewFechaNacimiento("");
+      setNewPassword("");
+      setNewRolId("");
+      setNewEstadoId("");
+      setNewClienteId("");
+    } catch (error) {
+      console.error("Error al guardar el usuario", error);
     }
   };
 
   return (
-    <Container>
+    <div>
       <Grid container spacing={2}>
         {usuarios.map((usuario) => (
           <Grid item xs={12} sm={6} md={4} key={usuario.idUsuarios}>
             <Card>
               <CardContent>
-                <Typography variant="h6">ID Usuario: {usuario.idUsuarios}</Typography>
                 <Typography variant="h6">{usuario.nombre_completo}</Typography>
-                {editingUsuario?.idUsuarios === usuario.idUsuarios ? (
-                  // Si el usuario está en modo edición
-                  <form>
-                    <TextField
-                      label="Nombre Completo"
-                      name="nombre_completo"
-                      value={formData.nombre_completo}
-                      onChange={handleChange}
-                      fullWidth
-                      margin="normal"
-                    />
-                    <TextField
-                      label="Correo Electrónico"
-                      name="correo_electronico"
-                      value={formData.correo_electronico}
-                      onChange={handleChange}
-                      fullWidth
-                      margin="normal"
-                    />
-                    <TextField
-                      label="Teléfono"
-                      name="telefono"
-                      value={formData.telefono}
-                      onChange={handleChange}
-                      fullWidth
-                      margin="normal"
-                    />
-                    <TextField
-                      label="Fecha de Nacimiento"
-                      name="fecha_nacimiento"
-                      type="date"
-                      value={formData.fecha_nacimiento}
-                      onChange={handleChange}
-                      fullWidth
-                      margin="normal"
-                      InputLabelProps={{ shrink: true }}
-                    />
-                    <TextField
-                      label="Dirección"
-                      name="direccion"
-                      value={formData.direccion}
-                      onChange={handleChange}
-                      fullWidth
-                      margin="normal"
-                    />
-                    <TextField
-                      select
-                      label="Rol"
-                      name="rol_idRol"
-                      value={formData.rol_idRol}
-                      onChange={handleChange}
-                      fullWidth
-                      margin="normal"
-                    >
-                      {roles.map((rol) => (
-                        <MenuItem key={rol.idRol} value={rol.idRol}>
-                          {rol.nombre}
-                        </MenuItem>
-                      ))}
-                    </TextField>
-                    <Button variant="contained" color="primary" onClick={handleSave}>
-                      Guardar Cambios
-                    </Button>
-                  </form>
-                ) : (
+                <Typography variant="body2">Correo: {usuario.correo_electronico}</Typography>
+                <Typography variant="body2">Teléfono: {usuario.telefono}</Typography>
+                <Typography variant="body2">Fecha de Nacimiento: {usuario.fecha_nacimiento}</Typography>
+                <Typography variant="body2">Rol: {roles.find((rol) => rol.idRol === usuario.rol_idRol)?.nombre}</Typography>
+                <Typography variant="body2">Estado: {estados.find((estado) => estado.idEstados === usuario.estados_idEstados)?.nombre}</Typography>
+
+                {editing === usuario.idUsuarios ? (
                   <>
-                    <Typography color="textSecondary">Correo: {usuario.correo_electronico}</Typography>
-                    <Typography color="textSecondary">Teléfono: {usuario.telefono}</Typography>
-                    <Typography color="textSecondary">Fecha de nacimiento: {new Date(usuario.fecha_nacimiento).toLocaleDateString()}</Typography>
-                    <Typography color="textSecondary">Fecha de creación: {new Date(usuario.fecha_creacion).toLocaleDateString()}</Typography>
-                    <Typography color="textSecondary">Cliente ID: {usuario.clientes_idClientes}</Typography>
-                    <Typography color="textSecondary">Rol: {getRolesName(usuario.rol)}</Typography>
-                    {usuario.direccion && <Typography color="textSecondary">Dirección: {usuario.direccion}</Typography>}
-                    <Button variant="contained" color="secondary" sx={{ mt: 2 }} onClick={() => handleEditClick(usuario)}>
-                      Editar
+                    <TextField
+                      label="Nuevo Nombre"
+                      value={newNombre}
+                      onChange={(e) => setNewNombre(e.target.value)}
+                      fullWidth
+                      margin="normal"
+                    />
+                    <TextField
+                      label="Nuevo Correo"
+                      value={newCorreo}
+                      onChange={(e) => setNewCorreo(e.target.value)}
+                      fullWidth
+                      margin="normal"
+                    />
+                    <TextField
+                      label="Nuevo Teléfono"
+                      value={newTelefono}
+                      onChange={(e) => setNewTelefono(e.target.value)}
+                      fullWidth
+                      margin="normal"
+                    />
+                    <TextField
+                      label="Nueva Fecha de Nacimiento"
+                      type="date"
+                      value={newFechaNacimiento}
+                      onChange={(e) => setNewFechaNacimiento(e.target.value)}
+                      fullWidth
+                      margin="normal"
+                      InputLabelProps={{
+                        shrink: true,
+                      }}
+                    />
+                    <TextField
+                      label="Nueva Contraseña"
+                      value={newPassword}
+                      onChange={(e) => setNewPassword(e.target.value)}
+                      fullWidth
+                      margin="normal"
+                    />
+                    <FormControl fullWidth margin="normal">
+                      <InputLabel>Rol</InputLabel>
+                      <Select
+                        value={newRolId}
+                        onChange={(e) => setNewRolId(e.target.value)}
+                        label="Rol"
+                      >
+                        {roles.map((rol) => (
+                          <MenuItem key={rol.idRol} value={rol.idRol}>
+                            {rol.nombre}
+                          </MenuItem>
+                        ))}
+                      </Select>
+                    </FormControl>
+                    <FormControl fullWidth margin="normal">
+                      <InputLabel>Estado</InputLabel>
+                      <Select
+                        value={newEstadoId}
+                        onChange={(e) => setNewEstadoId(e.target.value)}
+                        label="Estado"
+                      >
+                        {estados.map((estado) => (
+                          <MenuItem key={estado.idEstados} value={estado.idEstados}>
+                            {estado.nombre}
+                          </MenuItem>
+                        ))}
+                      </Select>
+                    </FormControl>
+                    <TextField
+                      label="ID Cliente"
+                      value={newClienteId}
+                      onChange={(e) => setNewClienteId(e.target.value)}
+                      fullWidth
+                      margin="normal"
+                    />
+                    <Button onClick={() => handleSave(usuario.idUsuarios)} variant="contained" color="primary" style={{ marginRight: 8 }}>
+                      Guardar
+                    </Button>
+                    <Button onClick={() => setEditing(null)} variant="outlined" color="secondary" style={{ marginRight: 8 }}>
+                      Cancelar
                     </Button>
                   </>
+                ) : (
+                  <div>
+                    <Button onClick={() => handleEdit(usuario.idUsuarios)} variant="outlined" color="secondary" style={{ marginRight: 8 }}>
+                      Editar
+                    </Button>
+                  </div>
                 )}
               </CardContent>
             </Card>
           </Grid>
         ))}
       </Grid>
-    </Container>
+    </div>
   );
 };
 
-export default UsuariosList;
+export default Usuarios;

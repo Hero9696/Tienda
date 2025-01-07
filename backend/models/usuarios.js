@@ -43,28 +43,24 @@ const insertarUsuario = async (usuario) => {
 };
 
 
-
-const actualizarUsuario = async (usuario, idUsuario) => {
+const actualizarUsuario = async (usuario) => {
   try {
     const pool = await connectDB();
 
     const result = await pool
       .request()
-      .input("idUsuario", mssql.Int, idUsuario)
-      .input("razon_social", mssql.NVarChar, usuario.razon_social)
-      .input("nombre_comercial", mssql.NVarChar, usuario.nombre_comercial)
-      .input("direccion_entrega", mssql.NVarChar, usuario.direccion_entrega)
-      .input("telefono", mssql.NVarChar, usuario.telefono)
-      .input("correo_electronico", mssql.NVarChar, usuario.correo_electronico)
+      .input("idUsuarios", mssql.Int, usuario.idUsuarios)
       .input("rol_idRol", mssql.Int, usuario.rol_idRol)
       .input("estados_idEstados", mssql.Int, usuario.estados_idEstados)
+      .input("correo_electronico", mssql.NVarChar, usuario.correo_electronico)
       .input("nombre_completo", mssql.NVarChar, usuario.nombre_completo)
       .input("password", mssql.NVarChar, usuario.password)
-      .input("telefono_usuario", mssql.NVarChar, usuario.telefono_usuario)
+      .input("telefono", mssql.NVarChar, usuario.telefono)
       .input("fecha_nacimiento", mssql.Date, usuario.fecha_nacimiento)
-      .execute("ActualizarUsuarioYCliente");
+      .input("clientes_idClientes", mssql.Int, usuario.clientes_idClientes)
+      .execute("ActualizarUsuarios");
 
-    console.log("Resultado de ActualizarUsuarioYCliente:", result);
+    console.log("Resultado de ActualizarUsuarios:", result);
 
     return result.recordset;
   } catch (err) {
@@ -72,6 +68,7 @@ const actualizarUsuario = async (usuario, idUsuario) => {
     throw err;
   }
 };
+
 
 
 const getUsuarios = async () => {

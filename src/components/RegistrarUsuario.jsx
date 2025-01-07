@@ -69,7 +69,7 @@ const RegistroUsuario = () => {
     }
 
     setError(""); // Limpiar mensaje de error de edad
-    console.log("Datos del formulario:", formData);
+    
     try {
       const response = await axios.post("http://localhost:5000/api/insertarusuarios", {
         rol_idRol: formData.rol_idRol,

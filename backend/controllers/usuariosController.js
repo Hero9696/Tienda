@@ -32,82 +32,17 @@ const createUsuario = async (req, res) => {
   }
 };
 
-
 const actualizarUsuario = async (req, res) => {
+  const usuario = req.body;
+
   try {
-    if (!req.body) {
-      return res.status(400).json({
-        error: "No se recibió ningún dato en el cuerpo de la solicitud",
-      });
-    }
-
-    const {
-      idUsuarios,
-      razon_social,
-      nombre_comercial,
-      direccion_entrega,
-      telefono,
-      correo_electronico,
-      rol_idRol,
-      estados_idEstados,
-      nombre_completo,
-      password,
-      telefono_usuario,
-      fecha_nacimiento,
-    } = req.body;
-
-    if (!idUsuarios) {
-      return res.status(400).json({ error: "El campo idUsuarios es obligatorio" });
-    }
-
-    // Verificar que los campos obligatorios estén presentes
-    if (
-      !razon_social ||
-      !nombre_comercial ||
-      !direccion_entrega ||
-      !telefono ||
-      !correo_electronico ||
-      !rol_idRol ||
-      !estados_idEstados ||
-      !nombre_completo ||
-      !telefono_usuario ||
-      !fecha_nacimiento
-    ) {
-      return res.status(400).json({ error: "Faltan campos obligatorios" });
-    }
-
-    const hashedPassword = password ? await bcrypt.hash(password, 10) : undefined;
-
-    // Crear objeto para actualizar el usuario
-    const usuario = {
-      idUsuarios,
-      razon_social,
-      nombre_comercial,
-      direccion_entrega,
-      telefono,
-      correo_electronico,
-      rol_idRol,
-      estados_idEstados,
-      nombre_completo,
-      password: hashedPassword,
-      telefono_usuario,
-      fecha_nacimiento,
-    };
-
-    // Llamar a la función que actualiza el usuario y el cliente
-    const result = await fusuarios.actualizarUsuario(usuario);
-
-    // Verificar si el resultado tiene éxito
-    if (result && result.recordset) {
-      res.status(200).json({ message: "Usuario y cliente actualizados exitosamente", result });
-    } else {
-      res.status(500).json({ error: "No se pudo actualizar el usuario o el cliente" });
-    }
+    const result = await fusuarios.actualizarUsuario({ ...usuario });
+    res.status(200).json(result);
   } catch (err) {
-    console.error("Error al actualizar el usuario:", err);
-    res.status(500).json({ error: "Error al actualizar el usuario", details: err.message });
+    res.status(500).json({ error: err.message });
   }
 };
+
 
 
 const usuarios = async (req, res) => {
