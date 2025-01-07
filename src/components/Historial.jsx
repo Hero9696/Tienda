@@ -34,7 +34,6 @@ const BuscarOrdenes = () => {
         { idUsuarios: idUsuario }
       );
       setOrdenes(response.data.orden);
-     
       setError("");
     } catch (err) {
       setError(err.response?.data?.message || "Aún no tienes órdenes.");
@@ -47,10 +46,10 @@ const BuscarOrdenes = () => {
   const eliminarOrden = async (idOrden, idEstado) => {
     // Verificar si el estado de la orden es 5
     if (idEstado === "Confirmado") {
-      alert("No se puede cancelar la compra porque ya esta confirmada.");
+      alert("No se puede cancelar la compra porque ya está confirmada.");
       return; // Salir de la función sin realizar la solicitud
     }
-  
+
     try {
       const response = await axios.delete(`http://localhost:5000/api/eliminarorden/${idOrden}`);
       alert(response.data.message);
@@ -59,7 +58,6 @@ const BuscarOrdenes = () => {
       alert('Error al eliminar la orden: ' + err.response?.data?.message || err.message);
     }
   };
-  
 
   const groupedOrders = ordenes.reduce((acc, orden) => {
     if (!acc[orden.idOrden]) {
@@ -83,13 +81,20 @@ const BuscarOrdenes = () => {
         flexDirection: "column",
         alignItems: "center",
         marginTop: "20px",
+        backgroundColor: "#f9e48f", // Fondo estilo One Piece
+        padding: "20px",
+        borderRadius: "10px",
       }}
     >
       <Typography
         variant="h4"
         gutterBottom
         align="center"
-        style={{ fontWeight: "bold", color: "#004d40" }}
+        style={{
+          fontWeight: "bold",
+          color: "#f58c42", // Naranja vibrante inspirado en One Piece
+          fontFamily: '"Rock Salt", cursive', // Tipografía de estilo manga
+        }}
       >
         Buscar Detalles de la Orden
       </Typography>
@@ -105,6 +110,7 @@ const BuscarOrdenes = () => {
           marginBottom: "20px",
           backgroundColor: "#FF5722",
           ":hover": { backgroundColor: "#E64A19" },
+          fontFamily: '"Rock Salt", cursive',
         }}
       >
         Buscar
@@ -128,6 +134,8 @@ const BuscarOrdenes = () => {
                 borderRadius: "8px",
                 marginBottom: "10px",
                 padding: "10px",
+                backgroundColor: "#fff7e6", // Fondo claro para cada orden
+                boxShadow: "0 4px 8px rgba(0, 0, 0, 0.1)", // Sombra sutil
               }}
             >
               <ListItemText
@@ -136,14 +144,20 @@ const BuscarOrdenes = () => {
                   <div>
                     <Typography
                       variant="body2"
-                      style={{ fontWeight: "bold", color: "#00796b" }}
+                      style={{
+                        fontWeight: "bold",
+                        color: "#00796b",
+                      }}
                     >
                       Dirección de Entrega:{" "}
                       {groupedOrders[idOrden].direccionEntrega}
                     </Typography>
                     <Typography
                       variant="body2"
-                      style={{ fontWeight: "bold", color: "#00796b" }}
+                      style={{
+                        fontWeight: "bold",
+                        color: "#00796b",
+                      }}
                     >
                       Estado De La Compra: {groupedOrders[idOrden].idEstado}
                     </Typography>
@@ -209,7 +223,11 @@ const BuscarOrdenes = () => {
         !loading && (
           <Typography
             variant="body1"
-            style={{ color: "#00796b", fontWeight: "bold" }}
+            style={{
+              color: "#00796b",
+              fontWeight: "bold",
+              fontFamily: '"Rock Salt", cursive',
+            }}
           >
             No hay órdenes para mostrar.
           </Typography>

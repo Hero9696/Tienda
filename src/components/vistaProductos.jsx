@@ -51,19 +51,20 @@ const Vista = ({ addToCart, actualizarCarrito }) => {
   };
 
   return (
-    <Box sx={{ backgroundColor: "#e0f7fa", minHeight: "100vh", padding: 4 }}>
+    <Box sx={{ backgroundColor: "#f9e48f", minHeight: "100vh", padding: 4 }}>
       <Typography
         variant="h3"
         gutterBottom
         align="center"
         sx={{
           marginBottom: 4,
-          color: "#004d40",
+          color: "#f58c42", // Color inspirado en One Piece
           fontWeight: "bold",
           textTransform: "uppercase",
+          fontFamily: '"Rock Salt", cursive', // Tipografía estilo manga
         }}
       >
-        🛒 Bienvenido a Mi Tiendita
+        🏴‍☠️ Bienvenido a Mi Tiendita
       </Typography>
 
       {loading ? (
@@ -91,6 +92,7 @@ const Vista = ({ addToCart, actualizarCarrito }) => {
                       transform: "scale(1.05)",
                       boxShadow: 10,
                     },
+                    backgroundColor: "#fff7e6", // Fondo claro para los productos
                   }}
                 >
                   <CardMedia
@@ -101,11 +103,11 @@ const Vista = ({ addToCart, actualizarCarrito }) => {
                       height: "200px", // Establecer una altura fija
                       width: "100%", // Asegurarse de que ocupe todo el ancho disponible
                       objectFit: "cover", // Asegura que la imagen cubra el área sin deformarse
-                      borderBottom: "2px solid #004d40", // Agregar borde inferior
+                      borderBottom: "2px solid #f58c42", // Borde inferior de color naranja
                     }}
                   />
                   <CardContent>
-                    <Typography variant="h6" sx={{ fontWeight: "bold", color: "#004d40" }}>
+                    <Typography variant="h6" sx={{ fontWeight: "bold", color: "#f58c42" }}>
                       {item.nombre}
                     </Typography>
                     <Typography color="textSecondary">
@@ -120,7 +122,7 @@ const Vista = ({ addToCart, actualizarCarrito }) => {
                         marginBottom: 2,
                         fontSize: "1.2rem",
                         fontWeight: "bold",
-                        color: "#00796b",
+                        color: "#f58c42",
                       }}
                     >
                       <strong>Precio:</strong> Q{item.precio}
@@ -132,9 +134,9 @@ const Vista = ({ addToCart, actualizarCarrito }) => {
                       disabled={item.stock === 0}
                       fullWidth
                       sx={{
-                        backgroundColor: "#004d40",
+                        backgroundColor: "#f58c42",
                         color: "#fff",
-                        ":hover": { backgroundColor: "#00251a" },
+                        ":hover": { backgroundColor: "#f57c00" },
                       }}
                     >
                       {item.stock === 0 ? "Sin Stock" : "Agregar al Carrito"}

@@ -1,6 +1,6 @@
 import { AppBar, Toolbar, Typography, IconButton, Badge, Box } from "@mui/material";
 import ShoppingCartIcon from "@mui/icons-material/ShoppingCart";
-import HistoryIcon from "@mui/icons-material/History"; // Icono para historial
+import HistoryIcon from "@mui/icons-material/History";
 import PropTypes from "prop-types";
 import { Link, useNavigate } from "react-router-dom";
 
@@ -12,14 +12,14 @@ const Navbar = ({ cart }) => {
   };
 
   const goToHistory = () => {
-    navigate("/historial"); // Redirige al historial
+    navigate("/historial");
   };
 
   return (
     <AppBar
       position="sticky"
       sx={{
-        backgroundColor: "#1976d2", // Color principal
+        backgroundColor: "#FFB400", // Color dorado, inspirado en la estética de One Piece
         padding: "10px 0", // Espaciado
       }}
     >
@@ -35,7 +35,7 @@ const Navbar = ({ cart }) => {
           to="/catalogo"
           style={{
             textDecoration: "none",
-            color: "white",
+            color: "#1d3557", // Color oscuro para contraste
             display: "flex",
             alignItems: "center",
           }}
@@ -45,11 +45,12 @@ const Navbar = ({ cart }) => {
             component="div"
             sx={{
               fontWeight: "bold",
-              fontSize: "1.8rem",
+              fontSize: "2rem", // Tamaño de fuente más grande
               marginLeft: "10px",
+              fontFamily: '"Rock Salt", cursive', // Tipografía inspirada en el estilo de One Piece
             }}
           >
-            🛒 Mi Tiendita
+            🏴‍☠️ Mi Tiendita
           </Typography>
         </Link>
 
@@ -57,7 +58,7 @@ const Navbar = ({ cart }) => {
         <Box sx={{ display: "flex", alignItems: "center", gap: "15px" }}>
           {/* Icono del historial */}
           <IconButton color="inherit" onClick={goToHistory}>
-            <HistoryIcon sx={{ fontSize: "2rem" }} />
+            <HistoryIcon sx={{ fontSize: "2.5rem", color: "#1d3557" }} /> Historial De Compras
           </IconButton>
 
           {/* Icono del carrito */}
@@ -67,13 +68,14 @@ const Navbar = ({ cart }) => {
               color="error"
               sx={{
                 "& .MuiBadge-badge": {
-                  fontSize: "0.9rem", // Tamaño del número
+                  fontSize: "1rem",
                   minWidth: "20px",
                   height: "20px",
+                  backgroundColor: "#ff6f61", // Color de advertencia similar al estilo de "One Piece"
                 },
               }}
             >
-              <ShoppingCartIcon sx={{ fontSize: "2rem" }} />
+              <ShoppingCartIcon sx={{ fontSize: "2.5rem", color: "#1d3557" }} /> Carrito De Compras
             </Badge>
           </IconButton>
         </Box>

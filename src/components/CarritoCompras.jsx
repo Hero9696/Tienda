@@ -112,12 +112,17 @@ const CarritoCompras = ({
   };
 
   return (
-    <Box sx={{ padding: 3 }}>
+    <Box sx={{ padding: 3, backgroundColor: "#f2e0a5" }}>
       <Typography
         variant="h4"
         gutterBottom
         align="center"
-        sx={{ color: "#004d40", fontWeight: "bold" }}
+        sx={{
+          color: "#d42f2f", // Rojo intenso, inspirando el estilo de One Piece
+          fontWeight: "bold",
+          fontFamily: "Comic Sans MS, sans-serif", // Toque divertido como One Piece
+          textShadow: "2px 2px 4px rgba(0, 0, 0, 0.5)", // Un toque de sombra para darle más profundidad
+        }}
       >
         Carrito de Compras
       </Typography>
@@ -127,7 +132,11 @@ const CarritoCompras = ({
           variant="body1"
           color="error"
           align="center"
-          sx={{ marginBottom: 2 }}
+          sx={{
+            marginBottom: 2,
+            fontFamily: "Comic Sans MS, sans-serif", // Igual que el título
+            textDecoration: "underline", // Subrayado para llamar la atención
+          }}
         >
           {error}
         </Typography>
@@ -142,8 +151,10 @@ const CarritoCompras = ({
                 sx={{
                   marginBottom: 2,
                   padding: 2,
-                  border: "1px solid #ddd",
+                  border: "2px solid #d42f2f", // Borde de color rojo
                   borderRadius: 2,
+                  backgroundColor: "#ffecb3", // Fondo amarillo suave
+                  boxShadow: "0px 4px 6px rgba(0, 0, 0, 0.2)", // Agregar sombra
                 }}
               >
                 <ListItemText
@@ -151,6 +162,10 @@ const CarritoCompras = ({
                   secondary={`Precio: Q${item.precio} x ${item.cantidad} = Q${
                     item.precio * item.cantidad
                   }`}
+                  sx={{
+                    fontFamily: "Comic Sans MS, sans-serif",
+                    color: "#d42f2f", // Mismo color que el encabezado
+                  }}
                 />
                 <Button
                   variant="outlined"
@@ -158,7 +173,11 @@ const CarritoCompras = ({
                   onClick={() => aumentarCantidad(item.idProductos)}
                   startIcon={<AddCircle />}
                   disabled={compraConfirmada}
-                  sx={{ marginRight: 1 }}
+                  sx={{
+                    marginRight: 1,
+                    backgroundColor: "#ff7043", // Naranja vibrante
+                    ":hover": { backgroundColor: "#ff5722" },
+                  }}
                 >
                   +
                 </Button>
@@ -168,7 +187,11 @@ const CarritoCompras = ({
                   onClick={() => reducirCantidad(item.idProductos)}
                   disabled={item.cantidad === 1 || compraConfirmada}
                   startIcon={<RemoveCircle />}
-                  sx={{ marginRight: 1 }}
+                  sx={{
+                    marginRight: 1,
+                    backgroundColor: "#b2dfdb", // Color suave, verde menta
+                    ":hover": { backgroundColor: "#80cbc4" },
+                  }}
                 >
                   -
                 </Button>
@@ -177,6 +200,10 @@ const CarritoCompras = ({
                   color="error"
                   onClick={() => handleEliminarProducto(item.idProductos)}
                   disabled={compraConfirmada}
+                  sx={{
+                    backgroundColor: "#d42f2f", // Rojo para eliminar
+                    ":hover": { backgroundColor: "#c62828" },
+                  }}
                 >
                   Eliminar
                 </Button>
@@ -187,7 +214,12 @@ const CarritoCompras = ({
           <Typography
             variant="h6"
             align="center"
-            sx={{ fontWeight: "bold", marginTop: 2 }}
+            sx={{
+              fontWeight: "bold",
+              marginTop: 2,
+              fontFamily: "Comic Sans MS, sans-serif",
+              color: "#f57c00", // Color naranja intenso
+            }}
           >
             Total: Q{total}
           </Typography>
@@ -200,8 +232,9 @@ const CarritoCompras = ({
               disabled={loading || compraConfirmada}
               sx={{
                 marginRight: 2,
-                backgroundColor: "#FF5722",
-                ":hover": { backgroundColor: "#E64A19" },
+                backgroundColor: "#ff5722",
+                ":hover": { backgroundColor: "#e64a19" },
+                fontFamily: "Comic Sans MS, sans-serif",
               }}
             >
               {loading ? "Confirmando..." : "Confirmar Compra"}
@@ -235,7 +268,11 @@ const CarritoCompras = ({
               <Typography
                 variant="h4"
                 color="primary"
-                sx={{ fontWeight: "bold" }}
+                sx={{
+                  fontWeight: "bold",
+                  fontFamily: "Comic Sans MS, sans-serif",
+                  color: "#ff9800", // Color dorado
+                }}
               >
                 Compra Realizada
               </Typography>
