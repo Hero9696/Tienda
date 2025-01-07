@@ -44,7 +44,7 @@ const VerOrdenes = () => {
           ? {
               ...orden,
               [name]: value,
-              estados_idEstados: value === 'Confirmar' ? 3 : 5,
+              estados_idEstados: value === 'Confirmado' ? 3 : 5,
             }
           : orden
       )
@@ -68,6 +68,7 @@ const VerOrdenes = () => {
       direccion: ordenToUpdate.direccion,
       estado: ordenToUpdate.estados_idEstados,
     };
+    console.log(ordenData);
 
     try {
       await axios.put('http://localhost:5000/api/actualizarordendetalles', {

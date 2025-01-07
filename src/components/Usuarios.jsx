@@ -15,7 +15,6 @@ const Usuarios = () => {
   const [newPassword, setNewPassword] = useState("");
   const [newRolId, setNewRolId] = useState("");
   const [newEstadoId, setNewEstadoId] = useState("");
-  const [newClienteId, setNewClienteId] = useState("");
   const [newDireccion, setNewDireccion] = useState("");
 
   // Obtener los usuarios, roles y estados desde el API
@@ -75,7 +74,6 @@ const Usuarios = () => {
     setNewPassword(usuario.password);
     setNewRolId(usuario.rol_idRol);
     setNewEstadoId(usuario.estados_idEstados);
-    setNewClienteId(usuario.clientes_idClientes);
     setNewDireccion(usuario.direccion);
     setEditing(id);
   };
@@ -83,19 +81,6 @@ const Usuarios = () => {
   // Función para guardar los cambios del usuario
   const handleSave = async (id) => {
     try {
-      console.log("Datos enviados:", {
-        idUsuario: newIdUsuarios,
-        nombre_completo: newNombre,
-        correo_electronico: newCorreo,
-        telefono: newTelefono,
-        fecha_nacimiento: newFechaNacimiento,
-        password: newPassword,
-        rol_idRol: newRolId,
-        estados_idEstados: newEstadoId,
-        clientes_idClientes: newClienteId,
-        direccion: newDireccion
-      });
-
       await axios.put("http://localhost:5000/api/actualizarusuarios", {
         idUsuario: newIdUsuarios,
         nombre_completo: newNombre,
@@ -105,7 +90,6 @@ const Usuarios = () => {
         password: newPassword,
         rol_idRol: newRolId,
         estados_idEstados: newEstadoId,
-        clientes_idClientes: newClienteId,
         direccion: newDireccion
       });
 
@@ -122,7 +106,6 @@ const Usuarios = () => {
                 password: newPassword,
                 rol_idRol: newRolId,
                 estados_idEstados: newEstadoId,
-                clientes_idClientes: newClienteId,
                 direccion: newDireccion
               }
             : usuario
@@ -138,8 +121,8 @@ const Usuarios = () => {
       setNewPassword("");
       setNewRolId("");
       setNewEstadoId("");
-      setNewClienteId("");
       setNewDireccion("");
+      alert("Usuario actualizado con éxito");
     } catch (error) {
       console.error("Error al guardar el usuario", error);
     }
@@ -155,7 +138,8 @@ const Usuarios = () => {
                 <Typography variant="h6">{usuario.nombre_completo}</Typography>
                 <Typography variant="body2">Correo: {usuario.correo_electronico}</Typography>
                 <Typography variant="body2">Teléfono: {usuario.telefono}</Typography>
-                <Typography variant="body2">Fecha de Nacimiento: {usuario.fecha_nacimiento}</Typography>
+                <Typography variant="body2">Fecha de Nacimiento: {new Date(usuario.fecha_nacimiento).toLocaleDateString("es-ES")}</Typography>
+
                 <Typography variant="body2">Rol: {roles.find((rol) => rol.idRol === usuario.rol)?.nombre}</Typography>
                 <Typography variant="body2">Estado: {estados.find((estado) => estado.idEstados === usuario.estado)?.nombre}</Typography>
 
@@ -235,13 +219,7 @@ const Usuarios = () => {
                         ))}
                       </Select>
                     </FormControl>
-                    <TextField
-                      label="ID Cliente"
-                      value={newClienteId}
-                      onChange={(e) => setNewClienteId(e.target.value)}
-                      fullWidth
-                      margin="normal"
-                    />
+                 
                     <Button onClick={() => handleSave(usuario.idUsuarios)} variant="contained" color="primary" style={{ marginRight: 8 }}>
                       Guardar
                     </Button>
