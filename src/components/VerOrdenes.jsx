@@ -1,5 +1,5 @@
-import { useEffect, useState } from 'react';
-import axios from 'axios';
+import { useEffect, useState } from "react";
+import axios from "axios";
 import {
   Button,
   Select,
@@ -14,7 +14,7 @@ import {
   CircularProgress,
   Typography,
   TextField,
-} from '@mui/material';
+} from "@mui/material";
 
 const VerOrdenes = () => {
   const [ordenes, setOrdenes] = useState([]);
@@ -24,10 +24,10 @@ const VerOrdenes = () => {
   useEffect(() => {
     const fetchOrdenes = async () => {
       try {
-        const response = await axios.get('http://localhost:5000/api/ordenes');
+        const response = await axios.get("http://localhost:5000/api/ordenes");
         setOrdenes(response.data);
       } catch (err) {
-        setError('Error al obtener los datos.', err);
+        setError("Error al obtener los datos.", err);
       } finally {
         setLoading(false);
       }
@@ -44,7 +44,7 @@ const VerOrdenes = () => {
           ? {
               ...orden,
               [name]: value,
-              estados_idEstados: value === 'Confirmado' ? 3 : 5,
+              estados_idEstados: value === "Confirmado" ? 3 : 5,
             }
           : orden
       )
@@ -71,27 +71,40 @@ const VerOrdenes = () => {
     console.log(ordenData);
 
     try {
-      await axios.put('http://localhost:5000/api/actualizarordendetalles', {
+      await axios.put("http://localhost:5000/api/actualizarordendetalles", {
         idOrden,
         detalles,
       });
 
-      await axios.put('http://localhost:5000/api/actualizarorden', ordenData);
+      await axios.put("http://localhost:5000/api/actualizarorden", ordenData);
 
-      alert('Orden actualizada correctamente');
+      alert("Orden actualizada correctamente");
     } catch (err) {
       console.error(err);
-      alert('Error al actualizar la orden');
+      alert("Error al actualizar la orden");
     }
   };
 
-  const eliminarOrden = async (idOrden) => {
+  const eliminarOrden = async (idOrden, idEstado) => {
+    // Verificar si el estado de la orden es "Confirmado"
+    if (idEstado === "Confirmado") {
+      alert("No se puede cancelar la compra porque ya está confirmada.");
+      return; // Salir de la función sin realizar la solicitud
+    }
+
     try {
-      const response = await axios.delete(`http://localhost:5000/api/eliminarorden/${idOrden}`);
+      const response = await axios.delete(
+        `http://localhost:5000/api/eliminarorden/${idOrden}`
+      );
       alert(response.data.message);
-      setOrdenes((prevOrdenes) => prevOrdenes.filter((orden) => orden.idOrden !== idOrden));
+      setOrdenes((prevOrdenes) =>
+        prevOrdenes.filter((orden) => orden.idOrden !== idOrden)
+      ); // Eliminar de la lista local
     } catch (err) {
-      alert('Error al eliminar la orden: ' + err.response?.data?.message || err.message);
+      alert(
+        "Error al eliminar la orden: " + err.response?.data?.message ||
+          err.message
+      );
     }
   };
 
@@ -104,7 +117,7 @@ const VerOrdenes = () => {
   }
 
   return (
-    <div style={{ padding: '20px' }}>
+    <div style={{ padding: "20px" }}>
       <Typography variant="h4" gutterBottom>
         Ordenes
       </Typography>
@@ -171,14 +184,16 @@ const VerOrdenes = () => {
                     variant="contained"
                     color="primary"
                     onClick={() => handleSave(orden.idOrden)}
-                    style={{ marginRight: '10px' }}
+                    style={{ marginRight: "10px" }}
                   >
                     Guardar Cambios
                   </Button>
                   <Button
                     variant="contained"
                     color="secondary"
-                    onClick={() => eliminarOrden(orden.idOrden)}
+                    onClick={() =>
+                      eliminarOrden(orden.idOrden, orden.estado_nombre)
+                    }
                   >
                     Eliminar
                   </Button>
