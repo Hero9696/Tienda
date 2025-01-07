@@ -49,15 +49,15 @@ const actualizarUsuario = async (usuario) => {
 
     const result = await pool
       .request()
-      .input("idUsuarios", mssql.Int, usuario.idUsuarios)
+      .input("idUsuario", mssql.Int, usuario.idUsuario)
       .input("rol_idRol", mssql.Int, usuario.rol_idRol)
       .input("estados_idEstados", mssql.Int, usuario.estados_idEstados)
       .input("correo_electronico", mssql.NVarChar, usuario.correo_electronico)
+      .input("direccion", mssql.NVarChar, usuario.direccion)
       .input("nombre_completo", mssql.NVarChar, usuario.nombre_completo)
       .input("password", mssql.NVarChar, usuario.password)
-      .input("telefono", mssql.NVarChar, usuario.telefono)
+      .input("telefono_usuario", mssql.NVarChar, usuario.telefono)
       .input("fecha_nacimiento", mssql.Date, usuario.fecha_nacimiento)
-      .input("clientes_idClientes", mssql.Int, usuario.clientes_idClientes)
       .execute("ActualizarUsuarios");
 
     console.log("Resultado de ActualizarUsuarios:", result);

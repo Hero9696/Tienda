@@ -3,6 +3,7 @@ import axios from "axios";
 import { Grid, Card, CardContent, Typography, Button, TextField, Select, MenuItem, InputLabel, FormControl } from "@mui/material";
 
 const Usuarios = () => {
+  const [newIdUsuarios, setNewIdUsuarios] = useState([]);
   const [usuarios, setUsuarios] = useState([]);
   const [roles, setRoles] = useState([]);
   const [estados, setEstados] = useState([]);
@@ -15,44 +16,58 @@ const Usuarios = () => {
   const [newRolId, setNewRolId] = useState("");
   const [newEstadoId, setNewEstadoId] = useState("");
   const [newClienteId, setNewClienteId] = useState("");
+  const [newDireccion, setNewDireccion] = useState("");
 
   // Obtener los usuarios, roles y estados desde el API
+  // Obtener los usuarios desde el API
   useEffect(() => {
     const fetchUsuarios = async () => {
       try {
         const response = await axios.get("http://localhost:5000/api/verusuarios");
         setUsuarios(response.data);
+        console.log("Usuarios", response.data);
       } catch (error) {
         console.error("Error al obtener los usuarios", error);
       }
     };
 
+    fetchUsuarios();
+  }, []);
+
+  // Obtener los roles desde el API
+  useEffect(() => {
     const fetchRoles = async () => {
       try {
-        const response = await axios.get("http://localhost:5000/api/roles");
+        const response = await axios.get("http://localhost:5000/api/obtenerroles");
         setRoles(response.data);
+        console.log("Roles", response.data);
       } catch (error) {
         console.error("Error al obtener los roles", error);
       }
     };
 
+    fetchRoles();
+  }, []);
+
+  // Obtener los estados desde el API
+  useEffect(() => {
     const fetchEstados = async () => {
       try {
         const response = await axios.get("http://localhost:5000/api/estados");
         setEstados(response.data);
+        console.log("Estados", response.data);
       } catch (error) {
         console.error("Error al obtener los estados", error);
       }
     };
 
-    fetchUsuarios();
-    fetchRoles();
     fetchEstados();
   }, []);
 
   // Función para manejar la edición de un usuario
   const handleEdit = (id) => {
     const usuario = usuarios.find((usuario) => usuario.idUsuarios === id);
+    setNewIdUsuarios(usuario.idUsuarios);
     setNewNombre(usuario.nombre_completo);
     setNewCorreo(usuario.correo_electronico);
     setNewTelefono(usuario.telefono);
@@ -61,21 +76,15 @@ const Usuarios = () => {
     setNewRolId(usuario.rol_idRol);
     setNewEstadoId(usuario.estados_idEstados);
     setNewClienteId(usuario.clientes_idClientes);
+    setNewDireccion(usuario.direccion);
     setEditing(id);
   };
 
   // Función para guardar los cambios del usuario
   const handleSave = async (id) => {
     try {
-      const idUsuarios = localStorage.getItem("idUsuarios");
-
-      if (!idUsuarios) {
-        console.error("No se encontró el id del usuario en localStorage.");
-        return;
-      }
-
-      await axios.put("http://localhost:5000/api/actualizarusuarios", {
-        idUsuarios: id,
+      console.log("Datos enviados:", {
+        idUsuario: newIdUsuarios,
         nombre_completo: newNombre,
         correo_electronico: newCorreo,
         telefono: newTelefono,
@@ -83,7 +92,21 @@ const Usuarios = () => {
         password: newPassword,
         rol_idRol: newRolId,
         estados_idEstados: newEstadoId,
-        clientes_idClientes: newClienteId
+        clientes_idClientes: newClienteId,
+        direccion: newDireccion
+      });
+
+      await axios.put("http://localhost:5000/api/actualizarusuarios", {
+        idUsuario: newIdUsuarios,
+        nombre_completo: newNombre,
+        correo_electronico: newCorreo,
+        telefono: newTelefono,
+        fecha_nacimiento: newFechaNacimiento,
+        password: newPassword,
+        rol_idRol: newRolId,
+        estados_idEstados: newEstadoId,
+        clientes_idClientes: newClienteId,
+        direccion: newDireccion
       });
 
       setUsuarios((prevUsuarios) =>
@@ -91,6 +114,7 @@ const Usuarios = () => {
           usuario.idUsuarios === id
             ? {
                 ...usuario,
+                idUsuario: newIdUsuarios,
                 nombre_completo: newNombre,
                 correo_electronico: newCorreo,
                 telefono: newTelefono,
@@ -98,13 +122,15 @@ const Usuarios = () => {
                 password: newPassword,
                 rol_idRol: newRolId,
                 estados_idEstados: newEstadoId,
-                clientes_idClientes: newClienteId
+                clientes_idClientes: newClienteId,
+                direccion: newDireccion
               }
             : usuario
         )
       );
 
       setEditing(null);
+      setNewIdUsuarios("");
       setNewNombre("");
       setNewCorreo("");
       setNewTelefono("");
@@ -113,6 +139,7 @@ const Usuarios = () => {
       setNewRolId("");
       setNewEstadoId("");
       setNewClienteId("");
+      setNewDireccion("");
     } catch (error) {
       console.error("Error al guardar el usuario", error);
     }
@@ -129,8 +156,8 @@ const Usuarios = () => {
                 <Typography variant="body2">Correo: {usuario.correo_electronico}</Typography>
                 <Typography variant="body2">Teléfono: {usuario.telefono}</Typography>
                 <Typography variant="body2">Fecha de Nacimiento: {usuario.fecha_nacimiento}</Typography>
-                <Typography variant="body2">Rol: {roles.find((rol) => rol.idRol === usuario.rol_idRol)?.nombre}</Typography>
-                <Typography variant="body2">Estado: {estados.find((estado) => estado.idEstados === usuario.estados_idEstados)?.nombre}</Typography>
+                <Typography variant="body2">Rol: {roles.find((rol) => rol.idRol === usuario.rol)?.nombre}</Typography>
+                <Typography variant="body2">Estado: {estados.find((estado) => estado.idEstados === usuario.estado)?.nombre}</Typography>
 
                 {editing === usuario.idUsuarios ? (
                   <>
@@ -170,6 +197,13 @@ const Usuarios = () => {
                       label="Nueva Contraseña"
                       value={newPassword}
                       onChange={(e) => setNewPassword(e.target.value)}
+                      fullWidth
+                      margin="normal"
+                    />
+                     <TextField
+                      label="Nueva Dirección"
+                      value={newDireccion}
+                      onChange={(e) => setNewDireccion(e.target.value)}
                       fullWidth
                       margin="normal"
                     />
