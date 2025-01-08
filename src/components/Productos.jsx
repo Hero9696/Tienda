@@ -30,7 +30,6 @@ const ProductoForm = ({ onSubmit, producto }) => {
   const [categorias, setCategorias] = useState([]);
   const [isSubmitting, setIsSubmitting] = useState(false);
 
-  // Obtener las categorías de productos desde el servidor
   useEffect(() => {
     const fetchCategorias = async () => {
       try {
@@ -49,7 +48,6 @@ const ProductoForm = ({ onSubmit, producto }) => {
 
     fetchCategorias();
 
-    // Obtener el idUsuario desde el localStorage
     const idUsuario = localStorage.getItem("idUsuarios");
     if (idUsuario) {
       setFormData((prevData) => ({
@@ -92,34 +90,33 @@ const ProductoForm = ({ onSubmit, producto }) => {
       }
     }
     return true;
-  };const handleSubmit = async (e) => {
+  };
+
+  const handleSubmit = async (e) => {
     e.preventDefault();
-  
+
     if (!validateForm()) return;
-  
+
     if (!window.confirm("¿Estás seguro de enviar los datos?")) return;
-  
+
     setIsSubmitting(true);
-  
-    // Log para verificar los datos que se están enviando
-    console.log("Datos del formulario:", formData);
-  
+
     try {
       const response = await axios.post(
-        "http://localhost:5000/api/insertarProducto", 
-        formData, // Enviar los datos directamente como JSON
+        "http://localhost:5000/api/insertarProducto",
+        formData,
         {
           headers: {
-            "Content-Type": "application/json", // Establecer el tipo de contenido como JSON
+            "Content-Type": "application/json",
           },
         }
       );
-  
+
       alert(
         producto ? "Producto actualizado correctamente." : "Producto agregado correctamente."
       );
       onSubmit && onSubmit(response.data);
-  
+
       setFormData({
         categoriaProductos_idCategoriaProductos: "",
         usuarios_idUsuarios: "",
@@ -144,8 +141,6 @@ const ProductoForm = ({ onSubmit, producto }) => {
       setIsSubmitting(false);
     }
   };
-  
-  
 
   const styles = {
     formContainer: {
@@ -157,17 +152,28 @@ const ProductoForm = ({ onSubmit, producto }) => {
       boxShadow: "0 4px 20px rgba(0, 0, 0, 0.1)",
     },
     input: {
-      backgroundColor: "#f4f7fb",
+      backgroundColor: "#f9f9f9",
       borderRadius: "4px",
       padding: "10px",
+      "&:focus": {
+        boxShadow: "0 0 5px 2px rgba(0, 51, 102, 0.3)", // Sombreado azul al enfocar
+        borderColor: "#003366", // Borde azul al enfocar
+      },
     },
     button: {
-      backgroundColor: "#1e88e5",
-      color: "#fff",
+      backgroundColor: "#ffcc00", // Amarillo Walmart
+      color: "#003366", // Azul Walmart
       padding: "12px 24px",
       borderRadius: "4px",
       textTransform: "none",
       boxShadow: "0 4px 10px rgba(0, 0, 0, 0.15)",
+      "&:hover": {
+        backgroundColor: "#e6b800", // Amarillo más oscuro al pasar el mouse
+      },
+    },
+    label: {
+      fontWeight: "bold",
+      color: "#003366", // Azul Walmart
     },
   };
 
@@ -184,7 +190,9 @@ const ProductoForm = ({ onSubmit, producto }) => {
         <Grid container spacing={2}>
           <Grid item xs={12} md={6}>
             <FormControl fullWidth>
-              <InputLabel id="categoria-label">Categoría</InputLabel>
+              <InputLabel id="categoria-label" style={styles.label}>
+                Categoría
+              </InputLabel>
               <Select
                 labelId="categoria-label"
                 name="categoriaProductos_idCategoriaProductos"
@@ -208,20 +216,20 @@ const ProductoForm = ({ onSubmit, producto }) => {
 
           <Grid item xs={12} md={6}>
             <Box display="flex" alignItems="center" justifyContent="space-between">
-              <InputLabel id="usuario-label">ID Usuario</InputLabel>
+              <InputLabel id="usuario-label" style={styles.label}>
+                ID Usuario
+              </InputLabel>
               <span style={styles.input}>{formData.usuarios_idUsuarios}</span>
             </Box>
           </Grid>
 
-          {/* TextField inputs */}
-          {[
-            { name: "nombre", label: "Nombre", type: "text" },
+          {[{ name: "nombre", label: "Nombre", type: "text" },
             { name: "marca", label: "Marca", type: "text" },
             { name: "codigo", label: "Código", type: "text" },
             { name: "foto", label: "Foto", type: "text" },
             { name: "stock", label: "Stock", type: "number" },
             { name: "estados_idEstados", label: "ID Estado", type: "number" },
-            { name: "precio", label: "Precio", type: "number", step: "0.01" },
+            { name: "precio", label: "Precio", type: "number", step: "0.01" }
           ].map(({ name, label, type, step }, index) => (
             <Grid item xs={12} md={6} key={index}>
               <TextField
@@ -247,11 +255,7 @@ const ProductoForm = ({ onSubmit, producto }) => {
                 disabled={isSubmitting}
                 style={styles.button}
               >
-                {isSubmitting
-                  ? "Guardando..."
-                  : producto
-                  ? "Actualizar"
-                  : "Guardar"}
+                {isSubmitting ? "Guardando..." : producto ? "Actualizar" : "Guardar"}
               </Button>
             </Box>
           </Grid>

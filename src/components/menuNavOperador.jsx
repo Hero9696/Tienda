@@ -1,14 +1,23 @@
-import { AppBar, Toolbar, Typography, IconButton, Badge, Menu, MenuItem, Box } from "@mui/material";
+import {
+  AppBar,
+  Toolbar,
+  Typography,
+  IconButton,
+  Badge,
+  Menu,
+  MenuItem,
+  Box,
+} from "@mui/material";
 import { useState } from "react";
 import ShoppingCartIcon from "@mui/icons-material/ShoppingCart";
 import AccountCircleIcon from "@mui/icons-material/AccountCircle";
-import StoreIcon from '@mui/icons-material/Store'; // Ícono para Productos
-import ShoppingBasketIcon from '@mui/icons-material/ShoppingBasket'; // Ícono para Ventas
-import PropTypes from 'prop-types';
-import { Link, useNavigate } from 'react-router-dom';
+import StoreIcon from "@mui/icons-material/Store"; // Ícono para Productos
+import ShoppingBasketIcon from "@mui/icons-material/ShoppingBasket"; // Ícono para Ventas
+import PropTypes from "prop-types";
+import { Link, useNavigate } from "react-router-dom";
 
 const Navbar = ({ cart }) => {
-  const navigate = useNavigate(); 
+  const navigate = useNavigate();
   const [anchorEl, setAnchorEl] = useState(null);
   const [anchorElProductos, setAnchorElProductos] = useState(null);
   const [anchorElVentas, setAnchorElVentas] = useState(null);
@@ -42,57 +51,119 @@ const Navbar = ({ cart }) => {
   };
 
   return (
-    <AppBar position="sticky" sx={{ backgroundColor: '#ff6f00', boxShadow: 3 }}>
-      <Toolbar style={{ display: 'flex', justifyContent: 'space-between', padding: '0 20px' }}>
-        <Link to="/catalogo/operador" style={{ textDecoration: 'none', color: 'white' }}>
-          <Typography variant="h6" sx={{ fontWeight: 'bold', color: '#0040ff' }}>
+    <AppBar
+      position="sticky"
+      sx={{
+        backgroundColor: "#0040ff", // Azul corporativo de Walmart
+        boxShadow: "0px 4px 6px rgba(0, 0, 0, 0.3)", // Sombra ligera
+      }}
+    >
+      <Toolbar
+        style={{
+          display: "flex",
+          justifyContent: "space-between",
+          padding: "0 20px",
+        }}
+      >
+        {/* Título de la tienda */}
+        <Link to="/catalogo/operador" style={{ textDecoration: "none" }}>
+          <Typography
+            variant="h6"
+            sx={{
+              fontWeight: "bold",
+              color: "#ffdd00", // Amarillo Walmart
+              fontFamily: "Arial, sans-serif",
+            }}
+          >
             Mi Tienda
           </Typography>
         </Link>
 
         <Box display="flex" alignItems="center">
           {/* Menú de Usuarios */}
-          <IconButton color="inherit" onClick={handleUserMenuClick} sx={{ marginRight: 2 }}>
-            <AccountCircleIcon sx={{ color: '#ffdd00' }} /> Usuarios
+          <IconButton
+            color="inherit"
+            onClick={handleUserMenuClick}
+            sx={{ marginRight: 2 }}
+          >
+            <AccountCircleIcon
+              sx={{
+                color: "#ffdd00", // Amarillo Walmart
+                fontSize: "1.5rem",
+              }}
+            />
           </IconButton>
           <Menu
             anchorEl={anchorEl}
             open={Boolean(anchorEl)}
             onClose={handleCloseUserMenu}
           >
-            <MenuItem onClick={() => navigate("/usuarios/crear")}>Crear Usuario</MenuItem>
-            <MenuItem onClick={() => navigate("/usuarios/lista")}>Lista de Usuarios</MenuItem>
+            <MenuItem onClick={() => navigate("/usuarios/crear")}>
+              Crear Usuario
+            </MenuItem>
+            <MenuItem onClick={() => navigate("/usuarios/lista")}>
+              Lista de Usuarios
+            </MenuItem>
           </Menu>
 
           {/* Menú de Productos */}
-          <IconButton color="inherit" onClick={handleProductosMenuClick} sx={{ marginRight: 2 }}>
-            <StoreIcon sx={{ color: '#ffdd00' }} /> Productos
+          <IconButton
+            color="inherit"
+            onClick={handleProductosMenuClick}
+            sx={{ marginRight: 2 }}
+          >
+            <StoreIcon
+              sx={{
+                color: "#ffdd00", // Amarillo Walmart
+                fontSize: "1.5rem",
+              }}
+            />
           </IconButton>
           <Menu
             anchorEl={anchorElProductos}
             open={Boolean(anchorElProductos)}
             onClose={handleCloseProductosMenu}
           >
-            <MenuItem onClick={() => navigate("/productos/crear")}>Crear Producto</MenuItem>
-            <MenuItem onClick={() => navigate("/productos/lista")}>Lista de Productos</MenuItem>
+            <MenuItem onClick={() => navigate("/productos/crear")}>
+              Crear Producto
+            </MenuItem>
+            <MenuItem onClick={() => navigate("/productos/lista")}>
+              Lista de Productos
+            </MenuItem>
           </Menu>
 
           {/* Menú de Ventas */}
-          <IconButton color="inherit" onClick={handleVentasMenuClick} sx={{ marginRight: 2 }}>
-            <ShoppingBasketIcon sx={{ color: '#ffdd00' }} /> Ventas
+          <IconButton
+            color="inherit"
+            onClick={handleVentasMenuClick}
+            sx={{ marginRight: 2 }}
+          >
+            <ShoppingBasketIcon
+              sx={{
+                color: "#ffdd00", // Amarillo Walmart
+                fontSize: "1.5rem",
+              }}
+            />
           </IconButton>
           <Menu
             anchorEl={anchorElVentas}
             open={Boolean(anchorElVentas)}
             onClose={handleCloseVentasMenu}
           >
-            <MenuItem onClick={() => navigate("/ventas/lista")}>Lista de Ventas</MenuItem>
+            <MenuItem onClick={() => navigate("/ventas/lista")}>
+              Lista de Ventas
+            </MenuItem>
           </Menu>
 
           {/* Icono de Carrito */}
-          <IconButton color="inherit" onClick={goToCart} sx={{ marginRight: 2 }}>
+          <IconButton color="inherit" onClick={goToCart}>
             <Badge badgeContent={cart.length} color="error">
-              <ShoppingCartIcon sx={{ color: '#ffdd00' }} /> Carrito
+              <ShoppingCartIcon
+                sx={{
+                  color: "#ffdd00", // Amarillo Walmart
+                  fontSize: "1.5rem",
+                }}
+              />
             </Badge>
           </IconButton>
         </Box>

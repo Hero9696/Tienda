@@ -1,5 +1,5 @@
 import { useState, useEffect } from "react";
-import { TextField, Button, MenuItem, Box, Typography } from "@mui/material";
+import { TextField, Button, MenuItem, Box, Typography, Card, CardContent } from "@mui/material";
 import axios from "axios";
 
 const RegistroUsuario = () => {
@@ -101,11 +101,11 @@ const RegistroUsuario = () => {
         p: 3,
         borderRadius: 2,
         boxShadow: 3,
-        bgcolor: "#ff9800", // Naranja como el gi de Goku
-        border: "3px solid #4caf50", // Borde verde
+        bgcolor: "#0063B1", // Azul Walmart
+        border: "3px solid #FFAA00", // Borde amarillo
       }}
     >
-      <Typography variant="h5" align="center" gutterBottom sx={{ color: "#1e88e5" }}>
+      <Typography variant="h5" align="center" gutterBottom sx={{ color: "#FFFFFF" }}>
         Registro de Usuario
       </Typography>
       <form onSubmit={handleSubmit}>
@@ -119,7 +119,7 @@ const RegistroUsuario = () => {
           margin="normal"
           required
           sx={{
-            backgroundColor: "#e3f2fd", // Azul claro
+            backgroundColor: "#FFFFFF", // Blanco para los campos
             borderRadius: 1,
             marginBottom: 2,
           }}
@@ -145,7 +145,7 @@ const RegistroUsuario = () => {
           margin="normal"
           required
           sx={{
-            backgroundColor: "#e3f2fd", // Azul claro
+            backgroundColor: "#FFFFFF", // Blanco
             borderRadius: 1,
             marginBottom: 2,
           }}
@@ -159,7 +159,7 @@ const RegistroUsuario = () => {
           margin="normal"
           required
           sx={{
-            backgroundColor: "#e3f2fd", // Azul claro
+            backgroundColor: "#FFFFFF", // Blanco
             borderRadius: 1,
             marginBottom: 2,
           }}
@@ -174,7 +174,7 @@ const RegistroUsuario = () => {
           margin="normal"
           required
           sx={{
-            backgroundColor: "#e3f2fd", // Azul claro
+            backgroundColor: "#FFFFFF", // Blanco
             borderRadius: 1,
             marginBottom: 2,
           }}
@@ -189,7 +189,7 @@ const RegistroUsuario = () => {
           required
           inputProps={{ maxLength: 8 }}
           sx={{
-            backgroundColor: "#e3f2fd", // Azul claro
+            backgroundColor: "#FFFFFF", // Blanco
             borderRadius: 1,
             marginBottom: 2,
           }}
@@ -206,7 +206,7 @@ const RegistroUsuario = () => {
           margin="normal"
           required
           sx={{
-            backgroundColor: "#e3f2fd", // Azul claro
+            backgroundColor: "#FFFFFF", // Blanco
             borderRadius: 1,
             marginBottom: 2,
           }}
@@ -220,7 +220,7 @@ const RegistroUsuario = () => {
           margin="normal"
           required
           sx={{
-            backgroundColor: "#e3f2fd", // Azul claro
+            backgroundColor: "#FFFFFF", // Blanco
             borderRadius: 1,
             marginBottom: 2,
           }}
@@ -230,20 +230,44 @@ const RegistroUsuario = () => {
         <Button
           type="submit"
           variant="contained"
-          color="primary"
+          color="warning"
           fullWidth
           sx={{
             mt: 2,
             borderRadius: 1,
-            backgroundColor: "#fbc02d", // Amarillo como el aura de Goku
+            backgroundColor: "#FFAA00", // Amarillo Walmart
             "&:hover": {
-              backgroundColor: "#f57f17", // Naranja oscuro
+              backgroundColor: "#F57C00", // Naranja
             },
           }}
         >
           Registrar
         </Button>
       </form>
+
+      {/* Información del usuario (tarjeta) */}
+      <Card sx={{ mt: 5, borderRadius: 2, boxShadow: 3 }}>
+        <CardContent>
+          <Typography variant="h6" color="primary" gutterBottom>
+            Información del Usuario
+          </Typography>
+          <Typography variant="body1">
+            <strong>Nombre Completo:</strong> {formData.nombre_completo}
+          </Typography>
+          <Typography variant="body1">
+            <strong>Correo Electrónico:</strong> {formData.correo_electronico}
+          </Typography>
+          <Typography variant="body1">
+            <strong>Teléfono:</strong> {formData.telefono}
+          </Typography>
+          <Typography variant="body1">
+            <strong>Fecha de Nacimiento:</strong> {formData.fecha_nacimiento}
+          </Typography>
+          <Typography variant="body1">
+            <strong>Dirección:</strong> {formData.direccion_entrega}
+          </Typography>
+        </CardContent>
+      </Card>
     </Box>
   );
 };

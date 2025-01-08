@@ -14,6 +14,7 @@ import {
   CircularProgress,
   Typography,
   TextField,
+  Box,
 } from "@mui/material";
 
 const VerOrdenes = () => {
@@ -68,7 +69,6 @@ const VerOrdenes = () => {
       direccion: ordenToUpdate.direccion,
       estado: ordenToUpdate.estados_idEstados,
     };
-    console.log(ordenData);
 
     try {
       await axios.put("http://localhost:5000/api/actualizarordendetalles", {
@@ -86,10 +86,9 @@ const VerOrdenes = () => {
   };
 
   const eliminarOrden = async (idOrden, idEstado) => {
-    // Verificar si el estado de la orden es "Confirmado"
     if (idEstado === "Confirmado") {
       alert("No se puede cancelar la compra porque ya está confirmada.");
-      return; // Salir de la función sin realizar la solicitud
+      return;
     }
 
     try {
@@ -99,7 +98,7 @@ const VerOrdenes = () => {
       alert(response.data.message);
       setOrdenes((prevOrdenes) =>
         prevOrdenes.filter((orden) => orden.idOrden !== idOrden)
-      ); // Eliminar de la lista local
+      );
     } catch (err) {
       alert(
         "Error al eliminar la orden: " + err.response?.data?.message ||
@@ -109,28 +108,59 @@ const VerOrdenes = () => {
   };
 
   if (loading) {
-    return <CircularProgress />;
+    return (
+      <Box
+        display="flex"
+        justifyContent="center"
+        alignItems="center"
+        minHeight="100vh"
+      >
+        <CircularProgress />
+      </Box>
+    );
   }
 
   if (error) {
-    return <Typography color="error">{error}</Typography>;
+    return (
+      <Box textAlign="center" mt={5}>
+        <Typography color="error" variant="h6">
+          {error}
+        </Typography>
+      </Box>
+    );
   }
 
   return (
-    <div style={{ padding: "20px" }}>
-      <Typography variant="h4" gutterBottom>
-        Ordenes
+    <Box sx={{ padding: "20px", backgroundColor: "#f5f5f5", minHeight: "100vh" }}>
+      <Typography
+        variant="h4"
+        gutterBottom
+        sx={{ fontWeight: "bold", marginBottom: "20px" }}
+      >
+        Órdenes
       </Typography>
-      <TableContainer component={Paper}>
+      <TableContainer component={Paper} elevation={3}>
         <Table>
-          <TableHead>
+          <TableHead sx={{ backgroundColor: "#0040ff" }}>
             <TableRow>
-              <TableCell>ID Orden</TableCell>
-              <TableCell>Estado De La Compra</TableCell>
-              <TableCell>Nombre Del Cliente</TableCell>
-              <TableCell>Dirección De Entrega</TableCell>
-              <TableCell>Total De La Compra</TableCell>
-              <TableCell>Acciones</TableCell>
+              <TableCell sx={{ color: "white", fontWeight: "bold" }}>
+                ID Orden
+              </TableCell>
+              <TableCell sx={{ color: "white", fontWeight: "bold" }}>
+                Estado De La Compra
+              </TableCell>
+              <TableCell sx={{ color: "white", fontWeight: "bold" }}>
+                Nombre Del Cliente
+              </TableCell>
+              <TableCell sx={{ color: "white", fontWeight: "bold" }}>
+                Dirección De Entrega
+              </TableCell>
+              <TableCell sx={{ color: "white", fontWeight: "bold" }}>
+                Total De La Compra
+              </TableCell>
+              <TableCell sx={{ color: "white", fontWeight: "bold" }}>
+                Acciones
+              </TableCell>
             </TableRow>
           </TableHead>
           <TableBody>
@@ -143,6 +173,10 @@ const VerOrdenes = () => {
                     name="estado_nombre"
                     value={orden.estado_nombre}
                     onChange={(e) => handleChange(e, orden.idOrden)}
+                    sx={{
+                      backgroundColor: "#f5f5f5",
+                      borderRadius: "4px",
+                    }}
                   >
                     <MenuItem value="Confirmado">Confirmado</MenuItem>
                     <MenuItem value="Pendiente">Pendiente</MenuItem>
@@ -184,13 +218,13 @@ const VerOrdenes = () => {
                     variant="contained"
                     color="primary"
                     onClick={() => handleSave(orden.idOrden)}
-                    style={{ marginRight: "10px" }}
+                    sx={{ marginRight: "10px" }}
                   >
                     Guardar Cambios
                   </Button>
                   <Button
                     variant="contained"
-                    color="secondary"
+                    color="error"
                     onClick={() =>
                       eliminarOrden(orden.idOrden, orden.estado_nombre)
                     }
@@ -203,7 +237,7 @@ const VerOrdenes = () => {
           </TableBody>
         </Table>
       </TableContainer>
-    </div>
+    </Box>
   );
 };
 

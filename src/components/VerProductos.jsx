@@ -16,7 +16,6 @@ const Productos = () => {
   const [newMarca, setNewMarca] = useState("");
   const [newEstadoId, setNewEstadoId] = useState(""); 
 
-  // Obtener los productos, categorías y estados desde el API
   useEffect(() => {
     const fetchProductos = async () => {
       try {
@@ -50,19 +49,16 @@ const Productos = () => {
     fetchEstados();
   }, []);
 
-  // Función para obtener el nombre de la categoría por ID
   const getCategoriaNombre = (idCategoria) => {
     const categoria = categorias.find((c) => c.idCategoriaProductos === idCategoria);
     return categoria ? categoria.nombre_categoria : "Desconocido";
   };
 
-  // Función para obtener el nombre del estado por ID
   const getEstadoNombre = (idEstados) => {
     const estado = estados.find((e) => e.idEstados === idEstados);
     return estado ? estado.nombre : "Desconocido";
   };
 
-  // Función para manejar la edición de un producto
   const handleEdit = (id) => {
     const producto = productos.find((producto) => producto.idProductos === id);
     setNewName(producto.nombre);
@@ -76,7 +72,6 @@ const Productos = () => {
     setEditing(id);
   };
 
-  // Función para guardar los cambios del producto
   const handleSave = async (id) => {
     try {
       const idUsuarios = localStorage.getItem("idUsuarios");
@@ -132,9 +127,6 @@ const Productos = () => {
     }
   };
 
-
-
-  // Función para cambiar el estado del producto
   const handleChangeStatus = async (id) => {
     const producto = productos.find((producto) => producto.idProductos === id);
     const updatedStatus = producto.estados_idEstados === 1 ? 2 : 1;
@@ -154,13 +146,64 @@ const Productos = () => {
     }
   };
 
+  const styles = {
+    card: {
+      borderRadius: "8px",
+      boxShadow: "0 4px 12px rgba(0, 0, 0, 0.1)",
+      backgroundColor: "#fff",
+      transition: "transform 0.3s",
+      "&:hover": {
+        transform: "scale(1.05)"
+      },
+    },
+    cardContent: {
+      padding: "16px",
+    },
+    title: {
+      fontSize: "1.2rem",
+      fontWeight: "bold",
+      color: "#003366",
+    },
+    subtitle: {
+      fontSize: "1rem",
+      color: "#003366",
+    },
+    button: {
+      backgroundColor: "#ffcc00", // Amarillo Walmart
+      color: "#003366", // Azul Walmart
+      marginTop: "8px",
+      textTransform: "none",
+      padding: "8px 16px",
+      borderRadius: "4px",
+      "&:hover": {
+        backgroundColor: "#e6b800", // Amarillo más oscuro
+      },
+    },
+    buttonOutlined: {
+      marginTop: "8px",
+      textTransform: "none",
+      borderColor: "#003366",
+      color: "#003366",
+      "&:hover": {
+        backgroundColor: "#003366",
+        color: "#fff",
+      },
+    },
+    input: {
+      backgroundColor: "#f9f9f9",
+      borderRadius: "4px",
+      padding: "8px",
+      marginBottom: "10px",
+    },
+  };
+
   return (
     <div>
       <Grid container spacing={2}>
         {productos.map((producto) => (
           <Grid item xs={12} sm={6} md={4} key={producto.idProductos}>
-            <Card>
-              <CardContent>
+            <Card style={styles.card}>
+              <CardContent style={styles.cardContent}>
                 {producto.foto && (
                   <CardMedia
                     component="img"
@@ -169,12 +212,24 @@ const Productos = () => {
                     alt={producto.nombre}
                   />
                 )}
-                <Typography variant="h6">{producto.nombre}</Typography>
-                <Typography variant="body2">Marca: {producto.marca}</Typography>
-                <Typography variant="body2">Precio: Q{producto.precio}</Typography>
-                <Typography variant="body2">Stock: {producto.stock}</Typography>
-                <Typography variant="body2">Estado: {getEstadoNombre(producto.estados_idEstados)}</Typography>
-                <Typography variant="body2">Categoría: {getCategoriaNombre(producto.categoriaProductos_idCategoriaProductos)}</Typography>
+                <Typography variant="h6" style={styles.title}>
+                  {producto.nombre}
+                </Typography>
+                <Typography variant="body2" style={styles.subtitle}>
+                  Marca: {producto.marca}
+                </Typography>
+                <Typography variant="body2" style={styles.subtitle}>
+                  Precio: Q{producto.precio}
+                </Typography>
+                <Typography variant="body2" style={styles.subtitle}>
+                  Stock: {producto.stock}
+                </Typography>
+                <Typography variant="body2" style={styles.subtitle}>
+                  Estado: {getEstadoNombre(producto.estados_idEstados)}
+                </Typography>
+                <Typography variant="body2" style={styles.subtitle}>
+                  Categoría: {getCategoriaNombre(producto.categoriaProductos_idCategoriaProductos)}
+                </Typography>
 
                 {editing === producto.idProductos ? (
                   <>
@@ -184,6 +239,7 @@ const Productos = () => {
                       onChange={(e) => setNewName(e.target.value)}
                       fullWidth
                       margin="normal"
+                      style={styles.input}
                     />
                     <TextField
                       label="Nuevo Precio"
@@ -192,6 +248,7 @@ const Productos = () => {
                       fullWidth
                       margin="normal"
                       type="number"
+                      style={styles.input}
                     />
                     <TextField
                       label="Nuevo Stock"
@@ -200,6 +257,7 @@ const Productos = () => {
                       fullWidth
                       margin="normal"
                       type="number"
+                      style={styles.input}
                     />
                     <TextField
                       label="Nuevo Codigo"
@@ -207,6 +265,7 @@ const Productos = () => {
                       onChange={(e) => setNewCodigo(e.target.value)}
                       fullWidth
                       margin="normal"
+                      style={styles.input}
                     />
                     <TextField
                       label="Nueva Foto URL"
@@ -214,6 +273,7 @@ const Productos = () => {
                       onChange={(e) => setNewFoto(e.target.value)}
                       fullWidth
                       margin="normal"
+                      style={styles.input}
                     />
                     <TextField
                       label="Nueva Marca"
@@ -221,6 +281,7 @@ const Productos = () => {
                       onChange={(e) => setNewMarca(e.target.value)}
                       fullWidth
                       margin="normal"
+                      style={styles.input}
                     />
                     <FormControl fullWidth margin="normal">
                       <InputLabel>Categoria</InputLabel>
@@ -250,20 +311,19 @@ const Productos = () => {
                         ))}
                       </Select>
                     </FormControl>
-                    <Button onClick={() => handleSave(producto.idProductos)} variant="contained" color="primary" style={{ marginRight: 8 }}>
+                    <Button onClick={() => handleSave(producto.idProductos)} variant="contained" style={styles.button}>
                       Guardar
                     </Button>
-                    <Button onClick={() => setEditing(null)} variant="outlined" color="secondary" style={{ marginRight: 8 }}>
+                    <Button onClick={() => setEditing(null)} variant="outlined" style={styles.buttonOutlined}>
                       Cancelar
                     </Button>
                   </>
                 ) : (
                   <div>
-                    <Button onClick={() => handleEdit(producto.idProductos)} variant="outlined" color="secondary" style={{ marginRight: 8 }}>
+                    <Button onClick={() => handleEdit(producto.idProductos)} variant="outlined" style={styles.buttonOutlined}>
                       Editar
                     </Button>
-                   
-                    <Button onClick={() => handleChangeStatus(producto.idProductos)} variant="outlined" color="info">
+                    <Button onClick={() => handleChangeStatus(producto.idProductos)} variant="outlined" color="info" style={styles.button}>
                       Cambiar Estado
                     </Button>
                   </div>
