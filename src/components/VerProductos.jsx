@@ -1,11 +1,21 @@
 import { useEffect, useState } from "react";
 import axios from "axios";
-import { Grid, Card, CardContent, Typography, Button, TextField, CardMedia, Select, MenuItem, InputLabel, FormControl } from "@mui/material";
+import {
+  Grid,
+  Card,
+  CardContent,
+  Typography,
+  Button,
+  TextField,
+  CardMedia,
+  Select,
+  MenuItem,
+  InputLabel,
+  FormControl,
+} from "@mui/material";
 
 const Productos = () => {
   const [productos, setProductos] = useState([]);
-  const [categorias, setCategorias] = useState([]);
-  const [estados, setEstados] = useState([]);
   const [editing, setEditing] = useState(null);
   const [newName, setNewName] = useState("");
   const [newPrice, setNewPrice] = useState("");
@@ -14,50 +24,29 @@ const Productos = () => {
   const [newFoto, setNewFoto] = useState("");
   const [newCategoriaId, setNewCategoriaId] = useState("");
   const [newMarca, setNewMarca] = useState("");
-  const [newEstadoId, setNewEstadoId] = useState(""); 
+  const [newEstadoId, setNewEstadoId] = useState("");
 
   useEffect(() => {
     const fetchProductos = async () => {
       try {
-        const response = await axios.get("http://localhost:5000/api/verproductos");
+        const response = await axios.get(
+          "http://localhost:5000/api/verproductos"
+        );
         setProductos(response.data);
         console.log("Productos", response.data);
       } catch (error) {
         console.error("Error al obtener los productos", error);
       }
     };
-
-    const fetchCategorias = async () => {
-      try {
-        const response = await axios.get("http://localhost:5000/api/categoriasproductos");
-        setCategorias(response.data);
-      } catch (error) {
-        console.error("Error al obtener las categorías", error);
-      }
-    };
-
-    const fetchEstados = async () => {
-      try {
-        const response = await axios.get("http://localhost:5000/api/estados");
-        setEstados(response.data);
-      } catch (error) {
-        console.error("Error al obtener los estados", error);
-      }
-    };
-
     fetchProductos();
-    fetchCategorias();
-    fetchEstados();
   }, []);
 
-  const getCategoriaNombre = (idCategoria) => {
-    const categoria = categorias.find((c) => c.idCategoriaProductos === idCategoria);
-    return categoria ? categoria.nombre_categoria : "Desconocido";
-  };
-
   const getEstadoNombre = (idEstados) => {
-    const estado = estados.find((e) => e.idEstados === idEstados);
-    return estado ? estado.nombre : "Desconocido";
+    return idEstados === 1
+      ? "Activo"
+      : idEstados === 2
+      ? "Inactivo"
+      : "Desconocido";
   };
 
   const handleEdit = (id) => {
@@ -92,7 +81,7 @@ const Productos = () => {
         categoriaProductos_idCategoriaProductos: newCategoriaId,
         marca: newMarca,
         usuarios_idUsuarios: idUsuarios,
-        estados_idEstados: newEstadoId
+        estados_idEstados: newEstadoId,
       });
 
       setProductos((prevProductos) =>
@@ -108,7 +97,7 @@ const Productos = () => {
                 categoriaProductos_idCategoriaProductos: newCategoriaId,
                 marca: newMarca,
                 usuarios_idUsuarios: idUsuarios,
-                estados_idEstados: newEstadoId
+                estados_idEstados: newEstadoId,
               }
             : producto
         )
@@ -133,7 +122,9 @@ const Productos = () => {
     const updatedStatus = producto.estados_idEstados === 1 ? 2 : 1;
 
     try {
-      await axios.post('http://localhost:5000/api/alternarestado', { idProducto: id });
+      await axios.post("http://localhost:5000/api/alternarestado", {
+        idProducto: id,
+      });
 
       setProductos((prevProductos) =>
         prevProductos.map((producto) =>
@@ -154,7 +145,7 @@ const Productos = () => {
       backgroundColor: "#fff",
       transition: "transform 0.3s",
       "&:hover": {
-        transform: "scale(1.05)"
+        transform: "scale(1.05)",
       },
     },
     cardContent: {
@@ -229,7 +220,7 @@ const Productos = () => {
                   Estado: {getEstadoNombre(producto.estados_idEstados)}
                 </Typography>
                 <Typography variant="body2" style={styles.subtitle}>
-                  Categoría: {getCategoriaNombre(producto.categoriaProductos_idCategoriaProductos)}
+                  Categoría: {producto.categoriaNombre}
                 </Typography>
 
                 {editing === producto.idProductos ? (
@@ -291,13 +282,26 @@ const Productos = () => {
                         onChange={(e) => setNewCategoriaId(e.target.value)}
                         label="Categoria"
                       >
-                        {categorias.map((categoria) => (
-                          <MenuItem key={categoria.idCategoriaProductos} value={categoria.idCategoriaProductos}>
-                            {categoria.nombre_categoria}
-                          </MenuItem>
-                        ))}
+                        {Array.from(
+                          new Set(
+                            productos.map(
+                              (producto) => producto.idCategoriaProductos
+                            )
+                          )
+                        ).map((idCategoria) => {
+                          const categoria = productos.find(
+                            (producto) =>
+                              producto.idCategoriaProductos === idCategoria
+                          );
+                          return (
+                            <MenuItem key={idCategoria} value={idCategoria}>
+                              {categoria.categoriaNombre}
+                            </MenuItem>
+                          );
+                        })}
                       </Select>
                     </FormControl>
+
                     <FormControl fullWidth margin="normal">
                       <InputLabel>Estado</InputLabel>
                       <Select
@@ -305,26 +309,41 @@ const Productos = () => {
                         onChange={(e) => setNewEstadoId(e.target.value)}
                         label="Estado"
                       >
-                        {estados.map((estado) => (
-                          <MenuItem key={estado.idEstados} value={estado.idEstados}>
-                            {estado.nombre}
-                          </MenuItem>
-                        ))}
+                        <MenuItem value={1}>Activo</MenuItem>
+                        <MenuItem value={2}>Inactivo</MenuItem>
                       </Select>
                     </FormControl>
-                    <Button onClick={() => handleSave(producto.idProductos)} variant="contained" style={styles.button}>
+
+                    <Button
+                      onClick={() => handleSave(producto.idProductos)}
+                      variant="contained"
+                      style={styles.button}
+                    >
                       Guardar
                     </Button>
-                    <Button onClick={() => setEditing(null)} variant="outlined" style={styles.buttonOutlined}>
+                    <Button
+                      onClick={() => setEditing(null)}
+                      variant="outlined"
+                      style={styles.buttonOutlined}
+                    >
                       Cancelar
                     </Button>
                   </>
                 ) : (
                   <div>
-                    <Button onClick={() => handleEdit(producto.idProductos)} variant="outlined" style={styles.buttonOutlined}>
+                    <Button
+                      onClick={() => handleEdit(producto.idProductos)}
+                      variant="outlined"
+                      style={styles.buttonOutlined}
+                    >
                       Editar
                     </Button>
-                    <Button onClick={() => handleChangeStatus(producto.idProductos)} variant="outlined" color="info" style={styles.button}>
+                    <Button
+                      onClick={() => handleChangeStatus(producto.idProductos)}
+                      variant="outlined"
+                      color="info"
+                      style={styles.button}
+                    >
                       Cambiar Estado
                     </Button>
                   </div>
