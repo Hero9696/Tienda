@@ -1,9 +1,9 @@
 import { AppBar, Toolbar, Typography, IconButton, Badge, Box } from "@mui/material";
 import ShoppingCartIcon from "@mui/icons-material/ShoppingCart";
-import HistoryIcon from "@mui/icons-material/History";
 import PropTypes from "prop-types";
 import { Link, useNavigate } from "react-router-dom";
-import EmojiFlagsIcon from "@mui/icons-material/EmojiFlags"; 
+import StorefrontIcon from "@mui/icons-material/Storefront";
+import HistoryIcon from "@mui/icons-material/History";
 
 const Navbar = ({ cart }) => {
   const navigate = useNavigate();
@@ -20,8 +20,9 @@ const Navbar = ({ cart }) => {
     <AppBar
       position="sticky"
       sx={{
-        backgroundColor: "#FFB400", // Color dorado, inspirado en la estética de One Piece
+        backgroundColor: "#0071ce", // Azul Walmart
         padding: "10px 0", // Espaciado
+        boxShadow: "0px 4px 6px rgba(0, 0, 0, 0.1)",
       }}
     >
       <Toolbar
@@ -36,25 +37,25 @@ const Navbar = ({ cart }) => {
           to="/catalogo"
           style={{
             textDecoration: "none",
-            color: "#1d3557", // Color oscuro para contraste
+            color: "#ffffff", // Texto blanco
             display: "flex",
             alignItems: "center",
           }}
         >
-          {/* Icono de bandera */}
-          <EmojiFlagsIcon sx={{ fontSize: "3rem", color: "#1d3557" }} />
-          
+          {/* Icono de tienda */}
+          <StorefrontIcon sx={{ fontSize: "3rem", color: "#ffc220" }} />
+
           <Typography
-            variant="h4"
+            variant="h5"
             component="div"
             sx={{
               fontWeight: "bold",
-              fontSize: "2rem", // Tamaño de fuente más grande
               marginLeft: "10px",
-              fontFamily: '"Rock Salt", cursive', // Tipografía inspirada en el estilo de One Piece
+              fontFamily: '"Roboto", sans-serif',
+              textTransform: "uppercase",
             }}
           >
-            Mi Tiendita
+            Walmart
           </Typography>
         </Link>
 
@@ -62,7 +63,18 @@ const Navbar = ({ cart }) => {
         <Box sx={{ display: "flex", alignItems: "center", gap: "15px" }}>
           {/* Icono del historial */}
           <IconButton color="inherit" onClick={goToHistory}>
-            <HistoryIcon sx={{ fontSize: "2.5rem", color: "#1d3557" }} /> Historial De Compras
+            <HistoryIcon sx={{ fontSize: "2.5rem", color: "#ffffff" }} />
+            <Typography
+              variant="body2"
+              sx={{
+                marginLeft: "5px",
+                color: "#ffffff",
+                fontWeight: "bold",
+                textTransform: "uppercase",
+              }}
+            >
+              Historial
+            </Typography>
           </IconButton>
 
           {/* Icono del carrito */}
@@ -75,11 +87,12 @@ const Navbar = ({ cart }) => {
                   fontSize: "1rem",
                   minWidth: "20px",
                   height: "20px",
-                  backgroundColor: "#ff6f61", // Color de advertencia similar al estilo de "One Piece"
+                  backgroundColor: "#ffc220", // Amarillo Walmart
+                  color: "#0071ce", // Azul texto
                 },
               }}
             >
-              <ShoppingCartIcon sx={{ fontSize: "2.5rem", color: "#1d3557" }} /> Carrito De Compras
+              <ShoppingCartIcon sx={{ fontSize: "2.5rem", color: "#ffffff" }} />
             </Badge>
           </IconButton>
         </Box>

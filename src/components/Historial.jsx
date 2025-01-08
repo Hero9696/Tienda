@@ -44,16 +44,15 @@ const BuscarOrdenes = () => {
   };
 
   const eliminarOrden = async (idOrden, idEstado) => {
-    // Verificar si el estado de la orden es 5
     if (idEstado === "Confirmado") {
       alert("No se puede cancelar la compra porque ya está confirmada.");
-      return; // Salir de la función sin realizar la solicitud
+      return;
     }
 
     try {
       const response = await axios.delete(`http://localhost:5000/api/eliminarorden/${idOrden}`);
       alert(response.data.message);
-      handleBuscar(localStorage.getItem('idUsuarios')); // Volver a buscar las órdenes después de eliminar
+      handleBuscar(localStorage.getItem('idUsuarios'));
     } catch (err) {
       alert('Error al eliminar la orden: ' + err.response?.data?.message || err.message);
     }
@@ -75,25 +74,26 @@ const BuscarOrdenes = () => {
 
   return (
     <Container
-      maxWidth="sm"
-      style={{
+      maxWidth="md"
+      sx={{
         display: "flex",
         flexDirection: "column",
         alignItems: "center",
-        marginTop: "20px",
-        backgroundColor: "#f9e48f", // Fondo estilo One Piece
-        padding: "20px",
-        borderRadius: "10px",
+        mt: 4,
+        backgroundColor: "#f1f1f1",
+        p: 3,
+        borderRadius: 2,
+        boxShadow: "0 4px 10px rgba(0, 0, 0, 0.1)",
       }}
     >
       <Typography
         variant="h4"
         gutterBottom
         align="center"
-        style={{
+        sx={{
           fontWeight: "bold",
-          color: "#f58c42", // Naranja vibrante inspirado en One Piece
-          fontFamily: '"Rock Salt", cursive', // Tipografía de estilo manga
+          color: "#0071ce", // Azul Walmart
+          fontFamily: '"Roboto", sans-serif',
         }}
       >
         Buscar Detalles de la Orden
@@ -101,100 +101,75 @@ const BuscarOrdenes = () => {
 
       <Button
         variant="contained"
-        color="primary"
         startIcon={<SearchIcon />}
         onClick={() =>
           !loading && handleBuscar(localStorage.getItem("idUsuarios"))
         }
-        style={{
-          marginBottom: "20px",
-          backgroundColor: "#FF5722",
-          ":hover": { backgroundColor: "#E64A19" },
-          fontFamily: '"Rock Salt", cursive',
+        sx={{
+          mb: 3,
+          backgroundColor: "#ffc220", // Amarillo Walmart
+          color: "#0071ce",
+          "&:hover": { backgroundColor: "#e5b01c" },
+          fontWeight: "bold",
         }}
       >
         Buscar
       </Button>
 
-      {loading && <CircularProgress sx={{ color: "#FF5722" }} />}
+      {loading && <CircularProgress sx={{ color: "#0071ce" }} />}
 
       {error && (
-        <Alert severity="error" style={{ width: "100%", marginBottom: "20px" }}>
+        <Alert severity="error" sx={{ width: "100%", mb: 2 }}>
           {error}
         </Alert>
       )}
 
       {Object.keys(groupedOrders).length > 0 ? (
-        <List style={{ width: "100%", marginTop: "20px" }}>
+        <List sx={{ width: "100%" }}>
           {Object.keys(groupedOrders).map((idOrden) => (
             <ListItem
               key={idOrden}
-              style={{
+              sx={{
                 border: "1px solid #ddd",
-                borderRadius: "8px",
-                marginBottom: "10px",
-                padding: "10px",
-                backgroundColor: "#fff7e6", // Fondo claro para cada orden
-                boxShadow: "0 4px 8px rgba(0, 0, 0, 0.1)", // Sombra sutil
+                borderRadius: 2,
+                mb: 2,
+                p: 2,
+                backgroundColor: "#ffffff",
+                boxShadow: "0 2px 5px rgba(0, 0, 0, 0.1)",
               }}
             >
               <ListItemText
                 primary={`ID Orden: ${idOrden}`}
                 secondary={
                   <div>
-                    <Typography
-                      variant="body2"
-                      style={{
-                        fontWeight: "bold",
-                        color: "#00796b",
-                      }}
-                    >
+                    <Typography variant="body2" sx={{ fontWeight: "bold" }}>
                       Dirección de Entrega:{" "}
                       {groupedOrders[idOrden].direccionEntrega}
                     </Typography>
-                    <Typography
-                      variant="body2"
-                      style={{
-                        fontWeight: "bold",
-                        color: "#00796b",
-                      }}
-                    >
+                    <Typography variant="body2" sx={{ fontWeight: "bold" }}>
                       Estado De La Compra: {groupedOrders[idOrden].idEstado}
                     </Typography>
                     {groupedOrders[idOrden].orders.map((orden, index) => (
                       <div key={index}>
-                        <Typography
-                          variant="body2"
-                          style={{ color: "#004d40" }}
-                        >
-                          Nombre del Cliente: {orden.nombre_completo}
+                        <Typography variant="body2">
+                          Cliente: {orden.nombre_completo}
                         </Typography>
-                        <Typography
-                          variant="body2"
-                          style={{ color: "#004d40" }}
-                        >
-                          Nombre del Producto: {orden.nombre_producto}
+                        <Typography variant="body2">
+                          Producto: {orden.nombre_producto}
                         </Typography>
-                        <Typography
-                          variant="body2"
-                          style={{ color: "#004d40" }}
-                        >
+                        <Typography variant="body2">
                           Cantidad: {orden.cantidad}
                         </Typography>
-                        <Typography
-                          variant="body2"
-                          style={{ color: "#004d40" }}
-                        >
+                        <Typography variant="body2">
                           Subtotal: Q{orden.subtotal}
                         </Typography>
                       </div>
                     ))}
                     <Typography
                       variant="body1"
-                      style={{
+                      sx={{
                         fontWeight: "bold",
-                        marginTop: "10px",
-                        color: "#004d40",
+                        mt: 1,
                       }}
                     >
                       Total: Q{groupedOrders[idOrden].total.toFixed(2)}
@@ -204,14 +179,15 @@ const BuscarOrdenes = () => {
               />
               <Button
                 variant="contained"
-                color="secondary"
                 onClick={() =>
                   eliminarOrden(idOrden, groupedOrders[idOrden].idEstado)
                 }
-                style={{
-                  marginTop: "10px",
-                  backgroundColor: "#004d40",
-                  ":hover": { backgroundColor: "#00251a" },
+                sx={{
+                  mt: 1,
+                  backgroundColor: "#0071ce", // Azul Walmart
+                  color: "#ffffff",
+                  "&:hover": { backgroundColor: "#005fa3" },
+                  fontWeight: "bold",
                 }}
               >
                 Cancelar Compra
@@ -223,10 +199,9 @@ const BuscarOrdenes = () => {
         !loading && (
           <Typography
             variant="body1"
-            style={{
-              color: "#00796b",
+            sx={{
+              color: "#0071ce",
               fontWeight: "bold",
-              fontFamily: '"Rock Salt", cursive',
             }}
           >
             No hay órdenes para mostrar.

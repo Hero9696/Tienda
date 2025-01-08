@@ -60,6 +60,7 @@ const CarritoCompras = ({
 
       if (response.data.success) {
         setOrden(response.data.result);
+        
       } else {
         throw new Error("La API no confirmó el éxito de la operación.");
       }
@@ -112,16 +113,15 @@ const CarritoCompras = ({
   };
 
   return (
-    <Box sx={{ padding: 3, backgroundColor: "#f2e0a5" }}>
+    <Box sx={{ padding: 3, backgroundColor: "#f5f5f5" }}>
       <Typography
         variant="h4"
         gutterBottom
         align="center"
         sx={{
-          color: "#d42f2f", // Rojo intenso, inspirando el estilo de One Piece
+          color: "#0071ce", // Azul Walmart
           fontWeight: "bold",
-          fontFamily: "Comic Sans MS, sans-serif", // Toque divertido como One Piece
-          textShadow: "2px 2px 4px rgba(0, 0, 0, 0.5)", // Un toque de sombra para darle más profundidad
+          fontFamily: "Arial, sans-serif",
         }}
       >
         Carrito de Compras
@@ -134,8 +134,7 @@ const CarritoCompras = ({
           align="center"
           sx={{
             marginBottom: 2,
-            fontFamily: "Comic Sans MS, sans-serif", // Igual que el título
-            textDecoration: "underline", // Subrayado para llamar la atención
+            fontFamily: "Arial, sans-serif",
           }}
         >
           {error}
@@ -151,58 +150,58 @@ const CarritoCompras = ({
                 sx={{
                   marginBottom: 2,
                   padding: 2,
-                  border: "2px solid #d42f2f", // Borde de color rojo
+                  border: "1px solid #0071ce", // Azul Walmart
                   borderRadius: 2,
-                  backgroundColor: "#ffecb3", // Fondo amarillo suave
-                  boxShadow: "0px 4px 6px rgba(0, 0, 0, 0.2)", // Agregar sombra
+                  backgroundColor: "#ffffff", // Fondo blanco
+                  boxShadow: "0px 4px 6px rgba(0, 0, 0, 0.1)",
                 }}
               >
                 <ListItemText
                   primary={item.nombre}
-                  secondary={`Precio: Q${item.precio} x ${item.cantidad} = Q${
+                  secondary={`Precio: Q${item.precio} x ${item.cantidad} = Q$${
                     item.precio * item.cantidad
                   }`}
                   sx={{
-                    fontFamily: "Comic Sans MS, sans-serif",
-                    color: "#d42f2f", // Mismo color que el encabezado
+                    fontFamily: "Arial, sans-serif",
+                    color: "#333", // Texto oscuro
                   }}
                 />
                 <Button
                   variant="outlined"
-                  color="primary"
                   onClick={() => aumentarCantidad(item.idProductos)}
                   startIcon={<AddCircle />}
                   disabled={compraConfirmada}
                   sx={{
                     marginRight: 1,
-                    backgroundColor: "#ff7043", // Naranja vibrante
-                    ":hover": { backgroundColor: "#ff5722" },
+                    color: "#0071ce",
+                    borderColor: "#0071ce",
+                    ":hover": { backgroundColor: "#e5f3ff" },
                   }}
                 >
                   +
                 </Button>
                 <Button
                   variant="outlined"
-                  color="secondary"
                   onClick={() => reducirCantidad(item.idProductos)}
                   disabled={item.cantidad === 1 || compraConfirmada}
                   startIcon={<RemoveCircle />}
                   sx={{
                     marginRight: 1,
-                    backgroundColor: "#b2dfdb", // Color suave, verde menta
-                    ":hover": { backgroundColor: "#80cbc4" },
+                    color: "#0071ce",
+                    borderColor: "#0071ce",
+                    ":hover": { backgroundColor: "#e5f3ff" },
                   }}
                 >
                   -
                 </Button>
                 <Button
                   variant="outlined"
-                  color="error"
                   onClick={() => handleEliminarProducto(item.idProductos)}
                   disabled={compraConfirmada}
                   sx={{
-                    backgroundColor: "#d42f2f", // Rojo para eliminar
-                    ":hover": { backgroundColor: "#c62828" },
+                    color: "#d32f2f",
+                    borderColor: "#d32f2f",
+                    ":hover": { backgroundColor: "#fdecea" },
                   }}
                 >
                   Eliminar
@@ -217,8 +216,8 @@ const CarritoCompras = ({
             sx={{
               fontWeight: "bold",
               marginTop: 2,
-              fontFamily: "Comic Sans MS, sans-serif",
-              color: "#f57c00", // Color naranja intenso
+              fontFamily: "Arial, sans-serif",
+              color: "#333", // Texto oscuro
             }}
           >
             Total: Q{total}
@@ -227,26 +226,26 @@ const CarritoCompras = ({
           <Box sx={{ display: "flex", justifyContent: "center", marginTop: 3 }}>
             <Button
               variant="contained"
-              color="primary"
               onClick={confirmarCompra}
               disabled={loading || compraConfirmada}
               sx={{
                 marginRight: 2,
-                backgroundColor: "#ff5722",
-                ":hover": { backgroundColor: "#e64a19" },
-                fontFamily: "Comic Sans MS, sans-serif",
+                backgroundColor: "#ffc220", // Amarillo Walmart
+                ":hover": { backgroundColor: "#e6a800" },
+                fontFamily: "Arial, sans-serif",
+                color: "#333",
               }}
             >
               {loading ? "Confirmando..." : "Confirmar Compra"}
             </Button>
             <Button
               variant="contained"
-              color="secondary"
               onClick={cancelarCompra}
               disabled={compraConfirmada}
               sx={{
-                backgroundColor: "#004d40",
-                ":hover": { backgroundColor: "#00251a" },
+                backgroundColor: "#0071ce",
+                ":hover": { backgroundColor: "#005bb5" },
+                color: "#fff",
               }}
             >
               Cancelar compra
@@ -262,16 +261,15 @@ const CarritoCompras = ({
                 alignItems: "center",
                 justifyContent: "center",
                 textAlign: "center",
-                fontSize: "1.2rem", // Aumenta el tamaño de la fuente
+                fontSize: "1rem",
               }}
             >
               <Typography
                 variant="h4"
-                color="primary"
                 sx={{
                   fontWeight: "bold",
-                  fontFamily: "Comic Sans MS, sans-serif",
-                  color: "#ff9800", // Color dorado
+                  fontFamily: "Arial, sans-serif",
+                  color: "#0071ce", // Azul Walmart
                 }}
               >
                 Compra Realizada
@@ -300,7 +298,7 @@ const CarritoCompras = ({
               <Button
                 variant="contained"
                 color="warning"
-                sx={{ marginTop: 3, fontSize: "1rem" }} // Aumenta el tamaño del botón
+                sx={{ marginTop: 3, fontSize: "1rem" }}
                 onClick={() => {
                   cancelarCompra();
                   eliminarProducto();
@@ -312,7 +310,11 @@ const CarritoCompras = ({
           )}
         </Box>
       ) : (
-        <Typography variant="h6" color="error" align="center">
+        <Typography
+          variant="h6"
+          align="center"
+          sx={{ color: "#d32f2f", fontFamily: "Arial, sans-serif" }}
+        >
           El carrito está vacío.
         </Typography>
       )}

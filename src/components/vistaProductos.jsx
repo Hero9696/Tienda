@@ -2,29 +2,27 @@ import { useEffect, useState } from "react";
 import axios from "axios";
 import { Card, CardContent, CardMedia, Typography, Grid, CircularProgress, Button, Box } from "@mui/material";
 import PropTypes from "prop-types";
-import EmojiFlagsIcon from "@mui/icons-material/EmojiFlags"; 
+import ShoppingCartIcon from "@mui/icons-material/ShoppingCart"; 
 
 const Vista = ({ addToCart, actualizarCarrito }) => {
   const [data, setData] = useState([]);
   const [error, setError] = useState(null);
-  const [loading, setLoading] = useState(true); // Añadimos estado de carga
+  const [loading, setLoading] = useState(true);
 
-  // Obtener los productos desde la API
   useEffect(() => {
     axios
       .get("http://localhost:5000/api/productos")
       .then((response) => {
         setData(response.data);
-        setLoading(false); // Terminamos de cargar los productos
+        setLoading(false);
       })
       .catch((err) => {
         setError("Error al obtener los datos");
-        setLoading(false); // Terminamos de cargar aunque haya error
+        setLoading(false);
         console.error(err);
       });
   }, []);
 
-  // Manejo de errores en la carga de productos
   if (error) {
     return <Typography color="error">{error}</Typography>;
   }
@@ -36,7 +34,6 @@ const Vista = ({ addToCart, actualizarCarrito }) => {
       addToCart({ ...producto, stock: quantity });
       actualizarCarrito({ ...producto, stock: quantity });
 
-      // Actualizamos el stock localmente solo para la vista, si no es un error
       setData((prevData) =>
         prevData.map((item) =>
           item.idProductos === producto.idProductos
@@ -52,20 +49,20 @@ const Vista = ({ addToCart, actualizarCarrito }) => {
   };
 
   return (
-    <Box sx={{ backgroundColor: "#f9e48f", minHeight: "100vh", padding: 4 }}>
+    <Box sx={{ backgroundColor: "#f3f4f6", minHeight: "100vh", padding: 4 }}>
       <Typography
         variant="h3"
         gutterBottom
         align="center"
         sx={{
           marginBottom: 4,
-          color: "#f58c42", // Color inspirado en One Piece
+          color: "#0071ce", // Azul Walmart
           fontWeight: "bold",
           textTransform: "uppercase",
-          fontFamily: '"Rock Salt", cursive', // Tipografía estilo manga
+          fontFamily: '"Roboto", sans-serif',
         }}
       >
-         <EmojiFlagsIcon sx={{ fontSize: "3rem", color: "#1d3557" }} /> Bienvenido a Mi Tiendita
+        <ShoppingCartIcon sx={{ fontSize: "3rem", color: "#ffc220" }} /> Bienvenido a Walmart
       </Typography>
 
       {loading ? (
@@ -77,23 +74,23 @@ const Vista = ({ addToCart, actualizarCarrito }) => {
             minHeight: "50vh",
           }}
         >
-          <CircularProgress color="secondary" />
+          <CircularProgress color="primary" />
         </Box>
       ) : (
         <Grid container spacing={4}>
           {data.map((item) =>
-            item.foto && item.foto.endsWith(".jpg") ? ( // Verificamos que la URL termine en .jpg
+            item.foto && item.foto.endsWith(".jpg") ? (
               <Grid item xs={12} sm={6} md={4} key={item.idProductos}>
                 <Card
                   sx={{
-                    borderRadius: 3,
-                    boxShadow: 5,
+                    borderRadius: 2,
+                    boxShadow: 2,
                     transition: "transform 0.3s, box-shadow 0.3s",
                     ":hover": {
                       transform: "scale(1.05)",
-                      boxShadow: 10,
+                      boxShadow: 6,
                     },
-                    backgroundColor: "#fff7e6", // Fondo claro para los productos
+                    backgroundColor: "#ffffff", // Fondo blanco para los productos
                   }}
                 >
                   <CardMedia
@@ -101,14 +98,14 @@ const Vista = ({ addToCart, actualizarCarrito }) => {
                     alt={item.nombre}
                     image={item.foto}
                     sx={{
-                      height: "200px", // Establecer una altura fija
-                      width: "100%", // Asegurarse de que ocupe todo el ancho disponible
-                      objectFit: "cover", // Asegura que la imagen cubra el área sin deformarse
-                      borderBottom: "2px solid #f58c42", // Borde inferior de color naranja
+                      height: "200px",
+                      width: "100%",
+                      objectFit: "cover",
+                      borderBottom: "3px solid #ffc220", // Borde amarillo
                     }}
                   />
                   <CardContent>
-                    <Typography variant="h6" sx={{ fontWeight: "bold", color: "#f58c42" }}>
+                    <Typography variant="h6" sx={{ fontWeight: "bold", color: "#0071ce" }}>
                       {item.nombre}
                     </Typography>
                     <Typography color="textSecondary">
@@ -123,7 +120,7 @@ const Vista = ({ addToCart, actualizarCarrito }) => {
                         marginBottom: 2,
                         fontSize: "1.2rem",
                         fontWeight: "bold",
-                        color: "#f58c42",
+                        color: "#0071ce",
                       }}
                     >
                       <strong>Precio:</strong> Q{item.precio}
@@ -135,9 +132,9 @@ const Vista = ({ addToCart, actualizarCarrito }) => {
                       disabled={item.stock === 0}
                       fullWidth
                       sx={{
-                        backgroundColor: "#f58c42",
-                        color: "#fff",
-                        ":hover": { backgroundColor: "#f57c00" },
+                        backgroundColor: "#0071ce",
+                        color: "#ffffff",
+                        ":hover": { backgroundColor: "#005bb5" },
                       }}
                     >
                       {item.stock === 0 ? "Sin Stock" : "Agregar al Carrito"}
@@ -145,7 +142,7 @@ const Vista = ({ addToCart, actualizarCarrito }) => {
                   </CardContent>
                 </Card>
               </Grid>
-            ) : null // Si no tiene imagen o no termina en .jpg, no se renderiza nada
+            ) : null
           )}
         </Grid>
       )}
