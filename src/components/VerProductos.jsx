@@ -21,6 +21,7 @@ const Productos = () => {
       try {
         const response = await axios.get("http://localhost:5000/api/verproductos");
         setProductos(response.data);
+        console.log("Productos", response.data);
       } catch (error) {
         console.error("Error al obtener los productos", error);
       }

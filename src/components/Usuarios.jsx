@@ -1,12 +1,10 @@
 import { useEffect, useState } from "react";
 import axios from "axios";
-import { Grid, Card, CardContent, Typography, Button, TextField, Select, MenuItem, InputLabel, FormControl } from "@mui/material";
+import { Grid, Card, CardContent, Typography, Button, TextField } from "@mui/material";
 
 const Usuarios = () => {
   const [newIdUsuarios, setNewIdUsuarios] = useState([]);
   const [usuarios, setUsuarios] = useState([]);
-  const [roles, setRoles] = useState([]);
-  const [estados, setEstados] = useState([]);
   const [editing, setEditing] = useState(null);
   const [newNombre, setNewNombre] = useState("");
   const [newCorreo, setNewCorreo] = useState("");
@@ -17,14 +15,13 @@ const Usuarios = () => {
   const [newEstadoId, setNewEstadoId] = useState("");
   const [newDireccion, setNewDireccion] = useState("");
 
-  // Obtener los usuarios, roles y estados desde el API
   // Obtener los usuarios desde el API
   useEffect(() => {
     const fetchUsuarios = async () => {
       try {
         const response = await axios.get("http://localhost:5000/api/verusuarios");
         setUsuarios(response.data);
-        console.log("Usuarios", response.data);
+       
       } catch (error) {
         console.error("Error al obtener los usuarios", error);
       }
@@ -33,35 +30,15 @@ const Usuarios = () => {
     fetchUsuarios();
   }, []);
 
-  // Obtener los roles desde el API
-  useEffect(() => {
-    const fetchRoles = async () => {
-      try {
-        const response = await axios.get("http://localhost:5000/api/obtenerroles");
-        setRoles(response.data);
-        console.log("Roles", response.data);
-      } catch (error) {
-        console.error("Error al obtener los roles", error);
-      }
-    };
+  // Función para obtener el nombre del estado
+  const obtenerEstado = (estadoId) => {
+    return estadoId === 1 ? "Activo" : estadoId === 2 ? "Inactivo" : "Desconocido";
+  };
 
-    fetchRoles();
-  }, []);
-
-  // Obtener los estados desde el API
-  useEffect(() => {
-    const fetchEstados = async () => {
-      try {
-        const response = await axios.get("http://localhost:5000/api/estados");
-        setEstados(response.data);
-        console.log("Estados", response.data);
-      } catch (error) {
-        console.error("Error al obtener los estados", error);
-      }
-    };
-
-    fetchEstados();
-  }, []);
+  const obtenerRol = (rolId) => {
+    return rolId === 1 || rolId === 3 ? "Operador" : rolId === 2 ? "Cliente" : "Desconocido";
+  };
+  
 
   // Función para manejar la edición de un usuario
   const handleEdit = (id) => {
@@ -81,7 +58,7 @@ const Usuarios = () => {
   // Función para guardar los cambios del usuario
   const handleSave = async (id) => {
     try {
-      await axios.put("http://localhost:5000/api/actualizarusuarios", {
+      console.log("Datos a guardar", {
         idUsuario: newIdUsuarios,
         nombre_completo: newNombre,
         correo_electronico: newCorreo,
@@ -89,6 +66,17 @@ const Usuarios = () => {
         fecha_nacimiento: newFechaNacimiento,
         password: newPassword,
         rol_idRol: newRolId,
+        estados_idEstados: newEstadoId,
+        direccion: newDireccion
+      });
+      await axios.put("http://localhost:5000/api/actualizarusuarios", {
+        idUsuario: newIdUsuarios,
+        nombre_completo: newNombre,
+        correo_electronico: newCorreo,
+        telefono: newTelefono,
+        fecha_nacimiento: newFechaNacimiento,
+        password: newPassword,
+        rol_idRol:newRolId,
         estados_idEstados: newEstadoId,
         direccion: newDireccion
       });
@@ -139,9 +127,9 @@ const Usuarios = () => {
                 <Typography variant="body2">Correo: {usuario.correo_electronico}</Typography>
                 <Typography variant="body2">Teléfono: {usuario.telefono}</Typography>
                 <Typography variant="body2">Fecha de Nacimiento: {new Date(usuario.fecha_nacimiento).toLocaleDateString("es-ES")}</Typography>
-
-                <Typography variant="body2">Rol: {roles.find((rol) => rol.idRol === usuario.rol)?.nombre}</Typography>
-                <Typography variant="body2">Estado: {estados.find((estado) => estado.idEstados === usuario.estado)?.nombre}</Typography>
+                <Typography variant="body2">Dirección: {usuario.direccion}</Typography>
+                <Typography variant="body2">Rol: {obtenerRol(usuario.rol)}</Typography>
+                <Typography variant="body2">Estado: {obtenerEstado(usuario.estado)}</Typography>
 
                 {editing === usuario.idUsuarios ? (
                   <>
@@ -184,42 +172,29 @@ const Usuarios = () => {
                       fullWidth
                       margin="normal"
                     />
-                     <TextField
+                    <TextField
                       label="Nueva Dirección"
                       value={newDireccion}
                       onChange={(e) => setNewDireccion(e.target.value)}
                       fullWidth
                       margin="normal"
                     />
-                    <FormControl fullWidth margin="normal">
-                      <InputLabel>Rol</InputLabel>
-                      <Select
-                        value={newRolId}
-                        onChange={(e) => setNewRolId(e.target.value)}
-                        label="Rol"
-                      >
-                        {roles.map((rol) => (
-                          <MenuItem key={rol.idRol} value={rol.idRol}>
-                            {rol.nombre}
-                          </MenuItem>
-                        ))}
-                      </Select>
-                    </FormControl>
-                    <FormControl fullWidth margin="normal">
-                      <InputLabel>Estado</InputLabel>
-                      <Select
-                        value={newEstadoId}
-                        onChange={(e) => setNewEstadoId(e.target.value)}
-                        label="Estado"
-                      >
-                        {estados.map((estado) => (
-                          <MenuItem key={estado.idEstados} value={estado.idEstados}>
-                            {estado.nombre}
-                          </MenuItem>
-                        ))}
-                      </Select>
-                    </FormControl>
-                 
+                    <TextField
+                      label="Nuevo Rol"
+                      value={newRolId}
+                      onChange={(e) => setNewRolId(e.target.value)}
+                      fullWidth
+                      margin="normal"
+                    />
+                    {/* Mostrar un select o texto con "Activo" o "Inactivo" */}
+                    <TextField
+                      label="Nuevo Estado"
+                      value={newEstadoId}
+                      onChange={(e) => setNewEstadoId(e.target.value)}
+                      fullWidth
+                      margin="normal"
+                    />
+
                     <Button onClick={() => handleSave(usuario.idUsuarios)} variant="contained" color="primary" style={{ marginRight: 8 }}>
                       Guardar
                     </Button>
