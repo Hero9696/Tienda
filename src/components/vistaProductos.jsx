@@ -62,7 +62,7 @@ const Vista = ({ addToCart, actualizarCarrito }) => {
           fontFamily: '"Roboto", sans-serif',
         }}
       >
-        <ShoppingCartIcon sx={{ fontSize: "3rem", color: "#ffc220" }} /> Bienvenido a Walmart
+        <ShoppingCartIcon sx={{ fontSize: "3rem", color: "#ffc220" }} /> Bienvenido a Mi Tiendita
       </Typography>
 
       {loading ? (

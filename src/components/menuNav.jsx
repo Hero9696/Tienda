@@ -55,7 +55,7 @@ const Navbar = ({ cart }) => {
               textTransform: "uppercase",
             }}
           >
-            Walmart
+            Mi Tiendita
           </Typography>
         </Link>
 

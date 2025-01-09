@@ -75,24 +75,35 @@ const Navbar = ({ cart }) => {
               fontFamily: "Arial, sans-serif",
             }}
           >
-            Mi Tienda
+            Mi Tiendita
           </Typography>
         </Link>
 
         <Box display="flex" alignItems="center">
           {/* Menú de Usuarios */}
-          <IconButton
-            color="inherit"
-            onClick={handleUserMenuClick}
-            sx={{ marginRight: 2 }}
-          >
-            <AccountCircleIcon
+          <Box sx={{ display: "flex", alignItems: "center", marginRight: 3 }}>
+            <IconButton
+              color="inherit"
+              onClick={handleUserMenuClick}
+              sx={{ marginRight: 1 }}
+            >
+              <AccountCircleIcon
+                sx={{
+                  color: "#ffdd00", // Amarillo Walmart
+                  fontSize: "1.5rem",
+                }}
+              />
+            </IconButton>
+            <Typography
               sx={{
                 color: "#ffdd00", // Amarillo Walmart
-                fontSize: "1.5rem",
+                fontSize: "1rem",
+                fontWeight: "bold",
               }}
-            />
-          </IconButton>
+            >
+              Usuarios
+            </Typography>
+          </Box>
           <Menu
             anchorEl={anchorEl}
             open={Boolean(anchorEl)}
@@ -107,18 +118,29 @@ const Navbar = ({ cart }) => {
           </Menu>
 
           {/* Menú de Productos */}
-          <IconButton
-            color="inherit"
-            onClick={handleProductosMenuClick}
-            sx={{ marginRight: 2 }}
-          >
-            <StoreIcon
+          <Box sx={{ display: "flex", alignItems: "center", marginRight: 3 }}>
+            <IconButton
+              color="inherit"
+              onClick={handleProductosMenuClick}
+              sx={{ marginRight: 1 }}
+            >
+              <StoreIcon
+                sx={{
+                  color: "#ffdd00", // Amarillo Walmart
+                  fontSize: "1.5rem",
+                }}
+              />
+            </IconButton>
+            <Typography
               sx={{
                 color: "#ffdd00", // Amarillo Walmart
-                fontSize: "1.5rem",
+                fontSize: "1rem",
+                fontWeight: "bold",
               }}
-            />
-          </IconButton>
+            >
+              Productos
+            </Typography>
+          </Box>
           <Menu
             anchorEl={anchorElProductos}
             open={Boolean(anchorElProductos)}
@@ -133,18 +155,29 @@ const Navbar = ({ cart }) => {
           </Menu>
 
           {/* Menú de Ventas */}
-          <IconButton
-            color="inherit"
-            onClick={handleVentasMenuClick}
-            sx={{ marginRight: 2 }}
-          >
-            <ShoppingBasketIcon
+          <Box sx={{ display: "flex", alignItems: "center", marginRight: 3 }}>
+            <IconButton
+              color="inherit"
+              onClick={handleVentasMenuClick}
+              sx={{ marginRight: 1 }}
+            >
+              <ShoppingBasketIcon
+                sx={{
+                  color: "#ffdd00", // Amarillo Walmart
+                  fontSize: "1.5rem",
+                }}
+              />
+            </IconButton>
+            <Typography
               sx={{
                 color: "#ffdd00", // Amarillo Walmart
-                fontSize: "1.5rem",
+                fontSize: "1rem",
+                fontWeight: "bold",
               }}
-            />
-          </IconButton>
+            >
+              Ventas
+            </Typography>
+          </Box>
           <Menu
             anchorEl={anchorElVentas}
             open={Boolean(anchorElVentas)}

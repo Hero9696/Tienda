@@ -47,7 +47,7 @@ const Login = () => {
         alignItems: "center",
         justifyContent: "center",
         minHeight: "100vh",
-        backgroundColor: "#e0f7fa",
+        backgroundColor: "#f5f5f5", // Gris claro similar al fondo de Walmart
       }}
     >
       <Container maxWidth="xs">
@@ -56,7 +56,8 @@ const Login = () => {
           sx={{
             padding: 4,
             borderRadius: 3,
-            boxShadow: "0px 8px 15px rgba(0, 77, 64, 0.2)",
+            boxShadow: "0px 8px 15px rgba(0, 0, 0, 0.1)",
+            backgroundColor: "#fff", // Fondo blanco
           }}
         >
           <Box display="flex" flexDirection="column" alignItems="center" justifyContent="center">
@@ -66,9 +67,10 @@ const Login = () => {
               component="h1"
               gutterBottom
               sx={{
-                color: "#004d40",
+                color: "#0066cc", // Azul Walmart
                 fontWeight: "bold",
                 textTransform: "uppercase",
+                fontFamily: "'Arial', sans-serif", // Tipografía simple y clara
               }}
             >
               🛒 Mi Tiendita
@@ -79,8 +81,9 @@ const Login = () => {
               component="p"
               sx={{
                 marginBottom: 3,
-                color: "#00796b",
+                color: "#ffcc00", // Amarillo Walmart
                 textAlign: "center",
+                fontFamily: "'Arial', sans-serif",
               }}
             >
               ¡Inicia sesión para disfrutar de la mejor experiencia de compra!
@@ -98,13 +101,13 @@ const Login = () => {
                 sx={{
                   "& .MuiOutlinedInput-root": {
                     "& fieldset": {
-                      borderColor: "#004d40",
+                      borderColor: "#0066cc", // Azul Walmart
                     },
                     "&:hover fieldset": {
-                      borderColor: "#00796b",
+                      borderColor: "#ffcc00", // Amarillo Walmart
                     },
                     "&.Mui-focused fieldset": {
-                      borderColor: "#004d40",
+                      borderColor: "#0066cc", // Azul Walmart
                     },
                   },
                 }}
@@ -121,13 +124,13 @@ const Login = () => {
                 sx={{
                   "& .MuiOutlinedInput-root": {
                     "& fieldset": {
-                      borderColor: "#004d40",
+                      borderColor: "#0066cc", // Azul Walmart
                     },
                     "&:hover fieldset": {
-                      borderColor: "#00796b",
+                      borderColor: "#ffcc00", // Amarillo Walmart
                     },
                     "&.Mui-focused fieldset": {
-                      borderColor: "#004d40",
+                      borderColor: "#0066cc", // Azul Walmart
                     },
                   },
                 }}
@@ -138,9 +141,9 @@ const Login = () => {
                 fullWidth
                 sx={{
                   marginTop: 3,
-                  backgroundColor: "#004d40",
+                  backgroundColor: "#0066cc", // Azul Walmart
                   color: "#fff",
-                  ":hover": { backgroundColor: "#00251a" },
+                  ":hover": { backgroundColor: "#004c99" }, // Azul más oscuro en hover
                 }}
               >
                 Iniciar Sesión
