@@ -61,6 +61,8 @@ const VerOrdenes = () => {
         usuario_nombre_completo: ordenToUpdate.usuario_nombre_completo,
         direccion: ordenToUpdate.direccion,
         total_orden: ordenToUpdate.total_orden,
+        telefono: ordenToUpdate.telefono,
+        usuario_correo: ordenToUpdate.usuario_correo,
       },
     ];
 
@@ -153,6 +155,12 @@ const VerOrdenes = () => {
                 Nombre Del Cliente
               </TableCell>
               <TableCell sx={{ color: "white", fontWeight: "bold" }}>
+                Número De Teléfono
+              </TableCell>
+              <TableCell sx={{ color: "white", fontWeight: "bold" }}>
+                Correo Electrónico
+              </TableCell>
+              <TableCell sx={{ color: "white", fontWeight: "bold" }}>
                 Dirección De Entrega
               </TableCell>
               <TableCell sx={{ color: "white", fontWeight: "bold" }}>
@@ -189,6 +197,26 @@ const VerOrdenes = () => {
                     size="small"
                     name="usuario_nombre_completo"
                     value={orden.usuario_nombre_completo}
+                    onChange={(e) => handleChange(e, orden.idOrden)}
+                  />
+                </TableCell>
+                <TableCell>
+                  <TextField
+                    fullWidth
+                    variant="outlined"
+                    size="small"
+                    name="Numero_telefono"
+                    value={orden.telefono}
+                    onChange={(e) => handleChange(e, orden.idOrden)}
+                  />
+                </TableCell>
+                <TableCell>
+                  <TextField
+                    fullWidth
+                    variant="outlined"
+                    size="small"
+                    name="Correo_electronico"
+                    value={orden.usuario_correo}
                     onChange={(e) => handleChange(e, orden.idOrden)}
                   />
                 </TableCell>
